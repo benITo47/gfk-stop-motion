@@ -18,3 +18,13 @@ private:
     wxCheckBox* fillCheckBox;
 
 };
+
+class Shape {
+public:
+    Shape(const wxString& type, const wxColour& color, bool filled)
+        : type(type), color(color), filled(filled) {}
+    
+    wxString type;
+    wxColour color;
+    bool filled; 
+};
