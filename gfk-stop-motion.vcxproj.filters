@@ -38,5 +38,17 @@
     <ClInclude Include="ShapeDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.anim" />
   </ItemGroup>
 </Project>

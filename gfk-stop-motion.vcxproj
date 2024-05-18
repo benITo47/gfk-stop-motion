@@ -139,7 +139,13 @@
   <ItemGroup>
     <ClInclude Include="GUI.h" />
     <ClInclude Include="MyPanel.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeDialog.h" />
+    <ClInclude Include="util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.anim" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
