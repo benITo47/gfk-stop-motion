@@ -17,13 +17,13 @@ public:
 
 wxIMPLEMENT_APP(App);
 
-int main(int argc, char* argv[]) {
-	App app;
-	wxApp::SetInstance(&app);
-	wxEntryStart(argc, argv);
-	wxTheApp->OnInit();
-	wxTheApp->OnRun();
-	wxTheApp->OnExit();
-	wxEntryCleanup();
-	return 0;
-}
+//int main(int argc, char* argv[]) {
+//	App app;
+//	wxApp::SetInstance(&app);
+//	wxEntryStart(argc, argv);
+//	wxTheApp->OnInit();
+//	wxTheApp->OnRun();
+//	wxTheApp->OnExit();
+//	wxEntryCleanup();
+//	return 0;
+//}
