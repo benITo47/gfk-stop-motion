@@ -137,6 +137,7 @@
     <ClCompile Include="ShapeDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="MyPanel.h" />
     <ClInclude Include="Parser.h" />
