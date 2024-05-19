@@ -11,14 +11,7 @@
 // przy implementacji faktycznych kształtów trzeba ujednolicić
 class ShapeToParse {
 public:
-	static std::unique_ptr<ShapeToParse> fromStrings(std::string name, std::vector<std::string> params) {
-		if (name == "circle") {
-			return Circle::fromParams(params);
-		}
-		else {
-			throw std::runtime_error("Invalid shape name");
-		}
-	}
+	static std::unique_ptr<ShapeToParse> fromStrings(std::string name, std::vector<std::string> params);
 
 	virtual operator std::string() const = 0;
 };
