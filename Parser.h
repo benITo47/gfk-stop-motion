@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <algorithm>
 #include <vector>
@@ -14,15 +14,15 @@ class Parser {
 private:
 	std::vector<std::string> _lines;
 public:
-	/// <summary>Wczytuje i wstepnie rozdziela na linie podany plik</summary>
+	/// <summary>Wczytuje i wstępnie rozdziela na linie podany plik</summary>
 	/// 
 	///	Format wczytywanego pliku:
-	/// - w poszczeg�lnych liniach kolejne klatki
-	/// - w kazdych klatkach kolejne argumenty rozdzielone `;`
-	///		- pierwszy argument: sciezka do pliku tla
-	///		- kolejne argumenty: poszczeg�lne ksztalty, opisane jako `[nazwa]([param1],[param2],...)`
+	/// - w poszczególnych liniach kolejne klatki
+	/// - w każdej klatce kolejne argumenty rozdzielone `;`
+	///		- pierwszy argument: scieżka do pliku tła
+	///		- kolejne argumenty: poszczególne kształty, opisane jako `[nazwa]([param1],[param2],...)`
 	/// 
-	/// <param name="path">sciezka do pliku</param>
+	/// <param name="path">ścieżka do pliku</param>
 	void readFile(std::string path);
 
 	/// <summary>
@@ -32,13 +32,25 @@ public:
 	std::vector<Frame> getFrames() const;
 
 	/// <summary>
-	/// Funkcja pomocnicza, wyciaga z linii kolejne parametry dla klatki
+	/// Funkcja pomocnicza, wyciąga z linii kolejne parametry dla klatki
 	/// </summary>
-	/// <param name="input">wejsciowa linia</param>
-	/// <returns></returns>
+	/// Parametry w linii są rozdzielone średnikami. Pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty
+	/// <param name="input">Wejściowa linia</param>
+	/// <returns>Wektor zawierający kolejne parametry do stworzenia klatki</returns>
 	static std::vector<std::string> getFrameParams(std::string input);
 
+
+	/// <summary>
+	/// Funkcja pomocnicza, zwraca nazwę ksztaltu z łańcucha go opisującego
+	/// </summary>
+	/// <param name="input">Wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`</param>
+	/// <returns>Nazwa wyciągnięta z łańcucha</returns>
 	static std::string getName(std::string input);
 
+	/// <summary>
+	/// Funkcja pomocnicza, zwraca wektor zawierający parametry kształtu z lańcucha go opisującego
+	/// </summary>
+	/// <param name="input">wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`</param>
+	/// <returns>wektor parametrów wyciągnietych z łańcucha</returns>
 	static std::vector<std::string> getParams(std::string input);
 };

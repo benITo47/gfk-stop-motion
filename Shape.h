@@ -7,12 +7,26 @@
 #include <wx/wx.h>
 #include <format>
 
-// Dziwna nazwa przez kolizję z `Shape` zdefiniowanym przez Daniela w `ShapeDialog.h`
-// przy implementacji faktycznych kształtów trzeba ujednolicić
+/// <summary>
+/// Przykładowa klasa bazowa dla kształtu z funckjonalnością parsowania
+/// </summary>
+/// 
+/// Dany kształt musi:
+/// - być dodany do funkcji `ShapeToParse::fromStrings`
+/// - posiadać funkcję konwertującą do `std::string` - 
 class ShapeToParse {
 public:
+	/// <summary>
+	/// Zwraca kształt opisany przez podane parametry
+	/// </summary>
+	/// <param name="name">Nazwa kształtu</param>
+	/// <param name="params">Parametry kształtu</param>
+	/// <returns>`std::unique_ptr` do kształtu (wymagane by uniknąć bezpośredniego użycia wskaźników)</returns>
 	static std::unique_ptr<ShapeToParse> fromStrings(std::string name, std::vector<std::string> params);
 
+	/// <summary>
+	/// Funkcja konwertująca kształt do `std::string` - czysto wirtualna
+	/// </summary>
 	virtual operator std::string() const = 0;
 };
 
