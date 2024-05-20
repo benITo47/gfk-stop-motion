@@ -1,4 +1,4 @@
-#include "Shape.h"
+#include "../include/Shape.h"
 
 std::unique_ptr<ShapeToParse> ShapeToParse::fromStrings(std::string name, std::vector<std::string> params) {
 	if (name == "circle") {

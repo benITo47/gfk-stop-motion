@@ -28,6 +28,7 @@ public:
 	/// Funkcja konwertująca kształt do `std::string` - czysto wirtualna
 	/// </summary>
 	virtual operator std::string() const = 0;
+    virtual ~ShapeToParse(){};
 };
 
 // Przy dodawaniu koloru proponuje zapisywac go jako rgb w hex - ulatwi to zapis do pliku

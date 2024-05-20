@@ -1,7 +1,7 @@
-#include "Frame.h"
-#include "Parser.h"
+#include "../include/Frame.h"
+#include "../include/Parser.h"
 
-#include "util.h"
+#include "../include/util.h"
 
 void Parser::readFile(std::string path) {
 	std::ifstream f;

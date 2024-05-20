@@ -1,5 +1,5 @@
 #include <wx/wx.h>
-#include "GUI.h"
+#include "include/GUI.h"
 
 class App : public wxApp {
 public:
@@ -8,8 +8,11 @@ public:
 		SetProcessDPIAware();
 #endif
 		MainFrame* frame = new MainFrame();
+        wxImage::AddHandler(new wxJPEGHandler);           // Dodajemy handlery do formatow
+        wxImage::AddHandler(new wxPNGHandler);
 
-		frame->Show(true);
+
+        frame->Show(true);
 		SetTopWindow(frame);
 		return true;
 	}
