@@ -16,6 +16,8 @@
 /// - posiadać funkcję konwertującą do `std::string` - 
 class ShapeToParse {
 public:
+
+
 	/// <summary>
 	/// Zwraca kształt opisany przez podane parametry
 	/// </summary>
@@ -29,9 +31,15 @@ public:
 	/// </summary>
 	virtual operator std::string() const = 0;
     virtual ~ShapeToParse(){};
+
 };
 
-// Przy dodawaniu koloru proponuje zapisywac go jako rgb w hex - ulatwi to zapis do pliku
+
+
+
+
+ //Przy dodawaniu koloru proponuje zapisywac go jako rgb w hex - ulatwi to zapis do pliku
+
 class Circle : public ShapeToParse {
 private:
 	double _x0, _y0, _r;

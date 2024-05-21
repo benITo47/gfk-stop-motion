@@ -112,12 +112,11 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
 
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
 	std::cout << "add Frame\n";
-	_myPanel->_framesCounter++;
 }
 void MainFrame::fun_delFrame(wxCommandEvent& e) {
 	std::cout << "del Frame\n";
-	if (_myPanel->_framesCounter)
-		_myPanel->_framesCounter--;
+	//if (_myPanel->_framesCounter)
+	//	_myPanel->_framesCounter--;
 }
 void MainFrame::fun_addShape(wxCommandEvent& e) {
 	ShapeDialog dlg(this);
@@ -127,7 +126,6 @@ void MainFrame::fun_addShape(wxCommandEvent& e) {
 		bool filled = dlg.IsFilled();
 
 		_myPanel->SetShape(shape,color,filled);
-		_myPanel->_currFramesCounter++;
 
 		std::cout << "User chose: "
 			<< shape << " " << "Color:" << color.GetRGB() << " " << "filled: " << filled << std::endl;

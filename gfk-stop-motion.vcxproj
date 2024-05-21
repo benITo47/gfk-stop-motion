@@ -144,7 +144,7 @@
     <ClCompile Include="MyApp.cpp" />
     <ClCompile Include="MyPanel.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="ShapeToParse.cpp" />
     <ClCompile Include="ShapeDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +152,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="MyPanel.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="Shape.h" />
+    <ClInclude Include="ShapeToParse.h" />
     <ClInclude Include="ShapeDialog.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
