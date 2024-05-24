@@ -15,18 +15,23 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
     if (isShapeSelected) {
         wxPoint pos = event.GetPosition();
         if (clickCount == 0) {
-            firstPoint = pos;
+            cfg->setPoint1(pos);
             clickCount++;
+            //
             std::cout << "x1:  " << pos.x << "   y1:  " << pos.y << std::endl;
+            //
         }
         else if (clickCount == 1) {
-            secondPoint = pos;
-            shapes.push_back({ firstPoint, secondPoint });
+            cfg->setPoint2(pos);
+
+            //
             std::cout << "x2:  " << pos.x << "   y2:  " << pos.y << std::endl;
-            Refresh(); 
+            //
+
+
             clickCount = 0;
-            _currFrame.emplace_back(type,color,filled,firstPoint,secondPoint);
-            _currFrameShapesCounter++;
+            cfg->saveShape();
+            Refresh();
         }
     }
 }
@@ -34,31 +39,28 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
 void MyPanel::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
     dc.Clear();
-
-    if (_backgroundBitmap.IsOk()) {
-        dc.DrawBitmap(_backgroundBitmap, 0, 0, false);
+    wxBitmap backgroundBitmap = cfg->getBackgroundBitmap();
+    if (backgroundBitmap.IsOk()) {
+        dc.DrawBitmap(backgroundBitmap, 0, 0, false);
     }
 
-
-
-
-    for (const auto& el : _currFrame) {
-
-        el.drawShape(dc);
+    for (const auto& shape : cfg->getCurrentFrame()) {
+        shape.drawShape(dc);
     }
+
 }
 
 void MyPanel::SetShape(const wxString& shape, const wxColour& col, bool fill) {
 
-    type = shape;
-    color = col;
-    filled = fill;
+    cfg->setType(shape);
+    cfg->setBorderColour(color);
+    cfg->setIsFilled(fill);
 
     isShapeSelected = true;
     clickCount = 0;
 }
 
-void MyPanel::SetBackgroundImage(wxString &shape, wxBitmap &bitmap)
+void MyPanel::SetBackgroundImage(wxString &filePath, wxBitmap &bitmap)
 {
 
     int bitmapWidth = bitmap.GetWidth();
@@ -91,7 +93,8 @@ void MyPanel::SetBackgroundImage(wxString &shape, wxBitmap &bitmap)
 
     wxImage image = bitmap.ConvertToImage();
     image.Rescale(bitmapWidth, bitmapHeight);
-    _backgroundBitmap = wxBitmap(image);
+    cfg->setBackgroundBitmap(image);
+    cfg->setBackgroundPath(filePath);
 
     Refresh();
 }

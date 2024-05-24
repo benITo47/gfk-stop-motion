@@ -22,6 +22,7 @@
 #include <wx/button.h>
 #include <wx/frame.h>
 
+#include "ShapeDialog.h"
 #include "MyPanel.h"
 
 class MainFrame : public wxFrame 
