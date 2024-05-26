@@ -64,25 +64,16 @@ void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitma
     double bitmapAspectRatio = static_cast<double>(bitmapWidth) / bitmapHeight;
     double panelAspectRatio = static_cast<double>(PANEL_WIDTH) / PANEL_HEIGHT;
 
-    if (bitmapWidth > PANEL_WIDTH || bitmapHeight > PANEL_HEIGHT) {
-        // Scale down
-        if (panelAspectRatio > 1) {
-            bitmapWidth = PANEL_WIDTH;
-            bitmapHeight = static_cast<int>(PANEL_WIDTH / bitmapAspectRatio);
-        } else {
-            bitmapHeight = PANEL_HEIGHT;
-            bitmapWidth = static_cast<int>(PANEL_HEIGHT * bitmapAspectRatio);
-        }
+    if (bitmapAspectRatio > panelAspectRatio) {
+        // Image is wider relative to the panel
+        bitmapWidth = PANEL_WIDTH;
+        bitmapHeight = static_cast<int>(PANEL_WIDTH / bitmapAspectRatio);
     } else {
-        // Scale up
-        if (bitmapAspectRatio > panelAspectRatio) {
-            bitmapWidth = PANEL_WIDTH;
-            bitmapHeight = static_cast<int>(PANEL_WIDTH / bitmapAspectRatio);
-        } else {
-            bitmapHeight = PANEL_HEIGHT;
-            bitmapWidth = static_cast<int>(PANEL_HEIGHT * bitmapAspectRatio);
-        }
+        // Image is taller relative to the panel
+        bitmapHeight = PANEL_HEIGHT;
+        bitmapWidth = static_cast<int>(PANEL_HEIGHT * bitmapAspectRatio);
     }
+
 
     wxImage image = bitmap.ConvertToImage();
     image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
