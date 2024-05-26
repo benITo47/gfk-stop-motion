@@ -1,5 +1,5 @@
-#include "../include/Parser.h"
-#include "../include/Frame.h"
+#include "Parser.h"
+#include "Frame.h"
 
 Frame Frame::fromParams(std::vector<std::string> params) {
 	Frame frame;

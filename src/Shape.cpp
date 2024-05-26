@@ -11,9 +11,8 @@
 void Shape::drawShape(wxDC &dc) const
 {
 
-
-    dc.SetBrush(wxBrush(color, filled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
-    dc.SetPen(wxPen(color));
+    dc.SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
+    dc.SetPen(wxPen(borderColour));
 
     if (type == "Line") {
         dc.DrawLine(firstPoint, secondPoint);
@@ -42,7 +41,18 @@ void Shape::drawShape(wxDC &dc) const
     }
     else if (type == "Square") {
         int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
-        dc.DrawRectangle(firstPoint, wxSize(side, side));
+        int topLeftX = firstPoint.x;
+        int topLeftY = firstPoint.y;
+
+        if (secondPoint.x < firstPoint.x) {
+            topLeftX = firstPoint.x - side;
+        }
+
+        if (secondPoint.y < firstPoint.y) {
+            topLeftY = firstPoint.y - side;
+        }
+
+        dc.DrawRectangle(wxPoint(topLeftX, topLeftY), wxSize(side, side));
     }
     else if (type == "Triangle") {
         wxPoint points[3];

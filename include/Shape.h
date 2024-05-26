@@ -11,21 +11,20 @@
 
 class Shape {
 public:
-    Shape(const wxString& type, const wxColour& color, bool filled, wxPoint& p1, wxPoint& p2)
-            : type(type), color(color), fillColour(*wxWHITE),filled(filled), firstPoint(p1), secondPoint(p2) {}
+    Shape( wxPoint& p1, wxPoint& p2, const wxString& type, const wxColour& color, bool filled)
+            : type(type), borderColour(color), fillColour(*wxWHITE),isFilled(filled), firstPoint(p1), secondPoint(p2) {}
 
 
-    Shape(const wxString& type, const wxColour& color, bool filled, wxColour fillColor, wxPoint& p1, wxPoint& p2)
-            : type(type), color(color), fillColour(fillColor), filled(filled), firstPoint(p1), secondPoint(p2) {}
+    Shape( wxPoint& p1, wxPoint& p2, const wxString& type, const wxColour& color, bool filled, wxColour fillColor)
+            : type(type), borderColour(color), fillColour(fillColor), isFilled(filled), firstPoint(p1), secondPoint(p2) {}
 
 
-    void drawShape(wxDC& dc)const ;
+    void drawShape(wxDC& dc) const;
 
     wxString type;
-    wxColour color;
+    wxColour borderColour;
     wxColour fillColour;
-    bool filled;
-
+    bool isFilled;
 
     wxPoint firstPoint;
     wxPoint secondPoint;

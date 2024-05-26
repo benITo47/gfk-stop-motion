@@ -12,40 +12,76 @@
 class ConfigClass {
 public:
 
-    ConfigClass():_firstPoint(wxPoint(0,0)), _secondPoint(wxPoint(0,0)), _type("Line"), _borderColour(0,0,0), _fillColour(0,0,0), _isFilled(false){}
+    //Constructor, sets member variables to predefined initial values;
+    ConfigClass();
 
-    void saveShape()
+    //Saves currently drawn shape into current working frame (_frames[_frameIterator])
+    //Saved shape is based on member variables
+    void saveShape();
+
+    //Adds new frame to _frames, without copying the existing data to new frame
+    void addFrame() ;
+
+    //Deletes the current frame
+    void deleteFrame();
+
+    //Changes current frame  to next frame
+    void nextFrame() ;
+
+    //Changes current frame to previous frame
+    void previousFrame();
+
+    //TO BE ADDED
+    void loadFramesFromFile(){}
+
+    //TO BE ADDED
+    void saveFramesToFile()
     {
-        _currentFrame.emplace_back(_type,_borderColour, _isFilled, _fillColour, _firstPoint, _secondPoint);
+        // ALL shapes have 6 variables;
+        //First point of beign drawn,
+        //Second point
+        // BorderColour - colour of shape border;
+        // isFilled bool - decides if shape should be filled or not
+        // FillColour - colour of shape filling;
+
+        //Those 6 variables should be saved and read from the file
     }
 
-    void setPoint1(const wxPoint& p1) { _firstPoint = p1; }
-    wxPoint getPoint1() const { return _firstPoint; }
-
-    void setPoint2(const wxPoint& p2) { _secondPoint = p2; }
-    wxPoint getPoint2() const { return _secondPoint; }
-
-    void setType(wxString type){_type = type;}
-    wxString getType(){return _type;}
-
-    void setBorderColour(wxColour borderColor){ _borderColour = borderColor;}
-    wxColour getBorderColour(){return _borderColour;}
-
-    void setFillColour(wxColour fillColour){_fillColour = fillColour;}
-    wxColour getFillColour(){return _fillColour;}
-
-    void setIsFilled(bool filled){_isFilled = filled;}
-    bool getIsFilled(){return _isFilled;}
-
-    void setBackgroundBitmap(const wxBitmap& bitmap){_backgroundBitmap = wxBitmap(bitmap);}
-    wxBitmap getBackgroundBitmap(){return _backgroundBitmap;}
-
-    void setBackgroundPath(wxString path){_backgroundPath = path;}
-    wxString getBackgroundPath(){return _backgroundPath;}
-
-    void setCurrentFrame(std::vector<Shape> frame){_currentFrame = frame;}
-    std::vector<Shape> getCurrentFrame(){return  _currentFrame;}
-
+    //MEMBER VARIABLE SETTER AND GETTERS
+    //FUNCTION NAMES ARE PRETTY SELF-EXPLANATORY
+    //--------------------------------------------------
+    void setPoint1(const wxPoint& p1) ;
+    wxPoint getPoint1() const ;
+    //--------------------------------------------------
+    void setPoint2(const wxPoint& p2);
+    wxPoint getPoint2() const ;
+    //--------------------------------------------------
+    void setType(wxString type);
+    wxString getType();
+    //--------------------------------------------------
+    void setBorderColour(wxColour borderColor);
+    wxColour getBorderColour();
+    //--------------------------------------------------
+    void setFillColour(wxColour fillColour);
+    wxColour getFillColour();
+    //--------------------------------------------------
+    void setIsFilled(bool filled);
+    bool getIsFilled();
+    //--------------------------------------------------
+    void setBackgroundBitmap(const wxBitmap& bitmap);
+    wxBitmap getBackgroundBitmap();
+    //--------------------------------------------------
+    void setBackgroundPath(wxString path);
+    wxString getBackgroundPath();
+    //--------------------------------------------------
+    void setCurrentFrame(std::vector<Shape> frame);
+    std::vector<Shape> getCurrentFrame();
+    //--------------------------------------------------
+    int getFrameNumber(){return _frames.size();}
+    void setFrameIterator(int iterator){
+        if(iterator < _frames.size())
+            _frameIterator = iterator;
+    }
 private:
 
 
@@ -61,10 +97,11 @@ private:
     wxBitmap _backgroundBitmap; //Bitmap used as a background
     wxString _backgroundPath;   //Path to the user loaded bitmap
 
-    std::vector<Shape> _currentFrame;  //Current Frame - "working space"
-
     std::vector<std::vector<Shape>> _frames;    //Vector of Frames, for saving and playing;
-    int _frameIterator; //Iterator over the _frames vector
+    int _frameIterator;                         //Iterator over the _frames vector
+
+
+    //For now unused, as the data handling responsibiites of _currentFrame have been moved to _frames[_frameIterator]
 
 
 

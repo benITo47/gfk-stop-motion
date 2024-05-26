@@ -1,7 +1,7 @@
-﻿#include "../include/MyPanel.h"
+﻿#include "MyPanel.h"
 
 #define PANEL_HEIGHT  900
-#define  PANEL_WIDTH  1200
+#define PANEL_WIDTH  1200
 
 MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<ConfigClass>()) {
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
@@ -52,7 +52,6 @@ void MyPanel::SetShape(const wxString& shape, const wxColour& col, bool fill) {
     cfg->setType(shape);
     cfg->setBorderColour(col);
     cfg->setIsFilled(fill);
-
     isShapeSelected = true;
     clickCount = 0;
 }
@@ -92,5 +91,17 @@ void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitma
     cfg->setBackgroundPath(filePath);
 
     Refresh();
+}
+
+void MyPanel::PlayAnimation()
+{
+    int frames = cfg->getFrameNumber();
+    for(int i = 0; i < frames; i++)
+    {
+        cfg->setFrameIterator(i);
+        Refresh();
+        wxMilliSleep(100); // Sleep for 100 milliseconds (0.1 seconds)
+        wxYield();
+    }
 }
 

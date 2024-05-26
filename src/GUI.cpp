@@ -1,4 +1,4 @@
-﻿#include "../include/GUI.h"
+﻿#include "GUI.h"
 
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
 	_myPanel = new MyPanel(this);
@@ -83,6 +83,8 @@ void MainFrame::fun_saveAnimationFile(wxCommandEvent& e) {
 void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
 	std::cout << "load file\n";
 }
+
+
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
                                   "Image files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp",
@@ -110,12 +112,12 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
     }
 }
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
-	std::cout << "add Frame\n";
+	_myPanel->cfg->addFrame();
+    _myPanel->Refresh();
 }
 void MainFrame::fun_delFrame(wxCommandEvent& e) {
-	std::cout << "del Frame\n";
-	//if (_myPanel->_framesCounter)
-	//	_myPanel->_framesCounter--;
+    _myPanel->cfg->deleteFrame();
+    _myPanel->Refresh();
 }
 void MainFrame::fun_addShape(wxCommandEvent& e) {
 	ShapeDialog dlg(this);
@@ -131,11 +133,14 @@ void MainFrame::fun_addShape(wxCommandEvent& e) {
 	}
 }
 void MainFrame::fun_nextFrame(wxCommandEvent& e) {
-	std::cout << "next Frame\n";
+    _myPanel->cfg->nextFrame();
+    _myPanel->Refresh();
 }
 void MainFrame::fun_playFrame(wxCommandEvent& e) {
 	std::cout << "play Frame\n";
+    _myPanel->PlayAnimation();
 }
 void MainFrame::fun_prevFrame(wxCommandEvent& e) {
-	std::cout << "prev Frame\n";
+    _myPanel->cfg->previousFrame();
+    _myPanel->Refresh();
 }
