@@ -12,16 +12,6 @@
 class ConfigClass {
 public:
 
-
-    /*
-    wxPoint _firstPoint;    //First point of the shape
-    wxPoint _secondPoint;   //Second point of the shape
-    wxString _type;         //Type of the shape  //should be enum  ?
-    wxColour _borderColour; //Colour of shape's outline
-    wxColour _fillColour;   //Colour of shape's fill
-    bool _isFilled;
-     */
-
     ConfigClass():_firstPoint(wxPoint(0,0)), _secondPoint(wxPoint(0,0)), _type("Line"), _borderColour(0,0,0), _fillColour(0,0,0), _isFilled(false){}
 
     void saveShape()
@@ -29,11 +19,11 @@ public:
         _currentFrame.emplace_back(_type,_borderColour, _isFilled, _fillColour, _firstPoint, _secondPoint);
     }
 
-    void setPoint1(wxPoint p1){_firstPoint = p1;}
-    wxPoint getPoint1(){return _firstPoint;}
+    void setPoint1(const wxPoint& p1) { _firstPoint = p1; }
+    wxPoint getPoint1() const { return _firstPoint; }
 
-    void setPoint2(wxPoint p2){_secondPoint = p2;}
-    wxPoint getPoint2(){return _secondPoint;}
+    void setPoint2(const wxPoint& p2) { _secondPoint = p2; }
+    wxPoint getPoint2() const { return _secondPoint; }
 
     void setType(wxString type){_type = type;}
     wxString getType(){return _type;}
@@ -47,7 +37,7 @@ public:
     void setIsFilled(bool filled){_isFilled = filled;}
     bool getIsFilled(){return _isFilled;}
 
-    void setBackgroundBitmap(wxBitmap bitmap){_backgroundBitmap = bitmap;}
+    void setBackgroundBitmap(const wxBitmap& bitmap){_backgroundBitmap = wxBitmap(bitmap);}
     wxBitmap getBackgroundBitmap(){return _backgroundBitmap;}
 
     void setBackgroundPath(wxString path){_backgroundPath = path;}

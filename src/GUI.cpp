@@ -109,7 +109,6 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
         }
     }
 }
-
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
 	std::cout << "add Frame\n";
 }

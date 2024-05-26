@@ -11,6 +11,7 @@
 void Shape::drawShape(wxDC &dc) const
 {
 
+
     dc.SetBrush(wxBrush(color, filled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
     dc.SetPen(wxPen(color));
 

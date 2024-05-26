@@ -3,7 +3,7 @@
 #define PANEL_HEIGHT  900
 #define  PANEL_WIDTH  1200
 
-MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent) {
+MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<ConfigClass>()) {
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMaxSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMinSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
@@ -22,15 +22,12 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
             //
         }
         else if (clickCount == 1) {
-            cfg->setPoint2(pos);
-
             //
             std::cout << "x2:  " << pos.x << "   y2:  " << pos.y << std::endl;
             //
-
-
-            clickCount = 0;
+            cfg->setPoint2(pos);
             cfg->saveShape();
+            clickCount = 0;
             Refresh();
         }
     }
@@ -53,16 +50,15 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
 void MyPanel::SetShape(const wxString& shape, const wxColour& col, bool fill) {
 
     cfg->setType(shape);
-    cfg->setBorderColour(color);
+    cfg->setBorderColour(col);
     cfg->setIsFilled(fill);
 
     isShapeSelected = true;
     clickCount = 0;
 }
 
-void MyPanel::SetBackgroundImage(wxString &filePath, wxBitmap &bitmap)
+void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitmap)
 {
-
     int bitmapWidth = bitmap.GetWidth();
     int bitmapHeight = bitmap.GetHeight();
 
@@ -89,11 +85,10 @@ void MyPanel::SetBackgroundImage(wxString &filePath, wxBitmap &bitmap)
         }
     }
 
-
-
     wxImage image = bitmap.ConvertToImage();
-    image.Rescale(bitmapWidth, bitmapHeight);
-    cfg->setBackgroundBitmap(image);
+    image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
+    wxBitmap bitmapFinal(image);
+    cfg->setBackgroundBitmap(bitmapFinal);
     cfg->setBackgroundPath(filePath);
 
     Refresh();
