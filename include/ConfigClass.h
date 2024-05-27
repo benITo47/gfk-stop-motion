@@ -22,9 +22,12 @@ public:
     //Adds new frame to _frames, without copying the existing data to new frame
     void addFrame() ;
 
+    void addCopyFrame();
+
     //Deletes the current frame
     void deleteFrame();
 
+    void deleteLastShape(); //Pops back shape from _Frames, it;s no longer drawn.
     //Changes current frame  to next frame
     void nextFrame() ;
 
@@ -77,11 +80,18 @@ public:
     void setCurrentFrame(std::vector<Shape> frame);
     std::vector<Shape> getCurrentFrame();
     //--------------------------------------------------
-    int getFrameNumber(){return _frames.size();}
-    void setFrameIterator(int iterator){
-        if(iterator < _frames.size())
-            _frameIterator = iterator;
-    }
+    int getFrameNumber();
+    //--------------------------------------------------
+    void setFrameIterator(int iterator);
+    //--------------------------------------------------
+    void setBackgroundBitmapCopy(const wxBitmap& bitmap);
+    wxBitmap getBackgroundBitmapCopy();
+    //--------------------------------------------------
+    void setThumbPos(int pos);
+    int getThumbPos();
+    //--------------------------------------------------
+
+
 private:
 
 
@@ -95,12 +105,13 @@ private:
     bool _isFilled;          // Should the shape be filled or transparent
 
     wxBitmap _backgroundBitmap; //Bitmap used as a background
+    wxBitmap _backgroundBitmapCopy;
     wxString _backgroundPath;   //Path to the user loaded bitmap
 
     std::vector<std::vector<Shape>> _frames;    //Vector of Frames, for saving and playing;
     int _frameIterator;                         //Iterator over the _frames vector
 
-
+    int _thumbPos = 0;
     //For now unused, as the data handling responsibiites of _currentFrame have been moved to _frames[_frameIterator]
 
 

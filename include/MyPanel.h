@@ -13,7 +13,7 @@ public:
 	MyPanel(wxWindow* parent);
 	void OnPaint(wxPaintEvent& event);
 	void OnLeftDown(wxMouseEvent& event);
-	void SetShape(const wxString& shape, const wxColour& color, bool filled);
+	void SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor);
     void SetBackgroundImage(const wxString &filePath, const wxBitmap &bitmap);
     void PlayAnimation();
 
@@ -22,7 +22,6 @@ private:
     std::shared_ptr<ConfigClass> cfg;
 
 
-    //Frame data - primitives for drawing - set based on GUI events
 	bool isShapeSelected;
 	int clickCount=0;
 };

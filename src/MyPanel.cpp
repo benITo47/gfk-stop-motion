@@ -36,7 +36,7 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
 void MyPanel::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
     dc.Clear();
-    wxBitmap backgroundBitmap = cfg->getBackgroundBitmap();
+    wxBitmap backgroundBitmap = cfg->getBackgroundBitmapCopy();
     if (backgroundBitmap.IsOk()) {
         dc.DrawBitmap(backgroundBitmap, 0, 0, false);
     }
@@ -47,11 +47,12 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
 
 }
 
-void MyPanel::SetShape(const wxString& shape, const wxColour& col, bool fill) {
+void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
 
     cfg->setType(shape);
-    cfg->setBorderColour(col);
-    cfg->setIsFilled(fill);
+    cfg->setBorderColour(borderColor);
+    cfg->setIsFilled(filled);
+    cfg->setFillColour(fillColor);
     isShapeSelected = true;
     clickCount = 0;
 }
