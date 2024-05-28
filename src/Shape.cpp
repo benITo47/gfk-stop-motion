@@ -10,7 +10,21 @@
 
 void Shape::drawShape(wxDC& dc) const
 {
-	//wxMessageBox(toString());
+	//// Crude parsing test
+	//wxString str = (toString());
+	//wxMessageBox(str);
+	//Shape newMe = Shape::fromString(str);
+
+	//Shape* me = const_cast<Shape*>(this);
+
+	//me->type = newMe.type;
+	//me->borderColour = newMe.borderColour;
+	//me->fillColour = newMe.fillColour;
+	//me->isFilled = newMe.isFilled;
+
+	//me->firstPoint = newMe.firstPoint;
+	//me->secondPoint = newMe.secondPoint;
+
 	dc.SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
 	dc.SetPen(wxPen(borderColour));
 
