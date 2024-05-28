@@ -28,6 +28,17 @@ void ConfigClass::addFrame() {
     _frameIterator++;
 }
 
+void ConfigClass::addCopyFrame()
+{
+    addFrame();
+    for(auto elem: _frames[_frameIterator-1])
+    {
+        _frames[_frameIterator].push_back(elem);
+    }
+}
+
+
+
 void ConfigClass::deleteFrame()
 {
     if (_frames.empty()) {
@@ -45,6 +56,20 @@ void ConfigClass::deleteFrame()
         _frameIterator = _frames.size() - 1;
     }
 }
+
+void ConfigClass::deleteLastShape()
+{
+    if(!_frames[_frameIterator].empty())
+    {
+        _frames[_frameIterator].pop_back();
+    }
+    else
+    {
+        wxBell();
+    }
+}
+
+
 
 void ConfigClass::nextFrame() {
     if (_frameIterator < _frames.size() - 1) {
@@ -84,7 +109,8 @@ wxColour ConfigClass::getFillColour(){return _fillColour;}
 void ConfigClass::setIsFilled(bool filled){_isFilled = filled;}
 bool ConfigClass::getIsFilled(){return _isFilled;}
 
-void ConfigClass::setBackgroundBitmap(const wxBitmap& bitmap){_backgroundBitmap = wxBitmap(bitmap);}
+void ConfigClass::setBackgroundBitmap(const wxBitmap& bitmap){_backgroundBitmap = wxBitmap(bitmap);
+                                                               _backgroundBitmapCopy = wxBitmap(bitmap); }
 wxBitmap ConfigClass::getBackgroundBitmap(){return _backgroundBitmap;}
 
 void ConfigClass::setBackgroundPath(wxString path){_backgroundPath = path;}
@@ -92,3 +118,17 @@ wxString ConfigClass::getBackgroundPath(){return _backgroundPath;}
 
 void ConfigClass::setCurrentFrame(std::vector<Shape> frame){_frames[_frameIterator] = frame;}
 std::vector<Shape> ConfigClass::getCurrentFrame(){return  _frames[_frameIterator];}
+
+
+int ConfigClass::getFrameNumber(){return _frames.size();}
+
+void ConfigClass::setFrameIterator(int iterator){
+    if(iterator < _frames.size())
+        _frameIterator = iterator;
+}
+void ConfigClass::setBackgroundBitmapCopy(const wxBitmap& bitmap) { _backgroundBitmapCopy = wxBitmap(bitmap); }
+wxBitmap ConfigClass::getBackgroundBitmapCopy() { return _backgroundBitmapCopy; }
+
+void ConfigClass::setThumbPos(int pos) { _thumbPos = pos; }
+int ConfigClass::getThumbPos() { return _thumbPos; }
+

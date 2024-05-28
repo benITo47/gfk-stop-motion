@@ -36,12 +36,30 @@ public:
 	void fun_addFrame(wxCommandEvent& e);
 	void fun_delFrame(wxCommandEvent& e);
 	void fun_addShape(wxCommandEvent& e);
+	void fun_delShape(wxCommandEvent& e);
 	void fun_nextFrame(wxCommandEvent& e);
 	void fun_playFrame(wxCommandEvent& e);
 	void fun_prevFrame(wxCommandEvent& e);
+	void fun_copyPrevFrame(wxCommandEvent& e);
+	void OnFillCheckBoxChanged(wxCommandEvent& e);
+	void UpdateShapeInPanel(wxCommandEvent& e);
+	void OnScrollBrightness(wxScrollEvent& e);
+	void OnScrollTransparent(wxScrollEvent& e);
+
 private:
 	MyPanel*  _myPanel;
+	wxPanel* shapePanel;
+	wxChoice* shapeChoice;
+	wxColourPickerCtrl* colorPicker;
+	wxColourPickerCtrl* fillColorPicker;
+	wxCheckBox* fillCheckBox;
+	wxCheckBox* copyPrevFrame;
+	wxStaticText* fillColorLabel;
+	wxBoxSizer* shapeSizer;
+	wxScrollBar* ScrollBarBrightness;
+	wxScrollBar* ScrollBarTransparent;
 
+	bool _addedShape = false;
 	enum {
 		ID_saveFile = 1001,
 		ID_loadFile,
@@ -51,8 +69,15 @@ private:
 		ID_addShape,
 		ID_nextFrame,
 		ID_playFrame,
-		ID_prevFrame
+		ID_prevFrame,
+		ID_checkbox,
+		ID_copyPrevFrame,
+		ID_scrollBarTransparent,
+		ID_scrollBarBrightness,
+		ID_delLastShape
 	};
+
 };
 
+int clamp(int value, int min, int max);
 
