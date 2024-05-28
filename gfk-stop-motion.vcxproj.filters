@@ -41,9 +41,6 @@
     <ClInclude Include="include\ShapeDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ShapeToParse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,9 +65,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ShapeDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShapeToParse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MyApp.cpp">

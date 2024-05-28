@@ -1,30 +1,32 @@
 ﻿#pragma once
 
-#include "ShapeToParse.h"
+#include "Shape.h"
 #include <string>
 #include <vector>
 #include <memory>
 
-/// <summary>
-/// Klasa reprezentująca jedną klatkę animacji
-/// </summary>
+/**
+ * @class Frame
+ * @brief Klasa reprezentująca jedną klatkę animacji.
+ */
 class Frame {
 private:
-	/// <summary>
-	/// Ścieżka do obrazu tła
-	/// </summary>
-	std::string _bgPath;
+    /**
+     * @brief Ścieżka do obrazu tła.
+     */
+    std::string _bgPath;
 
-	/// <summary>
-	/// Wektor kształtów zawartych w klatce
-	/// </summary>
-	std::vector<std::unique_ptr<ShapeToParse>> _shapes;
+    /**
+     * @brief Wektor kształtów zawartych w klatce.
+     */
+    std::vector<Shape> _shapes;
+
 public:
-
-	/// <summary>
-	/// Zwraca klatkę stworzoną z wektora łańcuchów reprezentujących jej parametry
-	/// </summary>
-	/// <param name="params">Wektor parametrów, pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty</param>
-	/// <returns>Utworzona klatka</returns>
-	static Frame fromParams(std::vector<std::string> params);
+    /**
+     * @brief Zwraca klatkę stworzoną z wektora łańcuchów reprezentujących jej parametry.
+     *
+     * @param params Wektor parametrów, pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty.
+     * @return Utworzona klatka.
+     */
+    static Frame fromParams(std::vector<wxString> params);
 };

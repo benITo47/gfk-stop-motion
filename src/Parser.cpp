@@ -3,9 +3,9 @@
 
 #include "util.h"
 
-void Parser::readFile(std::string path) {
+void Parser::readFile(const wxString& path) {
 	std::ifstream f;
-	f.open(path);
+	f.open(path.ToStdString());
 	if (!f.is_open())
 		throw std::runtime_error("Couldn't open file: " + path);
 
@@ -24,16 +24,16 @@ std::vector<Frame> Parser::getFrames() const {
 	return result;
 }
 
-std::vector<std::string> Parser::getFrameParams(std::string input) {
+std::vector<wxString> Parser::getFrameParams(const wxString& input) {
 	return split(input, ";");
 }
 
-std::string Parser::getName(std::string input) {
+std::string Parser::getName(const wxString& input) {
 	auto paren = input.begin() + input.find("(");
 	return std::string(input.begin(), paren);
 }
 
-std::vector<std::string> Parser::getParams(std::string input) {
+std::vector<wxString> Parser::getParams(const wxString& input) {
 	auto lparen = input.begin() + input.find("(");
 	auto rparen = input.begin() + input.find(")");
 	return split(std::string(lparen + 1, rparen), ",");
