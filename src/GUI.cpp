@@ -142,10 +142,10 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
 
 void MainFrame::fun_saveAnimationFile(wxCommandEvent& e) {
-	std::cout << "save file\n";
+	_myPanel->cfg->saveFramesToFile();
 }
 void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
-	std::cout << "load file\n";
+    _myPanel->cfg->loadFramesFromFile();
 }
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
 	ScrollBarBrightness->Show();

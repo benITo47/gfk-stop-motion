@@ -1,6 +1,8 @@
 #include "Frame.h"
+#include "Parser.h"
 
-Frame Frame::fromParams(std::vector<wxString> params) {
+Frame Frame::fromString(const wxString& input) {
+	auto params = Parser::getFrameParams(input);
 	Frame frame;
 	frame._bgPath = params[0];
 	std::for_each(params.begin() + 1, params.end(), [&frame](auto s) {
@@ -8,4 +10,11 @@ Frame Frame::fromParams(std::vector<wxString> params) {
 		});
 
 	return frame;
+}
+
+wxString Frame::toString() const {
+	wxString result = _bgPath;
+	for (auto& shape : _shapes)
+		result += wxString::Format(";%s", shape.toString());
+	return result;
 }

@@ -35,6 +35,16 @@ public:
     void readFile(const wxString& path);
 
     /**
+     * @brief Zapisuje klatki jako tekst do parsera
+    */
+    void setFrames(const std::vector<Frame> frames);
+
+    /**
+     * @brief Zapisuje klatki do pliku
+    */
+    void saveToFile(const wxString& path) const;
+
+    /**
      * @brief Parsuje linie i zwraca je w formie wektora klatek.
      *
      * @return Wektor klatek.

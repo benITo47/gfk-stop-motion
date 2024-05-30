@@ -14,11 +14,25 @@ void Parser::readFile(const wxString& path) {
 		_lines.push_back(line);
 }
 
+void Parser::setFrames(const std::vector<Frame> frames) {
+	_lines.clear();
+	for (auto& frame : frames)
+		_lines.push_back(frame.toString());
+	wxMessageBox(_lines[0]);
+}
+
+void Parser::saveToFile(const wxString& path) const {
+	std::ofstream f;
+	f.open(path.ToStdString());
+	for (auto& line : _lines)
+		f << line << "\n";
+}
+
 std::vector<Frame> Parser::getFrames() const {
 	std::vector<Frame> result(_lines.size());
 
 	std::transform(_lines.begin(), _lines.end(), result.begin(), [](auto l) {
-		return Frame::fromParams(getFrameParams(l));
+		return Frame::fromString(l);
 		});
 
 	return result;
