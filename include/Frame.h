@@ -1,30 +1,47 @@
 ﻿#pragma once
 
-#include "ShapeToParse.h"
+#include "Shape.h"
 #include <string>
 #include <vector>
 #include <memory>
 
-/// <summary>
-/// Klasa reprezentująca jedną klatkę animacji
-/// </summary>
+/**
+ * @class Frame
+ * @brief Klasa reprezentująca jedną klatkę animacji.
+ */
 class Frame {
 private:
-	/// <summary>
-	/// Ścieżka do obrazu tła
-	/// </summary>
-	std::string _bgPath;
+    /**
+     * @brief Ścieżka do obrazu tła.
+     */
+    wxString _bgPath;
 
-	/// <summary>
-	/// Wektor kształtów zawartych w klatce
-	/// </summary>
-	std::vector<std::unique_ptr<ShapeToParse>> _shapes;
+    /**
+     * @brief Wektor kształtów zawartych w klatce.
+     */
+    std::vector<Shape> _shapes;
+
 public:
+    /// @brief Domyślny konstruktor
+    Frame() = default;
 
-	/// <summary>
-	/// Zwraca klatkę stworzoną z wektora łańcuchów reprezentujących jej parametry
-	/// </summary>
-	/// <param name="params">Wektor parametrów, pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty</param>
-	/// <returns>Utworzona klatka</returns>
-	static Frame fromParams(std::vector<std::string> params);
+    /// @brief Konstruktor z danych
+    Frame(wxString bgPath, std::vector<Shape> shapes) : _bgPath(bgPath), _shapes(shapes) {}
+
+    /**
+     * @brief Zwraca klatkę stworzoną z łańcucha reprezentującego jej parametry (oddzielone `;`).
+     *
+     * @param params Pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty.
+     * @return Utworzona klatka.
+     */
+    static Frame fromString(const wxString& params);
+
+    /// @brief Konwertuje klatkę na zapis w formie `wxString`
+    wxString toString() const;
+
+    /// @brief getter do ścieżki tła
+    const wxString& getBgPath() const { return _bgPath; }
+
+    /// @brief getter do listy kształtów
+    const std::vector<Shape>& getShapes() const { return _shapes; }
 };

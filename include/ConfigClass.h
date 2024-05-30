@@ -34,21 +34,8 @@ public:
     //Changes current frame to previous frame
     void previousFrame();
 
-    //TO BE ADDED
-    void loadFramesFromFile(){}
-
-    //TO BE ADDED
-    void saveFramesToFile()
-    {
-        // ALL shapes have 6 variables;
-        //First point of beign drawn,
-        //Second point
-        // BorderColour - colour of shape border;
-        // isFilled bool - decides if shape should be filled or not
-        // FillColour - colour of shape filling;
-
-        //Those 6 variables should be saved and read from the file
-    }
+    void loadFramesFromFile(const wxString& path);
+    void saveFramesToFile(const wxString& path);
 
     //MEMBER VARIABLE SETTER AND GETTERS
     //FUNCTION NAMES ARE PRETTY SELF-EXPLANATORY

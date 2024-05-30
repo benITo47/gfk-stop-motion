@@ -8,49 +8,73 @@
 #include <iostream>
 #include <fstream>
 
+#include <wx/string.h>
+
 class Frame;
 
+/**
+ * @class Parser
+ * @brief Klasa do parsowania klatek z pliku.
+ */
 class Parser {
 private:
-	std::vector<std::string> _lines;
+    /// @brief Zawiera linie z wczytanego/zapisywanego pliku
+    std::vector<wxString> _lines;
+
 public:
-	/// <summary>Wczytuje i wstępnie rozdziela na linie podany plik</summary>
-	/// 
-	///	Format wczytywanego pliku:
-	/// - w poszczególnych liniach kolejne klatki
-	/// - w każdej klatce kolejne argumenty rozdzielone `;`
-	///		- pierwszy argument: scieżka do pliku tła
-	///		- kolejne argumenty: poszczególne kształty, opisane jako `[nazwa]([param1],[param2],...)`
-	/// 
-	/// <param name="path">ścieżka do pliku</param>
-	void readFile(std::string path);
+    /**
+     * @brief Wczytuje i wstępnie rozdziela na linie podany plik.
+     *
+     * Format wczytywanego pliku:
+     * - w poszczególnych liniach kolejne klatki
+     * - w każdej klatce kolejne argumenty rozdzielone `;`
+     *     - pierwszy argument: ścieżka do pliku tła
+     *     - kolejne argumenty: poszczególne kształty, opisane jako `[nazwa]([param1],[param2],...)`
+     *
+     * @param path ścieżka do pliku
+     */
+    void readFile(const wxString& path);
 
-	/// <summary>
-	/// Parsuje linie i zwraca je w formie wektora klatek
-	/// </summary>
-	/// <returns>Wektor klatek</returns>
-	std::vector<Frame> getFrames() const;
+    /**
+     * @brief Zapisuje klatki jako tekst do parsera
+    */
+    void setFrames(const std::vector<Frame> frames);
 
-	/// <summary>
-	/// Funkcja pomocnicza, wyciąga z linii kolejne parametry dla klatki
-	/// </summary>
-	/// Parametry w linii są rozdzielone średnikami. Pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty
-	/// <param name="input">Wejściowa linia</param>
-	/// <returns>Wektor zawierający kolejne parametry do stworzenia klatki</returns>
-	static std::vector<std::string> getFrameParams(std::string input);
+    /**
+     * @brief Zapisuje klatki do pliku
+    */
+    void saveToFile(const wxString& path) const;
 
+    /**
+     * @brief Parsuje linie i zwraca je w formie wektora klatek.
+     *
+     * @return Wektor klatek.
+     */
+    std::vector<Frame> getFrames() const;
 
-	/// <summary>
-	/// Funkcja pomocnicza, zwraca nazwę ksztaltu z łańcucha go opisującego
-	/// </summary>
-	/// <param name="input">Wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`</param>
-	/// <returns>Nazwa wyciągnięta z łańcucha</returns>
-	static std::string getName(std::string input);
+    /**
+     * @brief Funkcja pomocnicza, wyciąga z linii kolejne parametry dla klatki.
+     *
+     * Parametry w linii są rozdzielone średnikami. Pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty.
+     *
+     * @param input Wejściowa linia.
+     * @return Wektor zawierający kolejne parametry do stworzenia klatki.
+     */
+    static std::vector<wxString> getFrameParams(const wxString& input);
 
-	/// <summary>
-	/// Funkcja pomocnicza, zwraca wektor zawierający parametry kształtu z lańcucha go opisującego
-	/// </summary>
-	/// <param name="input">wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`</param>
-	/// <returns>wektor parametrów wyciągnietych z łańcucha</returns>
-	static std::vector<std::string> getParams(std::string input);
+    /**
+     * @brief Funkcja pomocnicza, zwraca nazwę kształtu z łańcucha go opisującego.
+     *
+     * @param input Wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`
+     * @return Nazwa wyciągnięta z łańcucha.
+     */
+    static std::string getName(const wxString& input);
+
+    /**
+     * @brief Funkcja pomocnicza, zwraca wektor zawierający parametry kształtu z łańcucha go opisującego.
+     *
+     * @param input Wejściowy łańcuch w formie `[nazwa]([param1],[param2],...)`
+     * @return Wektor parametrów wyciągniętych z łańcucha.
+     */
+    static std::vector<wxString> getParams(const wxString& input);
 };
