@@ -18,6 +18,7 @@ class Frame;
  */
 class Parser {
 private:
+    /// @brief Zawiera linie z wczytanego/zapisywanego pliku
     std::vector<wxString> _lines;
 
 public:

@@ -22,8 +22,10 @@ private:
     std::vector<Shape> _shapes;
 
 public:
+    /// @brief Domyślny konstruktor
     Frame() = default;
 
+    /// @brief Konstruktor z danych
     Frame(wxString bgPath, std::vector<Shape> shapes) : _bgPath(bgPath), _shapes(shapes) {}
 
     /**
@@ -34,9 +36,12 @@ public:
      */
     static Frame fromString(const wxString& params);
 
+    /// @brief Konwertuje klatkę na zapis w formie `wxString`
     wxString toString() const;
 
+    /// @brief getter do ścieżki tła
     const wxString& getBgPath() const { return _bgPath; }
 
+    /// @brief getter do listy kształtów
     const std::vector<Shape>& getShapes() const { return _shapes; }
 };
