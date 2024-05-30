@@ -103,9 +103,9 @@ static std::vector<Frame> asFrameVec(wxString path, std::vector<std::vector<Shap
 	return result;
 }
 
-void ConfigClass::loadFramesFromFile() {
+void ConfigClass::loadFramesFromFile(const wxString& path) {
 	Parser p;
-	p.readFile("test.anim");
+	p.readFile(path);
 	auto frames = p.getFrames();
 
 	_backgroundPath = frames[0].getBgPath();
@@ -137,12 +137,12 @@ void ConfigClass::loadFramesFromFile() {
 	_frameIterator = 0;
 }
 
-void ConfigClass::saveFramesToFile() {
+void ConfigClass::saveFramesToFile(const wxString& path) {
 	std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
 
 	Parser p;
 	p.setFrames(frames);
-	p.saveToFile("test.anim");
+	p.saveToFile(path);
 }
 
 void ConfigClass::setPoint1(const wxPoint& p1) { _firstPoint = p1; }

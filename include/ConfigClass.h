@@ -34,11 +34,8 @@ public:
     //Changes current frame to previous frame
     void previousFrame();
 
-    //TO BE ADDED
-    void loadFramesFromFile();
-
-    //TO BE ADDED
-    void saveFramesToFile();
+    void loadFramesFromFile(const wxString& path);
+    void saveFramesToFile(const wxString& path);
 
     //MEMBER VARIABLE SETTER AND GETTERS
     //FUNCTION NAMES ARE PRETTY SELF-EXPLANATORY

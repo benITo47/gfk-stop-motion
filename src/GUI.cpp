@@ -142,10 +142,20 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
 
 void MainFrame::fun_saveAnimationFile(wxCommandEvent& e) {
-	_myPanel->cfg->saveFramesToFile();
+    wxFileDialog saveFileDialog(this, _("Save animation file"), "", "",
+        "Image files (*.anim)|*.anim", wxFD_SAVE);
+
+    if(saveFileDialog.ShowModal() == wxID_OK)
+        _myPanel->cfg->saveFramesToFile(saveFileDialog.GetPath());
 }
 void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
-    _myPanel->cfg->loadFramesFromFile();
+    wxFileDialog openFileDialog(this, _("Open animation file"), "", "",
+        "Image files (*.anim)|*.anim", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    
+    if (openFileDialog.ShowModal() == wxID_OK)
+        _myPanel->cfg->loadFramesFromFile(openFileDialog.GetPath());
+
+    _myPanel->Refresh();
 }
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
 	ScrollBarBrightness->Show();
