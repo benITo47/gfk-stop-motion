@@ -6,6 +6,7 @@
 #define STOP_MOTION_CONFIGCLASS_H
 
 #include "MyPanel.h"
+#include "Frame.h"
 #include "Shape.h"
 
 
@@ -57,32 +58,44 @@ public:
     //--------------------------------------------------
     void setIsFilled(bool filled);
     bool getIsFilled();
-    //--------------------------------------------------
-    void setBackgroundBitmap(const wxBitmap& bitmap);
-    wxBitmap getBackgroundBitmap();
-    //--------------------------------------------------
-    void setBackgroundPath(wxString path);
-    wxString getBackgroundPath();
-    //--------------------------------------------------
-    void setCurrentFrame(std::vector<Shape> frame);
-    std::vector<Shape> getCurrentFrame();
+
+    /**
+     *  Unused function - not compatible;
+     * @return
+     */
+    //void setCurrentFrame(std::vector<Shape> frame);
+
+    Frame  getCurrentFrame();
     //--------------------------------------------------
     int getFrameNumber();
     //--------------------------------------------------
     void setFrameIterator(int iterator);
-    //--------------------------------------------------
-    void setBackgroundBitmapCopy(const wxBitmap& bitmap);
-    wxBitmap getBackgroundBitmapCopy();
-    //--------------------------------------------------
+
+
+    void loadBackground(wxString filePath)
+    {
+        _frames[_frameIterator].setBgPath(filePath);
+        _frames[_frameIterator].loadBitmap();
+
+    }
+
+
+
+
+
+
     void setThumbPos(int pos);
     int getThumbPos();
     //--------------------------------------------------
+
 
 
 private:
 
 
     //Blueprint for data - based on those variables, the Shape objects are created and drawn;
+
+
 
     wxPoint _firstPoint;    //First point of the shape
     wxPoint _secondPoint;   //Second point of the shape
@@ -95,7 +108,7 @@ private:
     wxBitmap _backgroundBitmapCopy;
     wxString _backgroundPath;   //Path to the user loaded bitmap
 
-    std::vector<std::vector<Shape>> _frames;    //Vector of Frames, for saving and playing;
+    std::vector<Frame>  _frames;    //Vector of Frames, for saving and playing;
     int _frameIterator;                         //Iterator over the _frames vector
 
     int _thumbPos = 0;

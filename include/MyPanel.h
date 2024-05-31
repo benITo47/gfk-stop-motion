@@ -14,12 +14,15 @@ public:
 	void OnPaint(wxPaintEvent& event);
 	void OnLeftDown(wxMouseEvent& event);
 	void SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor);
-    void SetBackgroundImage(const wxString &filePath, const wxBitmap &bitmap);
+    wxBitmap RescaleBitmap(const wxBitmap &bitmap);
     void PlayAnimation();
+
+
 
 	friend class MainFrame;
 private:
     std::shared_ptr<ConfigClass> cfg;
+
 
 
 	bool isShapeSelected;

@@ -7,6 +7,9 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<Confi
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMaxSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMinSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
+
+
+
 	Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &MyPanel::OnLeftDown, this);
 }
@@ -33,17 +36,24 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
     }
 }
 
+
+
 void MyPanel::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
     dc.Clear();
-    wxBitmap backgroundBitmap = cfg->getBackgroundBitmapCopy();
+    wxMemoryDC previousLayer;
+    wxMemoryDC currentLayer;
+
+    wxBitmap backgroundBitmap = cfg->getCurrentFrame().getBitmap();
     if (backgroundBitmap.IsOk()) {
-        dc.DrawBitmap(backgroundBitmap, 0, 0, false);
+        dc.DrawBitmap(RescaleBitmap(backgroundBitmap), 0, 0, false);
     }
 
-    for (const auto& shape : cfg->getCurrentFrame()) {
+    Frame currentFrame =  cfg->getCurrentFrame();
+    for (const auto& shape : currentFrame.getShapes()) {
         shape.drawShape(dc);
     }
+
 
 }
 
@@ -57,7 +67,7 @@ void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool 
     clickCount = 0;
 }
 
-void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitmap)
+wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
 {
     int bitmapWidth = bitmap.GetWidth();
     int bitmapHeight = bitmap.GetHeight();
@@ -78,11 +88,10 @@ void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitma
 
     wxImage image = bitmap.ConvertToImage();
     image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
-    wxBitmap bitmapFinal(image);
-    cfg->setBackgroundBitmap(bitmapFinal);
-    cfg->setBackgroundPath(filePath);
+    return  wxBitmap(image);
 
-    Refresh();
+
+
 }
 
 void MyPanel::PlayAnimation()

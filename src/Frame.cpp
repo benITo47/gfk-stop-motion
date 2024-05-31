@@ -1,6 +1,8 @@
 #include "Frame.h"
 #include "Parser.h"
 
+
+
 Frame Frame::fromString(const wxString& input) {
 	auto params = Parser::getFrameParams(input);
 	Frame frame;

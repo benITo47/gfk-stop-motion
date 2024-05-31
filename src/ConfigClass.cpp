@@ -18,12 +18,12 @@ ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 
 
 void ConfigClass::saveShape()
 {
-	_frames[_frameIterator].emplace_back(_firstPoint, _secondPoint, _type, _borderColour, _isFilled, _fillColour);
+	_frames[_frameIterator].addShape(_firstPoint, _secondPoint, _type, _borderColour, _isFilled, _fillColour);
 }
 
 void ConfigClass::addFrame() {
 	if (_frameIterator < _frames.size() - 1) {
-		_frames.insert(_frames.begin() + _frameIterator + 1, std::vector<Shape>());
+		_frames.insert(_frames.begin() + _frameIterator + 1, Frame());
 	}
 	else {
 		_frames.emplace_back();
@@ -34,10 +34,9 @@ void ConfigClass::addFrame() {
 void ConfigClass::addCopyFrame()
 {
 	addFrame();
-	for (auto elem : _frames[_frameIterator - 1])
-	{
-		_frames[_frameIterator].push_back(elem);
-	}
+    auto previousShapes = _frames[_frameIterator - 1].getShapes();
+	_frames[_frameIterator].setShapes(previousShapes);
+
 }
 
 
@@ -63,14 +62,7 @@ void ConfigClass::deleteFrame()
 
 void ConfigClass::deleteLastShape()
 {
-	if (!_frames[_frameIterator].empty())
-	{
-		_frames[_frameIterator].pop_back();
-	}
-	else
-	{
-		wxBell();
-	}
+	_frames[_frameIterator].popLastShape();
 }
 
 
@@ -96,54 +88,67 @@ void ConfigClass::previousFrame() {
 }
 
 /// @brief Temporary function for transforming into frame class
-static std::vector<Frame> asFrameVec(wxString path, std::vector<std::vector<Shape>> frames) {
+/*static std::vector<Frame> asFrameVec(wxString path, std::vector<Frame> frames) {
 	std::vector<Frame> result(frames.size());
 	std::transform(frames.begin(), frames.end(), result.begin(),
 		[path](std::vector<Shape> shapes) { return Frame(path, shapes); });
 	return result;
-}
+}*/
 
 void ConfigClass::loadFramesFromFile(const wxString& path) {
 	Parser p;
 	p.readFile(path);
 	auto frames = p.getFrames();
 
-	_backgroundPath = frames[0].getBgPath();
+    _frames.clear();
+    for(auto& elem : frames)
+    {
+        elem.loadBitmap();
+        _frames.push_back(elem);
+    }
+    _frameIterator = 0;
+    /*
+       _backgroundPath = frames[0].getBgPath();
 
-	wxString ext = _backgroundPath.AfterLast('.').Lower();
+       wxString ext = _backgroundPath.AfterLast('.').Lower();
 
-	wxBitmapType format = wxBITMAP_TYPE_ANY;
-	if (ext == "png")
-		format = wxBITMAP_TYPE_PNG;
-	else if (ext == "jpg" || ext == "jpeg")
-		format = wxBITMAP_TYPE_JPEG;
-	else if (ext == "bmp")
-		format = wxBITMAP_TYPE_BMP;
+       wxBitmapType format = wxBITMAP_TYPE_ANY;
+       if (ext == "png")
+           format = wxBITMAP_TYPE_PNG;
+       else if (ext == "jpg" || ext == "jpeg")
+           format = wxBITMAP_TYPE_JPEG;
+       else if (ext == "bmp")
+           format = wxBITMAP_TYPE_BMP;
 
-	wxImage image;
-	if (image.LoadFile(_backgroundPath, format)) {
-		wxBitmap bitmap(image);
-		_backgroundBitmap = bitmap;
-		_backgroundBitmapCopy = bitmap;
-	}
-	else {
-		wxLogError("Could not load image file '%s'.", _backgroundPath);
-	}
+       wxImage image;
+       if (image.LoadFile(_backgroundPath, format)) {
+           wxBitmap bitmap(image);
+           _backgroundBitmap = bitmap;
+           _backgroundBitmapCopy = bitmap;
+       }
+       else {
+           wxLogError("Could not load image file '%s'.", _backgroundPath);
+       }
 
-	_frames.clear();
-	_frames.resize(frames.size());
-	std::transform(frames.begin(), frames.end(), _frames.begin(), 
-		[](const Frame& f) { return f.getShapes(); });
-	_frameIterator = 0;
+       _frames.clear();
+       _frames = frames;
+
+       std::transform(frames.begin(), frames.end(), _frames.begin(),
+           [](const Frame& f) { return f.getShapes(); });
+   */
+
 }
 
 void ConfigClass::saveFramesToFile(const wxString& path) {
-	std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
+	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
 
 	Parser p;
-	p.setFrames(frames);
+	p.setFrames(_frames);
 	p.saveToFile(path);
 }
+
+
+
 
 void ConfigClass::setPoint1(const wxPoint& p1) { _firstPoint = p1; }
 wxPoint ConfigClass::getPoint1() const { return _firstPoint; }
@@ -163,17 +168,9 @@ wxColour ConfigClass::getFillColour() { return _fillColour; }
 void ConfigClass::setIsFilled(bool filled) { _isFilled = filled; }
 bool ConfigClass::getIsFilled() { return _isFilled; }
 
-void ConfigClass::setBackgroundBitmap(const wxBitmap& bitmap) {
-	_backgroundBitmap = wxBitmap(bitmap);
-	_backgroundBitmapCopy = wxBitmap(bitmap);
-}
-wxBitmap ConfigClass::getBackgroundBitmap() { return _backgroundBitmap; }
 
-void ConfigClass::setBackgroundPath(wxString path) { _backgroundPath = path; }
-wxString ConfigClass::getBackgroundPath() { return _backgroundPath; }
-
-void ConfigClass::setCurrentFrame(std::vector<Shape> frame) { _frames[_frameIterator] = frame; }
-std::vector<Shape> ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
+//void ConfigClass::setCurrentFrame(Frame frame) { _frames[_frameIterator].setShapes(frame.getShapes()); }
+Frame ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
 
 
 int ConfigClass::getFrameNumber() { return _frames.size(); }
@@ -182,8 +179,7 @@ void ConfigClass::setFrameIterator(int iterator) {
 	if (iterator < _frames.size())
 		_frameIterator = iterator;
 }
-void ConfigClass::setBackgroundBitmapCopy(const wxBitmap& bitmap) { _backgroundBitmapCopy = wxBitmap(bitmap); }
-wxBitmap ConfigClass::getBackgroundBitmapCopy() { return _backgroundBitmapCopy; }
+
 
 void ConfigClass::setThumbPos(int pos) { _thumbPos = pos; }
 int ConfigClass::getThumbPos() { return _thumbPos; }

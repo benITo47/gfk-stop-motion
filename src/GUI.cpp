@@ -28,6 +28,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _prevFrame = new wxButton(this, ID_prevFrame, "<-");
 
     copyPrevFrame = new wxCheckBox(this, ID_copyPrevFrame, "Copy previous frame");
+    copyBackground = new wxCheckBox(this, ID_copyPrevBackground, "Copy previous background");
     ScrollBarBrightness = new wxScrollBar(this, ID_scrollBarBrightness, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
     ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
 
@@ -45,6 +46,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     wxBoxSizer* sizer3 = new wxBoxSizer(wxVERTICAL);
     sizer3->Add(copyPrevFrame, 1, wxEXPAND | wxTOP, 5);
+    sizer3->Add(copyBackground,1, wxEXPAND | wxTOP, 5);
     sizer3->Add(_addShape, 1, wxEXPAND | wxTOP, 10);
     sizer3->Add(_delLastShape, 1, wxEXPAND | wxTOP, 10);
     sizer3->AddStretchSpacer();
@@ -157,7 +159,9 @@ void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
 
     _myPanel->Refresh();
 }
+
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
+
 	ScrollBarBrightness->Show();
 	ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
@@ -166,27 +170,12 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
 
     if (wxOpenFileDialog.ShowModal() == wxID_OK) {
         wxString fileName = wxOpenFileDialog.GetPath();
-        wxString ext = wxOpenFileDialog.GetFilename().AfterLast('.').Lower();
-
-        wxBitmapType format = wxBITMAP_TYPE_ANY;
-        if (ext == "png")
-            format = wxBITMAP_TYPE_PNG;
-        else if (ext == "jpg" || ext == "jpeg")
-            format = wxBITMAP_TYPE_JPEG;
-        else if (ext == "bmp")
-            format = wxBITMAP_TYPE_BMP;
-
-        wxImage image;
-        if (image.LoadFile(fileName, format)) {
-            wxBitmap bitmap(image);
-            _myPanel->SetBackgroundImage(fileName, bitmap);
-			_myPanel->cfg->setBackgroundBitmap(_myPanel->cfg->getBackgroundBitmap());
-        } else {
-            wxLogError("Could not load image file '%s'.", fileName);
-        }
+        _myPanel->cfg->loadBackground(fileName);
+        _myPanel->Refresh();
     }
 	this->Layout();
 }
+
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
     if(!copyPrevFrame->GetValue()){
         _myPanel->cfg->addFrame();
@@ -268,9 +257,14 @@ void MainFrame::UpdateShapeInPanel(wxCommandEvent& e) {
 	_myPanel->SetShape(shape, borderColor, filled, fillColor);
 }
 
+
+
 void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
+
+    // Obecnie nie działa - będzie refaktoryzowane
+    /*
 	double s = ScrollBarBrightness->GetThumbPosition()/100.;
-	//std::cout << s << std::endl;
+	std::cout << s << std::endl;
 	wxImage image = _myPanel->cfg->getBackgroundBitmap().ConvertToImage();
 	unsigned char* data = image.GetData();
 	int pixelCount = image.GetWidth() * image.GetHeight();
@@ -288,9 +282,9 @@ void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
 		data[i * 3 + 1] = g;
 		data[i * 3 + 2] = b;
 	}
-	_myPanel->cfg->setBackgroundBitmapCopy(wxBitmap(image));
+	//_myPanel->cfg->setBackgroundBitmapCopy(wxBitmap(image));
 	_myPanel->Refresh();
-
+*/
 }
 
 void MainFrame::OnScrollTransparent(wxScrollEvent& e) {
