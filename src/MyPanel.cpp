@@ -8,8 +8,6 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<Confi
     this->SetMaxSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMinSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
 
-
-
 	Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &MyPanel::OnLeftDown, this);
 }
@@ -37,25 +35,29 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
 }
 
 
-
 void MyPanel::OnPaint(wxPaintEvent& event) {
-	wxPaintDC dc(this);
+    wxPaintDC dc(this);
     dc.Clear();
-    wxMemoryDC previousLayer;
-    wxMemoryDC currentLayer;
 
+    // Draw the background bitmap
     wxBitmap backgroundBitmap = cfg->getCurrentFrame().getBitmap();
     if (backgroundBitmap.IsOk()) {
         dc.DrawBitmap(RescaleBitmap(backgroundBitmap), 0, 0, false);
     }
 
-    Frame currentFrame =  cfg->getCurrentFrame();
-    for (const auto& shape : currentFrame.getShapes()) {
-        shape.drawShape(dc);
+    // Draw the middle bitmap
+    wxBitmap middleBitmap = cfg->getMiddleBitmap();
+    if (middleBitmap.IsOk()) {
+        dc.DrawBitmap(middleBitmap, 0, 0, true);
     }
 
-
+    // Draw the current bitmap
+    wxBitmap currentBitmap = cfg->getCurrentBitmap();
+    if (currentBitmap.IsOk()) {
+        dc.DrawBitmap(currentBitmap, 0, 0, true);
+    }
 }
+
 
 void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
 

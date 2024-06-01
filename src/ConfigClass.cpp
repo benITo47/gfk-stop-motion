@@ -4,21 +4,52 @@
 
 
 #pragma warning(disable: 4996) // Visual Studio: warning C4996: 'XXX': This function or variable may be unsafe. <- wxcrt.h
-#include <fstream>
 #include "ConfigClass.h"
 #include "Frame.h"
 #include "Parser.h"
 
 
 
-ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false), _frameIterator(0)
+
+ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false), _middleLayer(wxBitmap(1200,900,32)), _currentLayer(wxBitmap(1200,900,32)), _frameIterator(0)
 {
+    _middleLayer.UseAlpha(true);
+    _currentLayer.UseAlpha(true);
+
 	_frames.emplace_back();
 }
 
 void ConfigClass::saveShape()
 {
 	_frames[_frameIterator].addShape(_firstPoint, _secondPoint, _type, _borderColour, _isFilled, _fillColour);
+    prepareCurrentLayer();
+}
+
+void ConfigClass::addFrame(bool copyFrame, bool copyBackground) {
+
+    if (_frameIterator < _frames.size() - 1) {
+        _frames.insert(_frames.begin() + _frameIterator + 1, Frame());
+    }
+    else {
+        _frames.emplace_back();
+    }
+    _frameIterator++;
+
+    if(copyFrame)
+    {
+        auto previousShapes = _frames[_frameIterator - 1].getShapes();
+        _frames[_frameIterator].setShapes(previousShapes);
+    }
+    if(copyBackground)
+    {
+        auto previousBgPath = _frames[_frameIterator - 1].getBgPath();
+        auto previousBitmap = _frames[_frameIterator - 1].getBitmap();
+        _frames[_frameIterator].setBgPath(previousBgPath);
+        //It copies the loaded bitmap instead of loading it again - dunno if it improves performance but i think it should?
+        _frames[_frameIterator].setBitmap(previousBitmap);
+
+    }
+    prepareBitmaps();
 }
 
 void ConfigClass::addFrame() {
@@ -29,15 +60,9 @@ void ConfigClass::addFrame() {
 		_frames.emplace_back();
 	}
 	_frameIterator++;
+    prepareBitmaps();
 }
 
-void ConfigClass::addCopyFrame()
-{
-	addFrame();
-    auto previousShapes = _frames[_frameIterator - 1].getShapes();
-	_frames[_frameIterator].setShapes(previousShapes);
-
-}
 
 
 
@@ -58,11 +83,13 @@ void ConfigClass::deleteFrame()
 		// Adjust iterator if it goes out of bounds
 		_frameIterator = _frames.size() - 1;
 	}
+    prepareBitmaps();
 }
 
 void ConfigClass::deleteLastShape()
 {
 	_frames[_frameIterator].popLastShape();
+    prepareCurrentLayer();
 }
 
 
@@ -75,6 +102,7 @@ void ConfigClass::nextFrame() {
 	{
 		wxBell();
 	}
+    prepareBitmaps();
 }
 
 void ConfigClass::previousFrame() {
@@ -85,6 +113,7 @@ void ConfigClass::previousFrame() {
 	{
 		wxBell();
 	}
+    prepareBitmaps();
 }
 
 /// @brief Temporary function for transforming into frame class
@@ -181,6 +210,86 @@ void ConfigClass::setFrameIterator(int iterator) {
 }
 
 
-void ConfigClass::setThumbPos(int pos) { _thumbPos = pos; }
-int ConfigClass::getThumbPos() { return _thumbPos; }
+void ConfigClass::setBrightness(int pos) { _backgroundBirghtness = pos; }
+int ConfigClass::getBrightness() { return _backgroundBirghtness; }
 
+void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; AdjustMiddleOpacity();}
+int ConfigClass::getOpacity() { return _middleOpacity; }
+
+
+
+void ConfigClass::prepareBitmaps()
+{
+
+    prepareMiddleLayer();
+
+    prepareCurrentLayer();
+}
+
+
+void ConfigClass::AdjustMiddleOpacity()
+{
+    // Ensure opacity is in the range 0-100
+    if (_middleOpacity < 0) _middleOpacity = 0;
+    if (_middleOpacity > 100) _middleOpacity = 100;
+
+    unsigned char alphaValue = static_cast<unsigned char>(_middleOpacity * 2.55); // Convert 0-100 to 0-255
+
+    wxImage image = _middleLayer.ConvertToImage();
+    unsigned char* alpha = image.GetAlpha();
+
+    if (!alpha)
+    {
+        image.InitAlpha();
+        alpha = image.GetAlpha();
+    }
+
+    int size = image.GetWidth() * image.GetHeight();
+    for (int i = 0; i < size; ++i)
+    {
+        alpha[i] = alphaValue;
+    }
+
+    _middleLayer = wxBitmap(image);
+}
+
+void ConfigClass::prepareMiddleLayer()
+{
+    _middleLayer = wxBitmap(1200,900,32);
+    _middleLayer.UseAlpha(true);
+
+    wxMemoryDC memDC;
+    memDC.SelectObject(_middleLayer);
+    memDC.SetBackground(*wxTRANSPARENT_BRUSH);
+    memDC.Clear();
+
+    if(_frameIterator > 0 && _frames.size() > 1)
+    {
+        for(auto& elem: _frames[_frameIterator - 1].getShapes())
+        {
+            elem.drawShape(memDC);
+        }
+
+        //AdjustMiddleOpacity();
+    }
+    memDC.SelectObject(wxNullBitmap);
+
+}
+
+void ConfigClass::prepareCurrentLayer()
+{
+
+    _currentLayer = wxBitmap(1200,900,32);
+    _currentLayer.UseAlpha(true);
+
+    wxMemoryDC memDC;
+    memDC.SelectObject(_currentLayer);
+    memDC.SetBackground(*wxTRANSPARENT_BRUSH);
+    memDC.Clear();
+
+    for(auto& elem: _frames[_frameIterator].getShapes())
+    {
+        elem.drawShape(memDC);
+    }
+    memDC.SelectObject(wxNullBitmap);
+}

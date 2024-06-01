@@ -177,13 +177,8 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
 }
 
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
-    if(!copyPrevFrame->GetValue()){
-        _myPanel->cfg->addFrame();
-    }
-    else
-    {
-        _myPanel->cfg->addCopyFrame();
-    }
+
+    _myPanel->cfg->addFrame(copyPrevFrame->GetValue(), copyBackground->GetValue());
     _myPanel->Refresh();
 }
 
@@ -261,6 +256,9 @@ void MainFrame::UpdateShapeInPanel(wxCommandEvent& e) {
 
 void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
 
+    _myPanel->cfg->setBrightness(ScrollBarBrightness->GetThumbPosition());
+    _myPanel->Refresh();
+
     // Obecnie nie działa - będzie refaktoryzowane
     /*
 	double s = ScrollBarBrightness->GetThumbPosition()/100.;
@@ -288,7 +286,8 @@ void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
 }
 
 void MainFrame::OnScrollTransparent(wxScrollEvent& e) {
-	std::cout << ScrollBarTransparent->GetThumbPosition() << std::endl;
+    _myPanel->cfg->setOpacity(ScrollBarTransparent->GetThumbPosition());
+    _myPanel->Refresh();
 }
 
 void MainFrame::fun_copyPrevFrame(wxCommandEvent& e) {

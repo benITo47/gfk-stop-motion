@@ -22,8 +22,8 @@ public:
 
     //Adds new frame to _frames, without copying the existing data to new frame
     void addFrame() ;
+    void addFrame(bool copyFrame, bool copyBackground);
 
-    void addCopyFrame();
 
     //Deletes the current frame
     void deleteFrame();
@@ -59,11 +59,6 @@ public:
     void setIsFilled(bool filled);
     bool getIsFilled();
 
-    /**
-     *  Unused function - not compatible;
-     * @return
-     */
-    //void setCurrentFrame(std::vector<Shape> frame);
 
     Frame  getCurrentFrame();
     //--------------------------------------------------
@@ -84,12 +79,22 @@ public:
 
 
 
-    void setThumbPos(int pos);
-    int getThumbPos();
+    void setBrightness(int pos);
+    int getBrightness();
     //--------------------------------------------------
+    void setOpacity(int pos);
+    int getOpacity();
 
 
+    void prepareBitmaps();
 
+    void AdjustMiddleOpacity();
+
+    void prepareMiddleLayer();
+    void prepareCurrentLayer();
+
+    wxBitmap getMiddleBitmap(){return _middleLayer;}
+    wxBitmap getCurrentBitmap(){return  _currentLayer;}
 private:
 
 
@@ -104,14 +109,19 @@ private:
     wxColour _fillColour;   //Colour of shape's fill
     bool _isFilled;          // Should the shape be filled or transparent
 
-    wxBitmap _backgroundBitmap; //Bitmap used as a background
-    wxBitmap _backgroundBitmapCopy;
-    wxString _backgroundPath;   //Path to the user loaded bitmap
+    wxBitmap _middleLayer;
+    wxBitmap _currentLayer;
+
+    int _backgroundBirghtness;
+    int _middleOpacity;
+
 
     std::vector<Frame>  _frames;    //Vector of Frames, for saving and playing;
     int _frameIterator;                         //Iterator over the _frames vector
 
-    int _thumbPos = 0;
+
+
+
     //For now unused, as the data handling responsibiites of _currentFrame have been moved to _frames[_frameIterator]
 
 
