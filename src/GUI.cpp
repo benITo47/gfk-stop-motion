@@ -164,6 +164,7 @@ void MainFrame::fun_loadImage(wxCommandEvent& e) {
 
 	ScrollBarBrightness->Show();
 	ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
+    _myPanel->cfg->setBrightness(100);
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
                                   "Image files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp",
                                   wxFD_OPEN | wxFD_FILE_MUST_EXIST);

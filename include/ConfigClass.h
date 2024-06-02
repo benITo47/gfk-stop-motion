@@ -91,6 +91,7 @@ public:
     void prepareBackgroundLayer();
     void AdjustBackgroundBrightness();
 
+    void RescaleBackground();
     void AdjustMiddleOpacity();
 
     void prepareMiddleLayer();

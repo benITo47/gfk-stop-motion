@@ -42,7 +42,7 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
     // Draw the background bitmap
     wxBitmap backgroundBitmap = cfg->getBackgroundBitmap();
     if (backgroundBitmap.IsOk()) {
-        dc.DrawBitmap(RescaleBitmap(backgroundBitmap), 0, 0, false);
+        dc.DrawBitmap(backgroundBitmap, 0, 0, false);
     }
 
     // Draw the middle bitmap
@@ -68,7 +68,7 @@ void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool 
     isShapeSelected = true;
     clickCount = 0;
 }
-
+/*
 wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
 {
     int bitmapWidth = bitmap.GetWidth();
@@ -91,10 +91,8 @@ wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
     wxImage image = bitmap.ConvertToImage();
     image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
     return  wxBitmap(image);
-
-
-
 }
+*/
 
 void MyPanel::PlayAnimation()
 {

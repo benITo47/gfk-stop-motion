@@ -8,16 +8,13 @@
 #include "Frame.h"
 #include "Parser.h"
 
-
-
-
 ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false),_backgroundLayer(wxBitmap(1200,900,32)), _middleLayer(wxBitmap(1200,900,32)), _currentLayer(wxBitmap(1200,900,32)), _middleOpacity(20), _backgroundBirghtness(100),_frameIterator(0)
 {
 
     _middleLayer.UseAlpha(true);
     _currentLayer.UseAlpha(true);
 
-	_frames.emplace_back();
+    _frames.emplace_back();
     prepareBackgroundLayer();
 }
 
@@ -234,6 +231,7 @@ void ConfigClass::prepareBitmaps()
 void ConfigClass::prepareBackgroundLayer()
 {
     _backgroundLayer = _frames[_frameIterator].getBitmap();
+    RescaleBackground();
     AdjustBackgroundBrightness();
 }
 
@@ -242,6 +240,34 @@ int clamp(int value, int min, int max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
+}
+
+void ConfigClass::RescaleBackground()
+{
+    int panelWidth = 1200;
+    int panelHeight = 900;
+    if(_backgroundLayer.IsOk()) {
+        int bitmapWidth = _backgroundLayer.GetWidth();
+        int bitmapHeight = _backgroundLayer.GetHeight();
+
+        double bitmapAspectRatio = static_cast<double>(bitmapWidth) / bitmapHeight;
+        double panelAspectRatio = static_cast<double>(panelWidth) / panelHeight;
+
+        if (bitmapAspectRatio > panelAspectRatio) {
+            // Image is wider relative to the panel
+            bitmapWidth = panelWidth;
+            bitmapHeight = static_cast<int>(panelWidth / bitmapAspectRatio);
+        } else {
+            // Image is taller relative to the panel
+            bitmapHeight = panelHeight;
+            bitmapWidth = static_cast<int>(panelHeight * bitmapAspectRatio);
+        }
+
+
+        wxImage image = _backgroundLayer.ConvertToImage();
+        image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
+        _backgroundLayer = wxBitmap(image);
+    }
 }
 
 void ConfigClass::AdjustBackgroundBrightness()
