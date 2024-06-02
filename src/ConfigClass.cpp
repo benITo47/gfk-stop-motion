@@ -127,13 +127,10 @@ void ConfigClass::previousFrame() {
 void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory) {
     for (size_t i = 0; i < _frames.size(); i++) {
         const wxString& path = _frames[i].getBgPath();
-        wxString extension = path.AfterLast('.').Lower();
-        wxString newPath = projectDirectory + wxString::Format("\\img\\%08zu.%s", i, extension);
-        if (newPath == path)
-            continue;
+        wxString newPath = projectDirectory + wxString::Format("\\img\\%08zu.jpg", i);
 
-        if(!wxCopyFile(path, newPath, true))
-            throw std::runtime_error("Couldn't copy file " + path + " to " + newPath);
+        if(!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
+            throw std::runtime_error("Couldn't save bitmap to " + newPath);
 
         _frames[i].setBgPath(newPath);
     }
