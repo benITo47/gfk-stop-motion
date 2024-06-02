@@ -4,6 +4,8 @@
 #include "util.h"
 
 void Parser::readFile(const wxString& path) {
+	_path = path;
+
 	std::ifstream f;
 	f.open(path.ToStdString());
 	if (!f.is_open())
@@ -30,8 +32,8 @@ void Parser::saveToFile(const wxString& path) const {
 std::vector<Frame> Parser::getFrames() const {
 	std::vector<Frame> result(_lines.size());
 
-	std::transform(_lines.begin(), _lines.end(), result.begin(), [](auto l) {
-		return Frame::fromString(l);
+	std::transform(_lines.begin(), _lines.end(), result.begin(), [this](auto l) {
+		return Frame::fromString(_path.BeforeLast('\\') + "\\img\\" + l);
 		});
 
 	return result;

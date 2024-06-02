@@ -145,7 +145,6 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
-    <None Include="test.anim" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ConfigClass.h" />

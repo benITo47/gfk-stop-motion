@@ -1,5 +1,7 @@
 ﻿#include "MyPanel.h"
 
+#include <wx/dcbuffer.h>
+
 #define PANEL_HEIGHT  900
 #define PANEL_WIDTH  1200
 
@@ -7,6 +9,8 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<Confi
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMaxSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMinSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
+
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &MyPanel::OnLeftDown, this);
@@ -36,7 +40,8 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
 
 
 void MyPanel::OnPaint(wxPaintEvent& event) {
-    wxPaintDC dc(this);
+    //wxPaintDC dc(this);
+    wxBufferedPaintDC dc(this);
     dc.Clear();
 
     // Draw the background bitmap
