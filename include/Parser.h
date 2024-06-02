@@ -18,6 +18,9 @@ class Frame;
  */
 class Parser {
 private:
+    /// @brief Sciezka do zawartego pliku
+    wxString _path;
+
     /// @brief Zawiera linie z wczytanego/zapisywanego pliku
     std::vector<wxString> _lines;
 

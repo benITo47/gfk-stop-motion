@@ -15,7 +15,7 @@ Frame Frame::fromString(const wxString& input) {
 }
 
 wxString Frame::toString() const {
-	wxString result = _bgPath;
+	wxString result = _bgPath.AfterLast('\\');
 	for (auto& shape : _shapes)
 		result += wxString::Format(";%s", shape.toString());
 	return result;

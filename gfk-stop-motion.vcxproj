@@ -145,7 +145,6 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
-    <None Include="test.anim" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ConfigClass.h" />
@@ -154,7 +153,6 @@
     <ClInclude Include="include\MyPanel.h" />
     <ClInclude Include="include\Parser.h" />
     <ClInclude Include="include\Shape.h" />
-    <ClInclude Include="include\ShapeDialog.h" />
     <ClInclude Include="include\util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +163,6 @@
     <ClCompile Include="src\MyPanel.cpp" />
     <ClCompile Include="src\Parser.cpp" />
     <ClCompile Include="src\Shape.cpp" />
-    <ClCompile Include="src\ShapeDialog.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
