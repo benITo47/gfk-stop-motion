@@ -34,7 +34,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     wxStaticText* transparencyText = new wxStaticText(this, wxID_ANY, "Adjust transparency of previous frame", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     ScrollBarTransparent = new wxScrollBar(this, ID_scrollBarTransparent, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    ScrollBarTransparent->SetScrollbar(0, 10, 100, 10);
+    ScrollBarTransparent->SetScrollbar(20, 10, 100, 10);
 
     wxBoxSizer* sizer1 = new wxBoxSizer(wxHORIZONTAL);
     sizer1->Add(_saveFile, 1, wxEXPAND | wxTOP, 5);
@@ -199,19 +199,6 @@ void MainFrame::fun_addShape(wxCommandEvent& e) {
 		shapePanel->Hide();
 		Layout();
 	}
-
-	/*ShapeDialog dlg(this); I VERSION
-	if (dlg.ShowModal() == wxID_OK) {
-		wxString shape = dlg.GetSelectedShape();
-		wxColour color = dlg.GetSelectedColor();
-		bool filled = dlg.IsFilled();
-
-		_myPanel->SetShape(shape,color,filled);
-
-		std::cout << "User chose: "
-			<< shape << " " << "Color:" << color.GetRGB() << " " << "filled: " << filled << std::endl;
-	}*/
-
 }
 
 void MainFrame::fun_delShape(wxCommandEvent& e) {
@@ -256,37 +243,14 @@ void MainFrame::UpdateShapeInPanel(wxCommandEvent& e) {
 
 void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
 
+    std::cout << ScrollBarBrightness->GetThumbPosition() << std::endl;
     _myPanel->cfg->setBrightness(ScrollBarBrightness->GetThumbPosition());
     _myPanel->Refresh();
-
-    // Obecnie nie działa - będzie refaktoryzowane
-    /*
-	double s = ScrollBarBrightness->GetThumbPosition()/100.;
-	std::cout << s << std::endl;
-	wxImage image = _myPanel->cfg->getBackgroundBitmap().ConvertToImage();
-	unsigned char* data = image.GetData();
-	int pixelCount = image.GetWidth() * image.GetHeight();
-
-	for (int i = 0; i < pixelCount; ++i) {
-		int r = data[i * 3];
-		int g = data[i * 3 + 1];
-		int b = data[i * 3 + 2];
-
-		r = clamp(r + (s - 1) * 255, 0, 255);
-		g = clamp(g + (s - 1) * 255, 0, 255);
-		b = clamp(b + (s - 1) * 255, 0, 255);
-
-		data[i * 3] = r;
-		data[i * 3 + 1] = g;
-		data[i * 3 + 2] = b;
-	}
-	//_myPanel->cfg->setBackgroundBitmapCopy(wxBitmap(image));
-	_myPanel->Refresh();
-*/
 }
 
 void MainFrame::OnScrollTransparent(wxScrollEvent& e) {
     _myPanel->cfg->setOpacity(ScrollBarTransparent->GetThumbPosition());
+    //std::cout << ScrollBarTransparent->GetThumbPosition() << std::endl;
     _myPanel->Refresh();
 }
 
@@ -294,8 +258,4 @@ void MainFrame::fun_copyPrevFrame(wxCommandEvent& e) {
 	if(copyPrevFrame->GetValue())
 		std::cout << "User wants to copy previous frame!\n";
 }
-int clamp(int value, int min, int max) {
-	if (value < min) return min;
-	if (value > max) return max;
-	return value;
-}
+

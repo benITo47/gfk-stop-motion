@@ -40,7 +40,7 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
     dc.Clear();
 
     // Draw the background bitmap
-    wxBitmap backgroundBitmap = cfg->getCurrentFrame().getBitmap();
+    wxBitmap backgroundBitmap = cfg->getBackgroundBitmap();
     if (backgroundBitmap.IsOk()) {
         dc.DrawBitmap(RescaleBitmap(backgroundBitmap), 0, 0, false);
     }
@@ -99,12 +99,16 @@ wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
 void MyPanel::PlayAnimation()
 {
     int frames = cfg->getFrameNumber();
+    auto opacityLevel = cfg->getOpacity();
+    cfg->setOpacity(0);
     for(int i = 0; i < frames; i++)
     {
         cfg->setFrameIterator(i);
+        cfg->prepareBitmaps();
         Refresh();
         wxMilliSleep(100); // Sleep for 100 milliseconds (0.1 seconds)
         wxYield();
     }
+    cfg->setOpacity(opacityLevel);
 }
 

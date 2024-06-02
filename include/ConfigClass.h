@@ -71,7 +71,7 @@ public:
     {
         _frames[_frameIterator].setBgPath(filePath);
         _frames[_frameIterator].loadBitmap();
-
+        prepareBackgroundLayer();
     }
 
 
@@ -88,11 +88,15 @@ public:
 
     void prepareBitmaps();
 
+    void prepareBackgroundLayer();
+    void AdjustBackgroundBrightness();
+
     void AdjustMiddleOpacity();
 
     void prepareMiddleLayer();
     void prepareCurrentLayer();
 
+    wxBitmap getBackgroundBitmap(){return _backgroundLayer;}
     wxBitmap getMiddleBitmap(){return _middleLayer;}
     wxBitmap getCurrentBitmap(){return  _currentLayer;}
 private:
@@ -109,6 +113,7 @@ private:
     wxColour _fillColour;   //Colour of shape's fill
     bool _isFilled;          // Should the shape be filled or transparent
 
+    wxBitmap _backgroundLayer;
     wxBitmap _middleLayer;
     wxBitmap _currentLayer;
 

@@ -11,12 +11,14 @@
 
 
 
-ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false), _middleLayer(wxBitmap(1200,900,32)), _currentLayer(wxBitmap(1200,900,32)), _frameIterator(0)
+ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false),_backgroundLayer(wxBitmap(1200,900,32)), _middleLayer(wxBitmap(1200,900,32)), _currentLayer(wxBitmap(1200,900,32)), _middleOpacity(20), _backgroundBirghtness(100),_frameIterator(0)
 {
+
     _middleLayer.UseAlpha(true);
     _currentLayer.UseAlpha(true);
 
 	_frames.emplace_back();
+    prepareBackgroundLayer();
 }
 
 void ConfigClass::saveShape()
@@ -210,16 +212,17 @@ void ConfigClass::setFrameIterator(int iterator) {
 }
 
 
-void ConfigClass::setBrightness(int pos) { _backgroundBirghtness = pos; }
+void ConfigClass::setBrightness(int pos) { _backgroundBirghtness = pos; prepareBackgroundLayer(); }
 int ConfigClass::getBrightness() { return _backgroundBirghtness; }
 
-void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; AdjustMiddleOpacity();}
+void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; prepareMiddleLayer();}
 int ConfigClass::getOpacity() { return _middleOpacity; }
 
 
 
 void ConfigClass::prepareBitmaps()
 {
+    prepareBackgroundLayer();
 
     prepareMiddleLayer();
 
@@ -227,29 +230,74 @@ void ConfigClass::prepareBitmaps()
 }
 
 
+
+void ConfigClass::prepareBackgroundLayer()
+{
+    _backgroundLayer = _frames[_frameIterator].getBitmap();
+    AdjustBackgroundBrightness();
+}
+
+//Helper function;
+int clamp(int value, int min, int max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+void ConfigClass::AdjustBackgroundBrightness()
+{
+    double s = _backgroundBirghtness/100.0;
+    if(_backgroundLayer.IsOk()) {
+        wxImage image = _backgroundLayer.ConvertToImage();
+        unsigned char *data = image.GetData();
+        int pixelCount = image.GetWidth() * image.GetHeight();
+
+        for (int i = 0; i < pixelCount; ++i) {
+            int r = data[i * 3];
+            int g = data[i * 3 + 1];
+            int b = data[i * 3 + 2];
+
+            r = clamp(r + (s - 1) * 255, 0, 255);
+            g = clamp(g + (s - 1) * 255, 0, 255);
+            b = clamp(b + (s - 1) * 255, 0, 255);
+
+            data[i * 3] = r;
+            data[i * 3 + 1] = g;
+            data[i * 3 + 2] = b;
+        }
+        _backgroundLayer = wxBitmap(image);
+    }
+}
+
+
 void ConfigClass::AdjustMiddleOpacity()
 {
-    // Ensure opacity is in the range 0-100
     if (_middleOpacity < 0) _middleOpacity = 0;
     if (_middleOpacity > 100) _middleOpacity = 100;
 
     unsigned char alphaValue = static_cast<unsigned char>(_middleOpacity * 2.55); // Convert 0-100 to 0-255
 
     wxImage image = _middleLayer.ConvertToImage();
-    unsigned char* alpha = image.GetAlpha();
-
-    if (!alpha)
+    if (!image.HasAlpha())
     {
         image.InitAlpha();
-        alpha = image.GetAlpha();
     }
 
-    int size = image.GetWidth() * image.GetHeight();
-    for (int i = 0; i < size; ++i)
+    int width = image.GetWidth();
+    int height = image.GetHeight();
+
+    // Loop through each pixel
+    for (int y = 0; y < height; ++y)
     {
-        alpha[i] = alphaValue;
+        for (int x = 0; x < width; ++x)
+        {
+            // Only modify the alpha value if the pixel is not fully transparent
+            if (image.GetAlpha(x, y) != 0)
+            {
+                image.SetAlpha(x, y, alphaValue);
+            }
+        }
     }
-
     _middleLayer = wxBitmap(image);
 }
 
@@ -270,7 +318,7 @@ void ConfigClass::prepareMiddleLayer()
             elem.drawShape(memDC);
         }
 
-        //AdjustMiddleOpacity();
+        AdjustMiddleOpacity();
     }
     memDC.SelectObject(wxNullBitmap);
 
