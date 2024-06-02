@@ -18,7 +18,6 @@ void Parser::setFrames(const std::vector<Frame> frames) {
 	_lines.clear();
 	for (auto& frame : frames)
 		_lines.push_back(frame.toString());
-	wxMessageBox(_lines[0]);
 }
 
 void Parser::saveToFile(const wxString& path) const {
