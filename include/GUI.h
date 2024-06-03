@@ -22,7 +22,7 @@
 #include <wx/button.h>
 #include <wx/frame.h>
 
-#include "ShapeDialog.h"
+
 #include "MyPanel.h"
 
 class MainFrame : public wxFrame 
@@ -54,6 +54,7 @@ private:
 	wxColourPickerCtrl* fillColorPicker;
 	wxCheckBox* fillCheckBox;
 	wxCheckBox* copyPrevFrame;
+    wxCheckBox* copyBackground;
 	wxStaticText* fillColorLabel;
 	wxBoxSizer* shapeSizer;
 	wxScrollBar* ScrollBarBrightness;
@@ -72,6 +73,7 @@ private:
 		ID_prevFrame,
 		ID_checkbox,
 		ID_copyPrevFrame,
+        ID_copyPrevBackground,
 		ID_scrollBarTransparent,
 		ID_scrollBarBrightness,
 		ID_delLastShape

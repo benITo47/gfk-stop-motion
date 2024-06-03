@@ -1,5 +1,7 @@
 ﻿#include "MyPanel.h"
 
+#include <wx/dcbuffer.h>
+
 #define PANEL_HEIGHT  900
 #define PANEL_WIDTH  1200
 
@@ -7,6 +9,9 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<Confi
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMaxSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
     this->SetMinSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
+
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+
 	Bind(wxEVT_PAINT, &MyPanel::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &MyPanel::OnLeftDown, this);
 }
@@ -33,19 +38,31 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
     }
 }
 
+
 void MyPanel::OnPaint(wxPaintEvent& event) {
-	wxPaintDC dc(this);
+    //wxPaintDC dc(this);
+    wxBufferedPaintDC dc(this);
     dc.Clear();
-    wxBitmap backgroundBitmap = cfg->getBackgroundBitmapCopy();
+
+    // Draw the background bitmap
+    wxBitmap backgroundBitmap = cfg->getBackgroundBitmap();
     if (backgroundBitmap.IsOk()) {
         dc.DrawBitmap(backgroundBitmap, 0, 0, false);
     }
 
-    for (const auto& shape : cfg->getCurrentFrame()) {
-        shape.drawShape(dc);
+    // Draw the middle bitmap
+    wxBitmap middleBitmap = cfg->getMiddleBitmap();
+    if (middleBitmap.IsOk()) {
+        dc.DrawBitmap(middleBitmap, 0, 0, true);
     }
 
+    // Draw the current bitmap
+    wxBitmap currentBitmap = cfg->getCurrentBitmap();
+    if (currentBitmap.IsOk()) {
+        dc.DrawBitmap(currentBitmap, 0, 0, true);
+    }
 }
+
 
 void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
 
@@ -56,8 +73,8 @@ void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool 
     isShapeSelected = true;
     clickCount = 0;
 }
-
-void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitmap)
+/*
+wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
 {
     int bitmapWidth = bitmap.GetWidth();
     int bitmapHeight = bitmap.GetHeight();
@@ -78,22 +95,23 @@ void MyPanel::SetBackgroundImage(const wxString &filePath, const wxBitmap &bitma
 
     wxImage image = bitmap.ConvertToImage();
     image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
-    wxBitmap bitmapFinal(image);
-    cfg->setBackgroundBitmap(bitmapFinal);
-    cfg->setBackgroundPath(filePath);
-
-    Refresh();
+    return  wxBitmap(image);
 }
+*/
 
 void MyPanel::PlayAnimation()
 {
     int frames = cfg->getFrameNumber();
+    auto opacityLevel = cfg->getOpacity();
+    cfg->setOpacity(0);
     for(int i = 0; i < frames; i++)
     {
         cfg->setFrameIterator(i);
+        cfg->prepareBitmaps();
         Refresh();
         wxMilliSleep(100); // Sleep for 100 milliseconds (0.1 seconds)
         wxYield();
     }
+    cfg->setOpacity(opacityLevel);
 }
 

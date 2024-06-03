@@ -6,6 +6,7 @@
 #define STOP_MOTION_CONFIGCLASS_H
 
 #include "MyPanel.h"
+#include "Frame.h"
 #include "Shape.h"
 
 
@@ -21,8 +22,8 @@ public:
 
     //Adds new frame to _frames, without copying the existing data to new frame
     void addFrame() ;
+    void addFrame(bool copyFrame, bool copyBackground);
 
-    void addCopyFrame();
 
     //Deletes the current frame
     void deleteFrame();
@@ -34,6 +35,7 @@ public:
     //Changes current frame to previous frame
     void previousFrame();
 
+    void copyImagesToProjectDirectory(const wxString& projectDirectory);
     void loadFramesFromFile(const wxString& path);
     void saveFramesToFile(const wxString& path);
 
@@ -57,32 +59,54 @@ public:
     //--------------------------------------------------
     void setIsFilled(bool filled);
     bool getIsFilled();
-    //--------------------------------------------------
-    void setBackgroundBitmap(const wxBitmap& bitmap);
-    wxBitmap getBackgroundBitmap();
-    //--------------------------------------------------
-    void setBackgroundPath(wxString path);
-    wxString getBackgroundPath();
-    //--------------------------------------------------
-    void setCurrentFrame(std::vector<Shape> frame);
-    std::vector<Shape> getCurrentFrame();
+
+
+    Frame  getCurrentFrame();
     //--------------------------------------------------
     int getFrameNumber();
     //--------------------------------------------------
     void setFrameIterator(int iterator);
-    //--------------------------------------------------
-    void setBackgroundBitmapCopy(const wxBitmap& bitmap);
-    wxBitmap getBackgroundBitmapCopy();
-    //--------------------------------------------------
-    void setThumbPos(int pos);
-    int getThumbPos();
-    //--------------------------------------------------
 
 
+    void loadBackground(wxString filePath)
+    {
+        _frames[_frameIterator].setBgPath(filePath);
+        _frames[_frameIterator].loadBitmap();
+        prepareBackgroundLayer();
+    }
+
+
+
+
+
+
+    void setBrightness(int pos);
+    int getBrightness();
+    //--------------------------------------------------
+    void setOpacity(int pos);
+    int getOpacity();
+
+
+    void prepareBitmaps();
+
+    void prepareBackgroundLayer();
+    void AdjustBackgroundBrightness();
+
+    void RescaleBackground();
+    void AdjustMiddleOpacity();
+
+    void prepareMiddleLayer();
+    void prepareCurrentLayer();
+
+    wxBitmap getBackgroundBitmap(){return _backgroundLayer;}
+    wxBitmap getMiddleBitmap(){return _middleLayer;}
+    wxBitmap getCurrentBitmap(){return  _currentLayer;}
 private:
 
 
     //Blueprint for data - based on those variables, the Shape objects are created and drawn;
+
+
 
     wxPoint _firstPoint;    //First point of the shape
     wxPoint _secondPoint;   //Second point of the shape
@@ -91,14 +115,20 @@ private:
     wxColour _fillColour;   //Colour of shape's fill
     bool _isFilled;          // Should the shape be filled or transparent
 
-    wxBitmap _backgroundBitmap; //Bitmap used as a background
-    wxBitmap _backgroundBitmapCopy;
-    wxString _backgroundPath;   //Path to the user loaded bitmap
+    wxBitmap _backgroundLayer;
+    wxBitmap _middleLayer;
+    wxBitmap _currentLayer;
 
-    std::vector<std::vector<Shape>> _frames;    //Vector of Frames, for saving and playing;
+    int _backgroundBirghtness;
+    int _middleOpacity;
+
+
+    std::vector<Frame>  _frames;    //Vector of Frames, for saving and playing;
     int _frameIterator;                         //Iterator over the _frames vector
 
-    int _thumbPos = 0;
+
+
+
     //For now unused, as the data handling responsibiites of _currentFrame have been moved to _frames[_frameIterator]
 
 

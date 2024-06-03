@@ -4,41 +4,64 @@
 
 
 #pragma warning(disable: 4996) // Visual Studio: warning C4996: 'XXX': This function or variable may be unsafe. <- wxcrt.h
-#include <fstream>
 #include "ConfigClass.h"
 #include "Frame.h"
 #include "Parser.h"
 
-
-
-ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false), _frameIterator(0)
+ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(false),_backgroundLayer(wxBitmap(1200,900,32)), _middleLayer(wxBitmap(1200,900,32)), _currentLayer(wxBitmap(1200,900,32)), _middleOpacity(20), _backgroundBirghtness(100),_frameIterator(0)
 {
-	_frames.emplace_back();
+
+    _middleLayer.UseAlpha(true);
+    _currentLayer.UseAlpha(true);
+
+    _frames.emplace_back();
+    prepareBackgroundLayer();
 }
 
 void ConfigClass::saveShape()
 {
-	_frames[_frameIterator].emplace_back(_firstPoint, _secondPoint, _type, _borderColour, _isFilled, _fillColour);
+	_frames[_frameIterator].addShape(_firstPoint, _secondPoint, _type, _borderColour, _isFilled, _fillColour);
+    prepareCurrentLayer();
+}
+
+void ConfigClass::addFrame(bool copyFrame, bool copyBackground) {
+
+    if (_frameIterator < _frames.size() - 1) {
+        _frames.insert(_frames.begin() + _frameIterator + 1, Frame());
+    }
+    else {
+        _frames.emplace_back();
+    }
+    _frameIterator++;
+
+    if(copyFrame)
+    {
+        auto previousShapes = _frames[_frameIterator - 1].getShapes();
+        _frames[_frameIterator].setShapes(previousShapes);
+    }
+    if(copyBackground)
+    {
+        auto previousBgPath = _frames[_frameIterator - 1].getBgPath();
+        auto previousBitmap = _frames[_frameIterator - 1].getBitmap();
+        _frames[_frameIterator].setBgPath(previousBgPath);
+        //It copies the loaded bitmap instead of loading it again - dunno if it improves performance but i think it should?
+        _frames[_frameIterator].setBitmap(previousBitmap);
+
+    }
+    prepareBitmaps();
 }
 
 void ConfigClass::addFrame() {
 	if (_frameIterator < _frames.size() - 1) {
-		_frames.insert(_frames.begin() + _frameIterator + 1, std::vector<Shape>());
+		_frames.insert(_frames.begin() + _frameIterator + 1, Frame());
 	}
 	else {
 		_frames.emplace_back();
 	}
 	_frameIterator++;
+    prepareBitmaps();
 }
 
-void ConfigClass::addCopyFrame()
-{
-	addFrame();
-	for (auto elem : _frames[_frameIterator - 1])
-	{
-		_frames[_frameIterator].push_back(elem);
-	}
-}
 
 
 
@@ -59,18 +82,13 @@ void ConfigClass::deleteFrame()
 		// Adjust iterator if it goes out of bounds
 		_frameIterator = _frames.size() - 1;
 	}
+    prepareBitmaps();
 }
 
 void ConfigClass::deleteLastShape()
 {
-	if (!_frames[_frameIterator].empty())
-	{
-		_frames[_frameIterator].pop_back();
-	}
-	else
-	{
-		wxBell();
-	}
+	_frames[_frameIterator].popLastShape();
+    prepareCurrentLayer();
 }
 
 
@@ -83,6 +101,7 @@ void ConfigClass::nextFrame() {
 	{
 		wxBell();
 	}
+    prepareBitmaps();
 }
 
 void ConfigClass::previousFrame() {
@@ -93,14 +112,27 @@ void ConfigClass::previousFrame() {
 	{
 		wxBell();
 	}
+    prepareBitmaps();
 }
 
 /// @brief Temporary function for transforming into frame class
-static std::vector<Frame> asFrameVec(wxString path, std::vector<std::vector<Shape>> frames) {
+/*static std::vector<Frame> asFrameVec(wxString path, std::vector<Frame> frames) {
 	std::vector<Frame> result(frames.size());
 	std::transform(frames.begin(), frames.end(), result.begin(),
 		[path](std::vector<Shape> shapes) { return Frame(path, shapes); });
 	return result;
+}*/
+
+void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory) {
+    for (size_t i = 0; i < _frames.size(); i++) {
+        const wxString& path = _frames[i].getBgPath();
+        wxString newPath = projectDirectory + wxString::Format("\\img\\%08zu.jpg", i);
+
+        if(!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
+            throw std::runtime_error("Couldn't save bitmap to " + newPath);
+
+        _frames[i].setBgPath(newPath);
+    }
 }
 
 void ConfigClass::loadFramesFromFile(const wxString& path) {
@@ -108,42 +140,57 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 	p.readFile(path);
 	auto frames = p.getFrames();
 
-	_backgroundPath = frames[0].getBgPath();
+    _frames.clear();
+    for(auto& elem : frames)
+    {
+        elem.loadBitmap();
+        _frames.push_back(elem);
+    }
+    _frameIterator = 0;
+    /*
+       _backgroundPath = frames[0].getBgPath();
 
-	wxString ext = _backgroundPath.AfterLast('.').Lower();
+       wxString ext = _backgroundPath.AfterLast('.').Lower();
 
-	wxBitmapType format = wxBITMAP_TYPE_ANY;
-	if (ext == "png")
-		format = wxBITMAP_TYPE_PNG;
-	else if (ext == "jpg" || ext == "jpeg")
-		format = wxBITMAP_TYPE_JPEG;
-	else if (ext == "bmp")
-		format = wxBITMAP_TYPE_BMP;
+       wxBitmapType format = wxBITMAP_TYPE_ANY;
+       if (ext == "png")
+           format = wxBITMAP_TYPE_PNG;
+       else if (ext == "jpg" || ext == "jpeg")
+           format = wxBITMAP_TYPE_JPEG;
+       else if (ext == "bmp")
+           format = wxBITMAP_TYPE_BMP;
 
-	wxImage image;
-	if (image.LoadFile(_backgroundPath, format)) {
-		wxBitmap bitmap(image);
-		_backgroundBitmap = bitmap;
-		_backgroundBitmapCopy = bitmap;
-	}
-	else {
-		wxLogError("Could not load image file '%s'.", _backgroundPath);
-	}
+       wxImage image;
+       if (image.LoadFile(_backgroundPath, format)) {
+           wxBitmap bitmap(image);
+           _backgroundBitmap = bitmap;
+           _backgroundBitmapCopy = bitmap;
+       }
+       else {
+           wxLogError("Could not load image file '%s'.", _backgroundPath);
+       }
 
-	_frames.clear();
-	_frames.resize(frames.size());
-	std::transform(frames.begin(), frames.end(), _frames.begin(), 
-		[](const Frame& f) { return f.getShapes(); });
-	_frameIterator = 0;
+       _frames.clear();
+       _frames = frames;
+
+       std::transform(frames.begin(), frames.end(), _frames.begin(),
+           [](const Frame& f) { return f.getShapes(); });
+   */
+
 }
 
 void ConfigClass::saveFramesToFile(const wxString& path) {
-	std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
+	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
+
+    copyImagesToProjectDirectory(path.BeforeLast('\\'));
 
 	Parser p;
-	p.setFrames(frames);
+	p.setFrames(_frames);
 	p.saveToFile(path);
 }
+
+
+
 
 void ConfigClass::setPoint1(const wxPoint& p1) { _firstPoint = p1; }
 wxPoint ConfigClass::getPoint1() const { return _firstPoint; }
@@ -163,17 +210,9 @@ wxColour ConfigClass::getFillColour() { return _fillColour; }
 void ConfigClass::setIsFilled(bool filled) { _isFilled = filled; }
 bool ConfigClass::getIsFilled() { return _isFilled; }
 
-void ConfigClass::setBackgroundBitmap(const wxBitmap& bitmap) {
-	_backgroundBitmap = wxBitmap(bitmap);
-	_backgroundBitmapCopy = wxBitmap(bitmap);
-}
-wxBitmap ConfigClass::getBackgroundBitmap() { return _backgroundBitmap; }
 
-void ConfigClass::setBackgroundPath(wxString path) { _backgroundPath = path; }
-wxString ConfigClass::getBackgroundPath() { return _backgroundPath; }
-
-void ConfigClass::setCurrentFrame(std::vector<Shape> frame) { _frames[_frameIterator] = frame; }
-std::vector<Shape> ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
+//void ConfigClass::setCurrentFrame(Frame frame) { _frames[_frameIterator].setShapes(frame.getShapes()); }
+Frame ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
 
 
 int ConfigClass::getFrameNumber() { return _frames.size(); }
@@ -182,9 +221,163 @@ void ConfigClass::setFrameIterator(int iterator) {
 	if (iterator < _frames.size())
 		_frameIterator = iterator;
 }
-void ConfigClass::setBackgroundBitmapCopy(const wxBitmap& bitmap) { _backgroundBitmapCopy = wxBitmap(bitmap); }
-wxBitmap ConfigClass::getBackgroundBitmapCopy() { return _backgroundBitmapCopy; }
 
-void ConfigClass::setThumbPos(int pos) { _thumbPos = pos; }
-int ConfigClass::getThumbPos() { return _thumbPos; }
 
+void ConfigClass::setBrightness(int pos) { _backgroundBirghtness = pos; prepareBackgroundLayer(); }
+int ConfigClass::getBrightness() { return _backgroundBirghtness; }
+
+void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; prepareMiddleLayer();}
+int ConfigClass::getOpacity() { return _middleOpacity; }
+
+
+
+void ConfigClass::prepareBitmaps()
+{
+    prepareBackgroundLayer();
+
+    prepareMiddleLayer();
+
+    prepareCurrentLayer();
+}
+
+
+
+void ConfigClass::prepareBackgroundLayer()
+{
+    _backgroundLayer = _frames[_frameIterator].getBitmap();
+    RescaleBackground();
+    AdjustBackgroundBrightness();
+}
+
+//Helper function;
+int clamp(int value, int min, int max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+void ConfigClass::RescaleBackground()
+{
+    int panelWidth = 1200;
+    int panelHeight = 900;
+    if(_backgroundLayer.IsOk()) {
+        int bitmapWidth = _backgroundLayer.GetWidth();
+        int bitmapHeight = _backgroundLayer.GetHeight();
+
+        double bitmapAspectRatio = static_cast<double>(bitmapWidth) / bitmapHeight;
+        double panelAspectRatio = static_cast<double>(panelWidth) / panelHeight;
+
+        if (bitmapAspectRatio > panelAspectRatio) {
+            // Image is wider relative to the panel
+            bitmapWidth = panelWidth;
+            bitmapHeight = static_cast<int>(panelWidth / bitmapAspectRatio);
+        } else {
+            // Image is taller relative to the panel
+            bitmapHeight = panelHeight;
+            bitmapWidth = static_cast<int>(panelHeight * bitmapAspectRatio);
+        }
+
+
+        wxImage image = _backgroundLayer.ConvertToImage();
+        image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
+        _backgroundLayer = wxBitmap(image);
+    }
+}
+
+void ConfigClass::AdjustBackgroundBrightness()
+{
+    double s = _backgroundBirghtness/100.0;
+    if(_backgroundLayer.IsOk()) {
+        wxImage image = _backgroundLayer.ConvertToImage();
+        unsigned char *data = image.GetData();
+        int pixelCount = image.GetWidth() * image.GetHeight();
+
+        for (int i = 0; i < pixelCount; ++i) {
+            int r = data[i * 3];
+            int g = data[i * 3 + 1];
+            int b = data[i * 3 + 2];
+
+            r = clamp(r + (s - 1) * 255, 0, 255);
+            g = clamp(g + (s - 1) * 255, 0, 255);
+            b = clamp(b + (s - 1) * 255, 0, 255);
+
+            data[i * 3] = r;
+            data[i * 3 + 1] = g;
+            data[i * 3 + 2] = b;
+        }
+        _backgroundLayer = wxBitmap(image);
+    }
+}
+
+
+void ConfigClass::AdjustMiddleOpacity()
+{
+    if (_middleOpacity < 0) _middleOpacity = 0;
+    if (_middleOpacity > 100) _middleOpacity = 100;
+
+    unsigned char alphaValue = static_cast<unsigned char>(_middleOpacity * 2.55); // Convert 0-100 to 0-255
+
+    wxImage image = _middleLayer.ConvertToImage();
+    if (!image.HasAlpha())
+    {
+        image.InitAlpha();
+    }
+
+    int width = image.GetWidth();
+    int height = image.GetHeight();
+
+    // Loop through each pixel
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            // Only modify the alpha value if the pixel is not fully transparent
+            if (image.GetAlpha(x, y) != 0)
+            {
+                image.SetAlpha(x, y, alphaValue);
+            }
+        }
+    }
+    _middleLayer = wxBitmap(image);
+}
+
+void ConfigClass::prepareMiddleLayer()
+{
+    _middleLayer = wxBitmap(1200,900,32);
+    _middleLayer.UseAlpha(true);
+
+    wxMemoryDC memDC;
+    memDC.SelectObject(_middleLayer);
+    memDC.SetBackground(*wxTRANSPARENT_BRUSH);
+    memDC.Clear();
+
+    if(_frameIterator > 0 && _frames.size() > 1)
+    {
+        for(auto& elem: _frames[_frameIterator - 1].getShapes())
+        {
+            elem.drawShape(memDC);
+        }
+
+        AdjustMiddleOpacity();
+    }
+    memDC.SelectObject(wxNullBitmap);
+
+}
+
+void ConfigClass::prepareCurrentLayer()
+{
+
+    _currentLayer = wxBitmap(1200,900,32);
+    _currentLayer.UseAlpha(true);
+
+    wxMemoryDC memDC;
+    memDC.SelectObject(_currentLayer);
+    memDC.SetBackground(*wxTRANSPARENT_BRUSH);
+    memDC.Clear();
+
+    for(auto& elem: _frames[_frameIterator].getShapes())
+    {
+        elem.drawShape(memDC);
+    }
+    memDC.SelectObject(wxNullBitmap);
+}

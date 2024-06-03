@@ -28,12 +28,13 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _prevFrame = new wxButton(this, ID_prevFrame, "<-");
 
     copyPrevFrame = new wxCheckBox(this, ID_copyPrevFrame, "Copy previous frame");
+    copyBackground = new wxCheckBox(this, ID_copyPrevBackground, "Copy previous background");
     ScrollBarBrightness = new wxScrollBar(this, ID_scrollBarBrightness, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
     ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
 
     wxStaticText* transparencyText = new wxStaticText(this, wxID_ANY, "Adjust transparency of previous frame", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     ScrollBarTransparent = new wxScrollBar(this, ID_scrollBarTransparent, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    ScrollBarTransparent->SetScrollbar(0, 10, 100, 10);
+    ScrollBarTransparent->SetScrollbar(20, 10, 100, 10);
 
     wxBoxSizer* sizer1 = new wxBoxSizer(wxHORIZONTAL);
     sizer1->Add(_saveFile, 1, wxEXPAND | wxTOP, 5);
@@ -45,6 +46,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     wxBoxSizer* sizer3 = new wxBoxSizer(wxVERTICAL);
     sizer3->Add(copyPrevFrame, 1, wxEXPAND | wxTOP, 5);
+    sizer3->Add(copyBackground,1, wxEXPAND | wxTOP, 5);
     sizer3->Add(_addShape, 1, wxEXPAND | wxTOP, 10);
     sizer3->Add(_delLastShape, 1, wxEXPAND | wxTOP, 10);
     sizer3->AddStretchSpacer();
@@ -157,44 +159,27 @@ void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
 
     _myPanel->Refresh();
 }
+
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
+
 	ScrollBarBrightness->Show();
 	ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
+    _myPanel->cfg->setBrightness(100);
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
                                   "Image files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp",
                                   wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (wxOpenFileDialog.ShowModal() == wxID_OK) {
         wxString fileName = wxOpenFileDialog.GetPath();
-        wxString ext = wxOpenFileDialog.GetFilename().AfterLast('.').Lower();
-
-        wxBitmapType format = wxBITMAP_TYPE_ANY;
-        if (ext == "png")
-            format = wxBITMAP_TYPE_PNG;
-        else if (ext == "jpg" || ext == "jpeg")
-            format = wxBITMAP_TYPE_JPEG;
-        else if (ext == "bmp")
-            format = wxBITMAP_TYPE_BMP;
-
-        wxImage image;
-        if (image.LoadFile(fileName, format)) {
-            wxBitmap bitmap(image);
-            _myPanel->SetBackgroundImage(fileName, bitmap);
-			_myPanel->cfg->setBackgroundBitmap(_myPanel->cfg->getBackgroundBitmap());
-        } else {
-            wxLogError("Could not load image file '%s'.", fileName);
-        }
+        _myPanel->cfg->loadBackground(fileName);
+        _myPanel->Refresh();
     }
 	this->Layout();
 }
+
 void MainFrame::fun_addFrame(wxCommandEvent& e) {
-    if(!copyPrevFrame->GetValue()){
-        _myPanel->cfg->addFrame();
-    }
-    else
-    {
-        _myPanel->cfg->addCopyFrame();
-    }
+
+    _myPanel->cfg->addFrame(copyPrevFrame->GetValue(), copyBackground->GetValue());
     _myPanel->Refresh();
 }
 
@@ -215,19 +200,6 @@ void MainFrame::fun_addShape(wxCommandEvent& e) {
 		shapePanel->Hide();
 		Layout();
 	}
-
-	/*ShapeDialog dlg(this); I VERSION
-	if (dlg.ShowModal() == wxID_OK) {
-		wxString shape = dlg.GetSelectedShape();
-		wxColour color = dlg.GetSelectedColor();
-		bool filled = dlg.IsFilled();
-
-		_myPanel->SetShape(shape,color,filled);
-
-		std::cout << "User chose: "
-			<< shape << " " << "Color:" << color.GetRGB() << " " << "filled: " << filled << std::endl;
-	}*/
-
 }
 
 void MainFrame::fun_delShape(wxCommandEvent& e) {
@@ -268,41 +240,23 @@ void MainFrame::UpdateShapeInPanel(wxCommandEvent& e) {
 	_myPanel->SetShape(shape, borderColor, filled, fillColor);
 }
 
+
+
 void MainFrame::OnScrollBrightness(wxScrollEvent& e) {
-	double s = ScrollBarBrightness->GetThumbPosition()/100.;
-	//std::cout << s << std::endl;
-	wxImage image = _myPanel->cfg->getBackgroundBitmap().ConvertToImage();
-	unsigned char* data = image.GetData();
-	int pixelCount = image.GetWidth() * image.GetHeight();
 
-	for (int i = 0; i < pixelCount; ++i) {
-		int r = data[i * 3];
-		int g = data[i * 3 + 1];
-		int b = data[i * 3 + 2];
-
-		r = clamp(r + (s - 1) * 255, 0, 255);
-		g = clamp(g + (s - 1) * 255, 0, 255);
-		b = clamp(b + (s - 1) * 255, 0, 255);
-
-		data[i * 3] = r;
-		data[i * 3 + 1] = g;
-		data[i * 3 + 2] = b;
-	}
-	_myPanel->cfg->setBackgroundBitmapCopy(wxBitmap(image));
-	_myPanel->Refresh();
-
+    std::cout << ScrollBarBrightness->GetThumbPosition() << std::endl;
+    _myPanel->cfg->setBrightness(ScrollBarBrightness->GetThumbPosition());
+    _myPanel->Refresh();
 }
 
 void MainFrame::OnScrollTransparent(wxScrollEvent& e) {
-	std::cout << ScrollBarTransparent->GetThumbPosition() << std::endl;
+    _myPanel->cfg->setOpacity(ScrollBarTransparent->GetThumbPosition());
+    //std::cout << ScrollBarTransparent->GetThumbPosition() << std::endl;
+    _myPanel->Refresh();
 }
 
 void MainFrame::fun_copyPrevFrame(wxCommandEvent& e) {
 	if(copyPrevFrame->GetValue())
 		std::cout << "User wants to copy previous frame!\n";
 }
-int clamp(int value, int min, int max) {
-	if (value < min) return min;
-	if (value > max) return max;
-	return value;
-}
+
