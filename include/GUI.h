@@ -25,17 +25,16 @@
 
 #include "MyPanel.h"
 
-class MainFrame : public wxFrame 
+class MainFrame : public wxFrame
 {
 public:
 	MainFrame();
 
 	void fun_saveAnimationFile(wxCommandEvent& e);
 	void fun_loadAnimationFile(wxCommandEvent& e);
-    void fun_loadImage(wxCommandEvent& e);
+	void fun_loadImage(wxCommandEvent& e);
 	void fun_addFrame(wxCommandEvent& e);
 	void fun_delFrame(wxCommandEvent& e);
-	void fun_addShape(wxCommandEvent& e);
 	void fun_delShape(wxCommandEvent& e);
 	void fun_nextFrame(wxCommandEvent& e);
 	void fun_playFrame(wxCommandEvent& e);
@@ -45,26 +44,30 @@ public:
 	void UpdateShapeInPanel(wxCommandEvent& e);
 	void OnScrollBrightness(wxScrollEvent& e);
 	void OnScrollTransparent(wxScrollEvent& e);
+	void OnExit(wxCommandEvent& e);
+	void OnAbout(wxCommandEvent& e);
+	void OnClose(wxCloseEvent& e);
+	void DeleteAllData(wxCommandEvent& e);
 
 private:
-	MyPanel*  _myPanel;
+	MyPanel* _myPanel;
 	wxPanel* shapePanel;
 	wxChoice* shapeChoice;
 	wxColourPickerCtrl* colorPicker;
 	wxColourPickerCtrl* fillColorPicker;
 	wxCheckBox* fillCheckBox;
 	wxCheckBox* copyPrevFrame;
-    wxCheckBox* copyBackground;
+	wxCheckBox* copyBackground;
 	wxStaticText* fillColorLabel;
+	wxStaticText* loadedBackgroundLabel;
 	wxBoxSizer* shapeSizer;
 	wxScrollBar* ScrollBarBrightness;
 	wxScrollBar* ScrollBarTransparent;
 
-	bool _addedShape = false;
 	enum {
 		ID_saveFile = 1001,
 		ID_loadFile,
-        ID_loadImage,
+		ID_loadImage,
 		ID_addFrame,
 		ID_delFrame,
 		ID_addShape,
@@ -73,10 +76,13 @@ private:
 		ID_prevFrame,
 		ID_checkbox,
 		ID_copyPrevFrame,
-        ID_copyPrevBackground,
+		ID_copyPrevBackground,
 		ID_scrollBarTransparent,
 		ID_scrollBarBrightness,
-		ID_delLastShape
+		ID_delLastShape,
+		ID_exit,
+		ID_about,
+		ID_delAll
 	};
 
 };
