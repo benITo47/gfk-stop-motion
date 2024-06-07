@@ -161,14 +161,14 @@ void MainFrame::saveAnimationFile(wxCommandEvent& e) {
         "Image files (*.anim)|*.anim", wxFD_SAVE);
 
     if (saveFileDialog.ShowModal() == wxID_OK)
-        _myPanel->cfg->saveFramesToFile(saveFileDialog.GetPath());
+        _myPanel->_cfg->saveFramesToFile(saveFileDialog.GetPath());
 }
 void MainFrame::loadAnimationFile(wxCommandEvent& e) {
     wxFileDialog openFileDialog(this, _("Open animation file"), "", "",
         "Image files (*.anim)|*.anim", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (openFileDialog.ShowModal() == wxID_OK)
-        _myPanel->cfg->loadFramesFromFile(openFileDialog.GetPath());
+        _myPanel->_cfg->loadFramesFromFile(openFileDialog.GetPath());
 
     _myPanel->Refresh();
 }
@@ -180,14 +180,14 @@ void MainFrame::loadImage(wxCommandEvent& e) {
     _loadedBackgroundLabel->Show();
     _scrollBarBrightness->Show();
     _scrollBarBrightness->SetScrollbar(100, 10, 200, 10);
-    _myPanel->cfg->setBrightness(100);
+    _myPanel->_cfg->setBrightness(100);
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
         "Image files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp",
         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (wxOpenFileDialog.ShowModal() == wxID_OK) {
         wxString fileName = wxOpenFileDialog.GetPath();
-        _myPanel->cfg->loadBackground(fileName);
+        _myPanel->_cfg->loadBackground(fileName);
         _myPanel->Refresh();
     }
     this->Layout();
@@ -195,31 +195,31 @@ void MainFrame::loadImage(wxCommandEvent& e) {
 
 void MainFrame::addFrame(wxCommandEvent& e) {
 
-    _myPanel->cfg->addFrame(_copyPrevFrame->GetValue(), _copyBackground->GetValue());
+    _myPanel->_cfg->addFrame(_copyPrevFrame->GetValue(), _copyBackground->GetValue());
     _myPanel->Refresh();
 }
 
 void MainFrame::delFrame(wxCommandEvent& e) {
-    _myPanel->cfg->deleteFrame();
+    _myPanel->_cfg->deleteFrame();
     _myPanel->Refresh();
 }
 
 void MainFrame::delShape(wxCommandEvent& e) {
-    _myPanel->cfg->deleteLastShape();
+    _myPanel->_cfg->deleteLastShape();
     _myPanel->Refresh();
 }
 
 void  MainFrame::nextFrame(wxCommandEvent& e) {
-    _myPanel->cfg->nextFrame();
+    _myPanel->_cfg->nextFrame();
     _myPanel->Refresh();
 }
 
 void MainFrame::playFrame(wxCommandEvent& e) {
     std::cout << "play Frame\n";
-    _myPanel->PlayAnimation();
+    _myPanel->playAnimation();
 }
 void MainFrame::prevFrame(wxCommandEvent& e) {
-    _myPanel->cfg->previousFrame();
+    _myPanel->_cfg->previousFrame();
     _myPanel->Refresh();
 }
 void MainFrame::onFillCheckBoxChanged(wxCommandEvent& e) {
@@ -239,18 +239,18 @@ void MainFrame::updateShapeInPanel(wxCommandEvent& e) {
         fillColor = _fillColorPicker->GetColour();
     }
 
-    _myPanel->SetShape(shape, borderColor, filled, fillColor);
+    _myPanel->setShape(shape, borderColor, filled, fillColor);
 }
 
 void MainFrame::onScrollBrightness(wxScrollEvent& e) {
 
     std::cout << _scrollBarBrightness->GetThumbPosition() << std::endl;
-    _myPanel->cfg->setBrightness(_scrollBarBrightness->GetThumbPosition());
+    _myPanel->_cfg->setBrightness(_scrollBarBrightness->GetThumbPosition());
     _myPanel->Refresh();
 }
 
 void MainFrame::onScrollTransparent(wxScrollEvent& e) {
-    _myPanel->cfg->setOpacity(_scrollBarTransparent->GetThumbPosition());
+    _myPanel->_cfg->setOpacity(_scrollBarTransparent->GetThumbPosition());
     //std::cout << _scrollBarTransparent->GetThumbPosition() << std::endl;
     _myPanel->Refresh();
 }
