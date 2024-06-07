@@ -30,6 +30,7 @@ class MainFrame : public wxFrame
 public:
 	MainFrame();
 
+	void newProject(wxCommandEvent& e);
 	void fun_saveAnimationFile(wxCommandEvent& e);
 	void fun_loadAnimationFile(wxCommandEvent& e);
 	void fun_loadImage(wxCommandEvent& e);
@@ -82,7 +83,8 @@ private:
 		ID_delLastShape,
 		ID_exit,
 		ID_about,
-		ID_delAll
+		ID_delAll,
+		ID_newProject
 	};
 
 };

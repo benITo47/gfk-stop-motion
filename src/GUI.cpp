@@ -13,16 +13,17 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     wxButton* _delLastShape;
     wxButton* _delAll;
 
-    _loadImage = new wxButton(this, ID_loadImage, "LOAD BACKGROUND");
-    _addFrame = new wxButton(this, ID_addFrame, "ADD FRAME");
-    _delFrame = new wxButton(this, ID_delFrame, "DELETE FRAME");
-    _delLastShape = new wxButton(this, ID_delLastShape, "DELETE LAST SHAPE");
-    _delAll = new wxButton(this, ID_delAll, "DELETE ALL");
+    _loadImage = new wxButton(this, ID_loadImage, "Load background");
+    _addFrame = new wxButton(this, ID_addFrame, "Add frame");
+    _delFrame = new wxButton(this, ID_delFrame, "Delete frame");
+    _delLastShape = new wxButton(this, ID_delLastShape, "Delete last shape");
+    _delAll = new wxButton(this, ID_delAll, "Delete all shapes");
     _nextFrame = new wxButton(this, ID_nextFrame, "->");
     _playFrame = new wxButton(this, ID_playFrame, ">");
     _prevFrame = new wxButton(this, ID_prevFrame, "<-");
 
     wxMenu* menuFile = new wxMenu();
+    menuFile->Append(ID_newProject, "&New project", "");
     menuFile->Append(ID_saveFile, "&Save to file", "");
     menuFile->Append(ID_loadFile, "&Load from file", "");
     menuFile->Append(ID_exit, "&Exit", "Quit this program");
@@ -36,16 +37,16 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     SetMenuBar(menuBar);
 
-    copyPrevFrame = new wxCheckBox(this, ID_copyPrevFrame, "Copy previous frame");
-    copyBackground = new wxCheckBox(this, ID_copyPrevBackground, "Copy previous background");
+    copyPrevFrame = new wxCheckBox(this, ID_copyPrevFrame, "Copy shapes");
+    copyBackground = new wxCheckBox(this, ID_copyPrevBackground, "Copy background");
     ScrollBarBrightness = new wxScrollBar(this, ID_scrollBarBrightness, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
     ScrollBarBrightness->SetScrollbar(100, 10, 200, 10);
 
-    wxStaticText* transparencyText = new wxStaticText(this, wxID_ANY, "Adjust transparency of previous frame", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    wxStaticText* transparencyText = new wxStaticText(this, wxID_ANY, "Middle layer opacity", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     ScrollBarTransparent = new wxScrollBar(this, ID_scrollBarTransparent, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
     ScrollBarTransparent->SetScrollbar(20, 10, 100, 10);
 
-    loadedBackgroundLabel = new wxStaticText(this, wxID_ANY, "Adjust brightness of background photo", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    loadedBackgroundLabel = new wxStaticText(this, wxID_ANY, "Background brightness", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
 
     wxBoxSizer* sizer2 = new wxBoxSizer(wxHORIZONTAL);
     sizer2->Add(_addFrame, 1, wxEXPAND | wxTOP, 5);
@@ -67,7 +68,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     shapeChoice->SetSelection(0);
     shapeSizer->Add(shapeChoice, 0, wxALL | wxEXPAND, 10);
 
-    wxStaticText* colorLabel = new wxStaticText(shapePanel, wxID_ANY, "Choose Border Color:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    wxStaticText* colorLabel = new wxStaticText(shapePanel, wxID_ANY, "Border color", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     shapeSizer->Add(colorLabel, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
     colorPicker = new wxColourPickerCtrl(shapePanel, wxID_ANY);
@@ -77,7 +78,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     shapeSizer->Add(fillCheckBox, 0, wxALIGN_CENTER | wxALL, 5);
     fillCheckBox->SetValue(true);
 
-    fillColorLabel = new wxStaticText(shapePanel, wxID_ANY, "Choose Fill Color:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    fillColorLabel = new wxStaticText(shapePanel, wxID_ANY, "Fill color:", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     fillColorPicker = new wxColourPickerCtrl(shapePanel, wxID_ANY);
 
     shapeSizer->Add(fillColorLabel, 0, wxALIGN_CENTER | wxALL, 5);
@@ -133,6 +134,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     Bind(wxEVT_MENU, &MainFrame::fun_saveAnimationFile, this, ID_saveFile);
     Bind(wxEVT_MENU, &MainFrame::fun_loadAnimationFile, this, ID_loadFile);
+    Bind(wxEVT_MENU, &MainFrame::newProject, this, ID_newProject);
     Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this);
     Bind(wxEVT_MENU, &MainFrame::OnExit, this, ID_exit);
     Bind(wxEVT_MENU, &MainFrame::OnAbout, this, ID_about);
@@ -169,6 +171,9 @@ void MainFrame::fun_loadAnimationFile(wxCommandEvent& e) {
         _myPanel->cfg->loadFramesFromFile(openFileDialog.GetPath());
 
     _myPanel->Refresh();
+}
+void MainFrame::newProject(wxCommandEvent& e) {
+
 }
 
 void MainFrame::fun_loadImage(wxCommandEvent& e) {
@@ -262,7 +267,7 @@ void MainFrame::OnExit(wxCommandEvent& e)
 
 void MainFrame::OnAbout(wxCommandEvent& e)
 {
-    wxMessageBox("This application, named Stop Motion, is a computer graphics project created by Daniel Czapla, Bartłomiej Obrochta, and Franciszek Urbański.\n The project allows adding and removing new shapes available on the drawing panel. Drawing is done by selecting two points on the panel, choosing a shape, its color and filling it with another one. It is possible to delete the last added shapes, load your own background, add(delete) frames and play frames as an animation.",
+    wxMessageBox("This application, named Stop Motion, is a computer graphics project created by Daniel Czapla, Bartlomiej Obrochta, and Franciszek Urbanski.\n The project allows adding and removing new shapes available on the drawing panel. Drawing is done by selecting two points on the panel, choosing a shape, its color and filling it with another one. It is possible to delete the last added shapes, load your own background, add(delete) frames and play frames as an animation.",
         "About Stop Motion", wxOK | wxICON_INFORMATION);
 }
 

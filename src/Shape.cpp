@@ -12,78 +12,59 @@
 
 void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
 {
-	//// Crude parsing test
-	//wxString str = (toString());
-	//wxMessageBox(str);
-	//Shape newMe = Shape::fromString(str);
+    gc->SetBrush(gc->CreateBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT)));
+    gc->SetPen(gc->CreatePen(wxPen(borderColour)));
 
-	//Shape* me = const_cast<Shape*>(this);
-
-	//me->type = newMe.type;
-	//me->borderColour = newMe.borderColour;
-	//me->fillColour = newMe.fillColour;
-	//me->isFilled = newMe.isFilled;
-
-	//me->firstPoint = newMe.firstPoint;
-	//me->secondPoint = newMe.secondPoint;
-
-	gc->SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
-	gc->SetPen(wxPen(borderColour));
-
-	auto path = gc->CreatePath();
-
-	int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
-	path.AddCircle((firstPoint.x + secondPoint.x) / 2, (firstPoint.y + secondPoint.y) / 2, radius);
-	gc->DrawPath(path);
-
-	//if (type == "Line") {
-	//	gc->DrawLine(firstPoint, secondPoint);
-	//}
-	//else if (type == "Polyline") {
-	//	wxPoint points[4];
-	//	points[0] = firstPoint;
-	//	points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-	//	points[2] = wxPoint((firstPoint.x + secondPoint.x) / 2, secondPoint.y);
-	//	points[3] = secondPoint;
-	//	dc.DrawLines(4, points);
-	//}
-	//else if (type == "Curve") {
-	//	wxPoint points[3];
-	//	points[0] = firstPoint;
-	//	points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-	//	points[2] = secondPoint;
-	//	dc.DrawSpline(3, points);
-	//}
-	//else if (type == "Circle") {
-	//	int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
-	//	dc.DrawCircle((firstPoint.x + secondPoint.x) / 2, (firstPoint.y + secondPoint.y) / 2, radius);
-	//}
-	//else if (type == "Ellipse") {
-	//	dc.DrawEllipse(wxRect(firstPoint, secondPoint));
-	//}
-	//else if (type == "Square") {
-	//	int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
-	//	int topLeftX = firstPoint.x;
-	//	int topLeftY = firstPoint.y;
-
-	//	if (secondPoint.x < firstPoint.x) {
-	//		topLeftX = firstPoint.x - side;
-	//	}
-
-	//	if (secondPoint.y < firstPoint.y) {
-	//		topLeftY = firstPoint.y - side;
-	//	}
-
-	//	dc.DrawRectangle(wxPoint(topLeftX, topLeftY), wxSize(side, side));
-	//}
-	//else if (type == "Triangle") {
-	//	wxPoint points[3];
-	//	points[0] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-	//	points[1] = wxPoint(firstPoint.x, secondPoint.y);
-	//	points[2] = wxPoint(secondPoint.x, secondPoint.y);
-	//	dc.DrawPolygon(3, points);
-	//}
+    if (type == "Line") {
+        gc->StrokeLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+    }
+    else if (type == "Polyline") {
+        wxGraphicsPath path = gc->CreatePath();
+        path.MoveToPoint(firstPoint.x, firstPoint.y);
+        path.AddLineToPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
+        path.AddLineToPoint((firstPoint.x + secondPoint.x) / 2, secondPoint.y);
+        path.AddLineToPoint(secondPoint.x, secondPoint.y);
+        gc->StrokePath(path);
+    }
+    else if (type == "Curve") {
+        wxGraphicsPath path = gc->CreatePath();
+        path.MoveToPoint(firstPoint.x, firstPoint.y);
+        path.AddQuadCurveToPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y, secondPoint.x, secondPoint.y);
+        gc->StrokePath(path);
+    }
+    else if (type == "Circle") {
+        int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
+        gc->DrawEllipse((firstPoint.x + secondPoint.x) / 2 - radius, (firstPoint.y + secondPoint.y) / 2 - radius, radius * 2, radius * 2);
+    }
+    else if (type == "Ellipse") {
+        double x = firstPoint.x;
+        double y = firstPoint.y;
+        double w = secondPoint.x - firstPoint.x;
+        double h = secondPoint.y - firstPoint.y;
+        gc->DrawEllipse(x, y, w, h);
+    }
+    else if (type == "Square") {
+        int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
+        int topLeftX = firstPoint.x;
+        int topLeftY = firstPoint.y;
+        if (secondPoint.x < firstPoint.x) {
+            topLeftX = firstPoint.x - side;
+        }
+        if (secondPoint.y < firstPoint.y) {
+            topLeftY = firstPoint.y - side;
+        }
+        gc->DrawRectangle(topLeftX, topLeftY, side, side);
+    }
+    else if (type == "Triangle") {
+        wxGraphicsPath path = gc->CreatePath();
+        path.MoveToPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
+        path.AddLineToPoint(firstPoint.x, secondPoint.y);
+        path.AddLineToPoint(secondPoint.x, secondPoint.y);
+        path.CloseSubpath();
+        gc->StrokePath(path);
+    }
 }
+
 
 Shape Shape::fromString(const wxString& input) {
 	auto name = Parser::getName(input);
