@@ -25,46 +25,49 @@
 
 #include "MyPanel.h"
 
-class MainFrame : public wxFrame 
+class MainFrame : public wxFrame
 {
 public:
 	MainFrame();
 
-	void fun_saveAnimationFile(wxCommandEvent& e);
-	void fun_loadAnimationFile(wxCommandEvent& e);
-    void fun_loadImage(wxCommandEvent& e);
-	void fun_addFrame(wxCommandEvent& e);
-	void fun_delFrame(wxCommandEvent& e);
-	void fun_addShape(wxCommandEvent& e);
-	void fun_delShape(wxCommandEvent& e);
-	void fun_nextFrame(wxCommandEvent& e);
-	void fun_playFrame(wxCommandEvent& e);
-	void fun_prevFrame(wxCommandEvent& e);
-	void fun_copyPrevFrame(wxCommandEvent& e);
-	void OnFillCheckBoxChanged(wxCommandEvent& e);
-	void UpdateShapeInPanel(wxCommandEvent& e);
-	void OnScrollBrightness(wxScrollEvent& e);
-	void OnScrollTransparent(wxScrollEvent& e);
+	void newProject(wxCommandEvent& e);
+	void saveAnimationFile(wxCommandEvent& e);
+	void loadAnimationFile(wxCommandEvent& e);
+	void loadImage(wxCommandEvent& e);
+	void addFrame(wxCommandEvent& e);
+	void delFrame(wxCommandEvent& e);
+	void delShape(wxCommandEvent& e);
+	void nextFrame(wxCommandEvent& e);
+	void playFrame(wxCommandEvent& e);
+	void prevFrame(wxCommandEvent& e);
+	void copyPrevFrame(wxCommandEvent& e);
+	void onFillCheckBoxChanged(wxCommandEvent& e);
+	void updateShapeInPanel(wxCommandEvent& e);
+	void onScrollBrightness(wxScrollEvent& e);
+	void onScrollTransparent(wxScrollEvent& e);
+	void onExit(wxCommandEvent& e);
+	void onAbout(wxCommandEvent& e);
+	void onClose(wxCloseEvent& e);
+	void deleteAllData(wxCommandEvent& e);
 
 private:
-	MyPanel*  _myPanel;
-	wxPanel* shapePanel;
-	wxChoice* shapeChoice;
-	wxColourPickerCtrl* colorPicker;
-	wxColourPickerCtrl* fillColorPicker;
-	wxCheckBox* fillCheckBox;
-	wxCheckBox* copyPrevFrame;
-    wxCheckBox* copyBackground;
-	wxStaticText* fillColorLabel;
-	wxBoxSizer* shapeSizer;
-	wxScrollBar* ScrollBarBrightness;
-	wxScrollBar* ScrollBarTransparent;
+	MyPanel* _myPanel;
+	wxPanel* _shapePanel;
+	wxChoice* _shapeChoice;
+	wxColourPickerCtrl* _colorPicker;
+	wxColourPickerCtrl* _fillColorPicker;
+	wxCheckBox* _fillCheckBox;
+	wxCheckBox* _copyPrevFrame;
+	wxCheckBox* _copyBackground;
+	wxStaticText* _fillColorLabel;
+	wxStaticText* _loadedBackgroundLabel;
+	wxScrollBar* _scrollBarBrightness;
+	wxScrollBar* _scrollBarTransparent;
 
-	bool _addedShape = false;
 	enum {
 		ID_saveFile = 1001,
 		ID_loadFile,
-        ID_loadImage,
+		ID_loadImage,
 		ID_addFrame,
 		ID_delFrame,
 		ID_addShape,
@@ -73,13 +76,15 @@ private:
 		ID_prevFrame,
 		ID_checkbox,
 		ID_copyPrevFrame,
-        ID_copyPrevBackground,
+		ID_copyPrevBackground,
 		ID_scrollBarTransparent,
 		ID_scrollBarBrightness,
-		ID_delLastShape
+		ID_delLastShape,
+		ID_exit,
+		ID_about,
+		ID_delAll,
+		ID_newProject
 	};
 
 };
-
-int clamp(int value, int min, int max);
 

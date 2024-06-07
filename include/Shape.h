@@ -8,6 +8,8 @@
 #include <wx/wx.h>
 #include <wx/colordlg.h>
 #include <wx/clrpicker.h>
+#include <wx/graphics.h>
+#include <memory>
 
 class Shape {
 public:
@@ -19,7 +21,7 @@ public:
             : type(type), borderColour(color), fillColour(fillColor), isFilled(filled), firstPoint(p1), secondPoint(p2) {}
 
 
-    void drawShape(wxDC& dc) const;
+    void drawShape(std::shared_ptr<wxGraphicsContext> gc) const;
 
     wxString type;
     wxColour borderColour;

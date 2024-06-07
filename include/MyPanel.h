@@ -11,20 +11,18 @@ class ConfigClass;
 class MyPanel : public wxPanel {
 public:
 	MyPanel(wxWindow* parent);
-	void OnPaint(wxPaintEvent& event);
-	void OnLeftDown(wxMouseEvent& event);
-	void SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor);
-    wxBitmap RescaleBitmap(const wxBitmap &bitmap);
-    void PlayAnimation();
+	void onPaint(wxPaintEvent& event);
+	void onLeftDown(wxMouseEvent& event);
+	void setShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor);
+    void playAnimation();
 
 
 
 	friend class MainFrame;
 private:
-    std::shared_ptr<ConfigClass> cfg;
+    std::shared_ptr<ConfigClass> _cfg;
 
 
 
-	bool isShapeSelected;
-	int clickCount=0;
+	int _clickCount=0;
 };

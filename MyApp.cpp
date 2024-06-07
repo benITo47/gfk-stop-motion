@@ -26,7 +26,7 @@ wxIMPLEMENT_APP(App);
 //	wxEntryStart(argc, argv);
 //	wxTheApp->OnInit();
 //	wxTheApp->OnRun();
-//	wxTheApp->OnExit();
+//	wxTheApp->onExit();
 //	wxEntryCleanup();
 //	return 0;
 //}
