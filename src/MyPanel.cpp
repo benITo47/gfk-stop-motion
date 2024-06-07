@@ -38,7 +38,6 @@ void MyPanel::OnLeftDown(wxMouseEvent& event) {
     }
 }
 
-
 void MyPanel::OnPaint(wxPaintEvent& event) {
     //wxPaintDC dc(this);
     wxBufferedPaintDC dc(this);
@@ -63,7 +62,6 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
     }
 }
 
-
 void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
 
     cfg->setType(shape);
@@ -73,31 +71,6 @@ void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool 
     isShapeSelected = true;
     clickCount = 0;
 }
-/*
-wxBitmap MyPanel::RescaleBitmap(const wxBitmap &bitmap)
-{
-    int bitmapWidth = bitmap.GetWidth();
-    int bitmapHeight = bitmap.GetHeight();
-
-    double bitmapAspectRatio = static_cast<double>(bitmapWidth) / bitmapHeight;
-    double panelAspectRatio = static_cast<double>(PANEL_WIDTH) / PANEL_HEIGHT;
-
-    if (bitmapAspectRatio > panelAspectRatio) {
-        // Image is wider relative to the panel
-        bitmapWidth = PANEL_WIDTH;
-        bitmapHeight = static_cast<int>(PANEL_WIDTH / bitmapAspectRatio);
-    } else {
-        // Image is taller relative to the panel
-        bitmapHeight = PANEL_HEIGHT;
-        bitmapWidth = static_cast<int>(PANEL_HEIGHT * bitmapAspectRatio);
-    }
-
-
-    wxImage image = bitmap.ConvertToImage();
-    image.Rescale(bitmapWidth, bitmapHeight, wxIMAGE_QUALITY_HIGH);
-    return  wxBitmap(image);
-}
-*/
 
 void MyPanel::PlayAnimation()
 {

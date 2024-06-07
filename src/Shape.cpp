@@ -6,9 +6,11 @@
 
 #include "Parser.h"
 
+#include <wx/graphics.h>
+#include <memory>
 
 
-void Shape::drawShape(wxDC& dc) const
+void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
 {
 	//// Crude parsing test
 	//wxString str = (toString());
@@ -25,56 +27,59 @@ void Shape::drawShape(wxDC& dc) const
 	//me->firstPoint = newMe.firstPoint;
 	//me->secondPoint = newMe.secondPoint;
 
-	dc.SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
-	dc.SetPen(wxPen(borderColour));
+	gc->SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
+	gc->SetPen(wxPen(borderColour));
 
-	if (type == "Line") {
-		dc.DrawLine(firstPoint, secondPoint);
-	}
-	else if (type == "Polyline") {
-		wxPoint points[4];
-		points[0] = firstPoint;
-		points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-		points[2] = wxPoint((firstPoint.x + secondPoint.x) / 2, secondPoint.y);
-		points[3] = secondPoint;
-		dc.DrawLines(4, points);
-	}
-	else if (type == "Curve") {
-		wxPoint points[3];
-		points[0] = firstPoint;
-		points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-		points[2] = secondPoint;
-		dc.DrawSpline(3, points);
-	}
-	else if (type == "Circle") {
-		int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
-		dc.DrawCircle((firstPoint.x + secondPoint.x) / 2, (firstPoint.y + secondPoint.y) / 2, radius);
-	}
-	else if (type == "Ellipse") {
-		dc.DrawEllipse(wxRect(firstPoint, secondPoint));
-	}
-	else if (type == "Square") {
-		int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
-		int topLeftX = firstPoint.x;
-		int topLeftY = firstPoint.y;
+	int diam = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
+	gc->DrawEllipse(firstPoint.x, firstPoint.y, diam, diam);
 
-		if (secondPoint.x < firstPoint.x) {
-			topLeftX = firstPoint.x - side;
-		}
+	//if (type == "Line") {
+	//	dc.DrawLine(firstPoint, secondPoint);
+	//}
+	//else if (type == "Polyline") {
+	//	wxPoint points[4];
+	//	points[0] = firstPoint;
+	//	points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
+	//	points[2] = wxPoint((firstPoint.x + secondPoint.x) / 2, secondPoint.y);
+	//	points[3] = secondPoint;
+	//	dc.DrawLines(4, points);
+	//}
+	//else if (type == "Curve") {
+	//	wxPoint points[3];
+	//	points[0] = firstPoint;
+	//	points[1] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
+	//	points[2] = secondPoint;
+	//	dc.DrawSpline(3, points);
+	//}
+	//else if (type == "Circle") {
+	//	int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
+	//	dc.DrawCircle((firstPoint.x + secondPoint.x) / 2, (firstPoint.y + secondPoint.y) / 2, radius);
+	//}
+	//else if (type == "Ellipse") {
+	//	dc.DrawEllipse(wxRect(firstPoint, secondPoint));
+	//}
+	//else if (type == "Square") {
+	//	int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
+	//	int topLeftX = firstPoint.x;
+	//	int topLeftY = firstPoint.y;
 
-		if (secondPoint.y < firstPoint.y) {
-			topLeftY = firstPoint.y - side;
-		}
+	//	if (secondPoint.x < firstPoint.x) {
+	//		topLeftX = firstPoint.x - side;
+	//	}
 
-		dc.DrawRectangle(wxPoint(topLeftX, topLeftY), wxSize(side, side));
-	}
-	else if (type == "Triangle") {
-		wxPoint points[3];
-		points[0] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-		points[1] = wxPoint(firstPoint.x, secondPoint.y);
-		points[2] = wxPoint(secondPoint.x, secondPoint.y);
-		dc.DrawPolygon(3, points);
-	}
+	//	if (secondPoint.y < firstPoint.y) {
+	//		topLeftY = firstPoint.y - side;
+	//	}
+
+	//	dc.DrawRectangle(wxPoint(topLeftX, topLeftY), wxSize(side, side));
+	//}
+	//else if (type == "Triangle") {
+	//	wxPoint points[3];
+	//	points[0] = wxPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
+	//	points[1] = wxPoint(firstPoint.x, secondPoint.y);
+	//	points[2] = wxPoint(secondPoint.x, secondPoint.y);
+	//	dc.DrawPolygon(3, points);
+	//}
 }
 
 Shape Shape::fromString(const wxString& input) {

@@ -351,11 +351,13 @@ void ConfigClass::prepareMiddleLayer()
     memDC.SetBackground(*wxTRANSPARENT_BRUSH);
     memDC.Clear();
 
+    auto gc = std::shared_ptr<wxGraphicsContext>(wxGraphicsContext::Create(memDC));
+
     if(_frameIterator > 0 && _frames.size() > 1)
     {
         for(auto& elem: _frames[_frameIterator - 1].getShapes())
         {
-            elem.drawShape(memDC);
+            elem.drawShape(gc);
         }
 
         AdjustMiddleOpacity();
@@ -375,9 +377,11 @@ void ConfigClass::prepareCurrentLayer()
     memDC.SetBackground(*wxTRANSPARENT_BRUSH);
     memDC.Clear();
 
+    auto gc = std::shared_ptr<wxGraphicsContext>(wxGraphicsContext::Create(memDC));
+
     for(auto& elem: _frames[_frameIterator].getShapes())
     {
-        elem.drawShape(memDC);
+        elem.drawShape(gc);
     }
     memDC.SelectObject(wxNullBitmap);
 }
