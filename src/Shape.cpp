@@ -30,11 +30,14 @@ void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
 	gc->SetBrush(wxBrush(fillColour, isFilled ? wxBRUSHSTYLE_SOLID : wxBRUSHSTYLE_TRANSPARENT));
 	gc->SetPen(wxPen(borderColour));
 
-	int diam = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
-	gc->DrawEllipse(firstPoint.x, firstPoint.y, diam, diam);
+	auto path = gc->CreatePath();
+
+	int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
+	path.AddCircle((firstPoint.x + secondPoint.x) / 2, (firstPoint.y + secondPoint.y) / 2, radius);
+	gc->DrawPath(path);
 
 	//if (type == "Line") {
-	//	dc.DrawLine(firstPoint, secondPoint);
+	//	gc->DrawLine(firstPoint, secondPoint);
 	//}
 	//else if (type == "Polyline") {
 	//	wxPoint points[4];

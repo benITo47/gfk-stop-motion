@@ -17,24 +17,22 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), cfg(std::make_shared<Confi
 }
 
 void MyPanel::OnLeftDown(wxMouseEvent& event) {
-    if (isShapeSelected) {
-        wxPoint pos = event.GetPosition();
-        if (clickCount == 0) {
-            cfg->setPoint1(pos);
-            clickCount++;
-            //
-            std::cout << "x1:  " << pos.x << "   y1:  " << pos.y << std::endl;
-            //
-        }
-        else if (clickCount == 1) {
-            //
-            std::cout << "x2:  " << pos.x << "   y2:  " << pos.y << std::endl;
-            //
-            cfg->setPoint2(pos);
-            cfg->saveShape();
-            clickCount = 0;
-            Refresh();
-        }
+    wxPoint pos = event.GetPosition();
+    if (clickCount == 0) {
+        cfg->setPoint1(pos);
+        clickCount++;
+        //
+        std::cout << "x1:  " << pos.x << "   y1:  " << pos.y << std::endl;
+        //
+    }
+    else if (clickCount == 1) {
+        //
+        std::cout << "x2:  " << pos.x << "   y2:  " << pos.y << std::endl;
+        //
+        cfg->setPoint2(pos);
+        cfg->saveShape();
+        clickCount = 0;
+        Refresh();
     }
 }
 
@@ -63,17 +61,14 @@ void MyPanel::OnPaint(wxPaintEvent& event) {
 }
 
 void MyPanel::SetShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
-
     cfg->setType(shape);
     cfg->setBorderColour(borderColor);
     cfg->setIsFilled(filled);
     cfg->setFillColour(fillColor);
-    isShapeSelected = true;
     clickCount = 0;
 }
 
-void MyPanel::PlayAnimation()
-{
+void MyPanel::PlayAnimation() {
     int frames = cfg->getFrameNumber();
     auto opacityLevel = cfg->getOpacity();
     cfg->setOpacity(0);

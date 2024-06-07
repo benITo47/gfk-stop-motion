@@ -25,6 +25,5 @@ private:
 
 
 
-	bool isShapeSelected;
 	int clickCount=0;
 };
