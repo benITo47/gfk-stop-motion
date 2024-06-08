@@ -33,7 +33,7 @@ std::vector<Frame> Parser::getFrames() const {
 	std::vector<Frame> result(_lines.size());
 
 	std::transform(_lines.begin(), _lines.end(), result.begin(), [this](auto l) {
-		return Frame::fromString(_path.BeforeLast('\\') + "\\img\\" + l);
+		return Frame::fromString(_path.BeforeLast('/') + "/img/" + l);
 		});
 
 	return result;

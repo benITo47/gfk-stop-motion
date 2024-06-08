@@ -2,9 +2,11 @@
 
 #include <vector>
 #include <string>
+#include <wx/string.h>
+#include <algorithm>
 
 // Split string by delimiter
-std::vector<wxString> split(wxString s, wxString delimiter) {
+inline std::vector<wxString> split(wxString s, wxString delimiter) {
     size_t posStart = 0, posEnd, delimLen = delimiter.length();
     std::string token;
     std::vector<wxString> res;
@@ -17,4 +19,10 @@ std::vector<wxString> split(wxString s, wxString delimiter) {
 
     res.push_back(s.substr(posStart));
     return res;
+}
+
+inline wxString toUnixPath(const wxString& path) {
+    wxString unixPath = path;
+    std::replace(unixPath.begin(), unixPath.end(), '\\', '/');
+    return unixPath;
 }

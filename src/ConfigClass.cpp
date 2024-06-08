@@ -126,7 +126,7 @@ void ConfigClass::previousFrame() {
 void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory) {
 	for (size_t i = 0; i < _frames.size(); i++) {
 		const wxString& path = _frames[i].getBgPath();
-		wxString newPath = projectDirectory + wxString::Format("\\img\\%08zu.jpg", i);
+		wxString newPath = projectDirectory + wxString::Format("/img/%08zu.jpg", i);
 
 		if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
 			throw std::runtime_error("Couldn't save bitmap to " + newPath);
@@ -152,7 +152,7 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 void ConfigClass::saveFramesToFile(const wxString& path) {
 	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
 
-	copyImagesToProjectDirectory(path.BeforeLast('\\'));
+	copyImagesToProjectDirectory(path.BeforeLast('/'));
 
 	Parser p;
 	p.setFrames(_frames);
