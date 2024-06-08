@@ -1,4 +1,5 @@
 ﻿#include "GUI.h"
+#include "util.h"
 
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
     _myPanel = new MyPanel(this);
@@ -158,17 +159,17 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
 void MainFrame::saveAnimationFile(wxCommandEvent& e) {
     wxFileDialog saveFileDialog(this, _("Save animation file"), "", "",
-        "Image files (*.anim)|*.anim", wxFD_SAVE);
+        "Animation files (*.anim)|*.anim", wxFD_SAVE);
 
     if (saveFileDialog.ShowModal() == wxID_OK)
-        _myPanel->_cfg->saveFramesToFile(saveFileDialog.GetPath());
+        _myPanel->_cfg->saveFramesToFile(toUnixPath(saveFileDialog.GetPath()));
 }
 void MainFrame::loadAnimationFile(wxCommandEvent& e) {
     wxFileDialog openFileDialog(this, _("Open animation file"), "", "",
-        "Image files (*.anim)|*.anim", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+        "Animation files (*.anim)|*.anim", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (openFileDialog.ShowModal() == wxID_OK)
-        _myPanel->_cfg->loadFramesFromFile(openFileDialog.GetPath());
+        _myPanel->_cfg->loadFramesFromFile(toUnixPath(openFileDialog.GetPath()));
 
     _myPanel->Refresh();
 }
@@ -186,7 +187,7 @@ void MainFrame::loadImage(wxCommandEvent& e) {
         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (wxOpenFileDialog.ShowModal() == wxID_OK) {
-        wxString fileName = wxOpenFileDialog.GetPath();
+        wxString fileName = toUnixPath(wxOpenFileDialog.GetPath());
         _myPanel->_cfg->loadBackground(fileName);
         _myPanel->Refresh();
     }

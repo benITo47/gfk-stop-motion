@@ -7,6 +7,7 @@
 #include "ConfigClass.h"
 #include "Frame.h"
 #include "Parser.h"
+#include <wx/filename.h>
 
 ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(true), _backgroundLayer(wxBitmap(1200, 900, 32)), _middleLayer(wxBitmap(1200, 900, 32)), _currentLayer(wxBitmap(1200, 900, 32)), _middleOpacity(20), _backgroundBirghtness(100), _frameIterator(0)
 {
@@ -123,10 +124,18 @@ void ConfigClass::previousFrame() {
 	return result;
 }*/
 
-void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory) {
+void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory, const wxString& animName) {
+	// Ensure the img directory exists
+	wxString imgDirectory = projectDirectory + "/img";
+	if (!wxFileName::DirExists(imgDirectory)) {
+		if (!wxFileName::Mkdir(imgDirectory, wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL)) {
+			throw std::runtime_error("Couldn't create directory " + imgDirectory.ToStdString());
+		}
+	}
+
 	for (size_t i = 0; i < _frames.size(); i++) {
 		const wxString& path = _frames[i].getBgPath();
-		wxString newPath = projectDirectory + wxString::Format("\\img\\%08zu.jpg", i);
+		wxString newPath = projectDirectory + wxString::Format("/img/%s%08zu.jpg", animName, i);
 
 		if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
 			throw std::runtime_error("Couldn't save bitmap to " + newPath);
@@ -152,7 +161,7 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 void ConfigClass::saveFramesToFile(const wxString& path) {
 	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
 
-	copyImagesToProjectDirectory(path.BeforeLast('\\'));
+	copyImagesToProjectDirectory(path.BeforeLast('/'), path.AfterLast('/').BeforeLast('.'));
 
 	Parser p;
 	p.setFrames(_frames);
