@@ -124,7 +124,7 @@ void ConfigClass::previousFrame() {
 	return result;
 }*/
 
-void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory) {
+void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory, const wxString& animName) {
 	// Ensure the img directory exists
 	wxString imgDirectory = projectDirectory + "/img";
 	if (!wxFileName::DirExists(imgDirectory)) {
@@ -135,7 +135,7 @@ void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory)
 
 	for (size_t i = 0; i < _frames.size(); i++) {
 		const wxString& path = _frames[i].getBgPath();
-		wxString newPath = projectDirectory + wxString::Format("/img/%08zu.jpg", i);
+		wxString newPath = projectDirectory + wxString::Format("/img/%s%08zu.jpg", animName, i);
 
 		if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
 			throw std::runtime_error("Couldn't save bitmap to " + newPath);
@@ -161,7 +161,7 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 void ConfigClass::saveFramesToFile(const wxString& path) {
 	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
 
-	copyImagesToProjectDirectory(path.BeforeLast('/'));
+	copyImagesToProjectDirectory(path.BeforeLast('/'), path.AfterLast('/').BeforeLast('.'));
 
 	Parser p;
 	p.setFrames(_frames);

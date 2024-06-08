@@ -35,7 +35,7 @@ public:
     //Changes current frame to previous frame
     void previousFrame();
 
-    void copyImagesToProjectDirectory(const wxString& projectDirectory);
+    void copyImagesToProjectDirectory(const wxString& projectDirectory, const wxString& animName);
     void loadFramesFromFile(const wxString& path);
     void saveFramesToFile(const wxString& path);
 
