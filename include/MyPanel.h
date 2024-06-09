@@ -12,6 +12,7 @@ class MyPanel : public wxPanel {
 public:
 	MyPanel(wxWindow* parent);
 	void onPaint(wxPaintEvent& event);
+    void onMotion(wxMouseEvent& event);
 	void onLeftDown(wxMouseEvent& event);
 	void setShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor);
     void playAnimation();
