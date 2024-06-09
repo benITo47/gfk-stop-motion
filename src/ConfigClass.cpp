@@ -9,7 +9,7 @@
 #include "Parser.h"
 #include <wx/filename.h>
 
-ConfigClass::ConfigClass() :_firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(true), _backgroundLayer(wxBitmap(1200, 900, 32)), _middleLayer(wxBitmap(1200, 900, 32)), _currentLayer(wxBitmap(1200, 900, 32)), _middleOpacity(20), _backgroundBirghtness(100), _frameIterator(0)
+ConfigClass::ConfigClass() : _firstPoint(wxPoint(0, 0)), _secondPoint(wxPoint(0, 0)), _type("Line"), _borderColour(0, 0, 0), _fillColour(0, 0, 0), _isFilled(true), _backgroundLayer(wxBitmap(1200, 900, 32)), _middleLayer(wxBitmap(1200, 900, 32)), _currentLayer(wxBitmap(1200, 900, 32)), _middleOpacity(20), _backgroundBrightness(100), _frameIterator(0)
 {
 
 	_middleLayer.UseAlpha(true);
@@ -51,20 +51,6 @@ void ConfigClass::addFrame(bool copyFrame, bool copyBackground) {
 	}
 	prepareBitmaps();
 }
-
-void ConfigClass::addFrame() {
-	if (_frameIterator < _frames.size() - 1) {
-		_frames.insert(_frames.begin() + _frameIterator + 1, Frame());
-	}
-	else {
-		_frames.emplace_back();
-	}
-	_frameIterator++;
-	prepareBitmaps();
-}
-
-
-
 
 void ConfigClass::deleteFrame()
 {
@@ -171,43 +157,27 @@ void ConfigClass::saveFramesToFile(const wxString& path) {
 
 
 
-void ConfigClass::setPoint1(const wxPoint& p1) { _firstPoint = p1; }
-wxPoint ConfigClass::getPoint1() const { return _firstPoint; }
 
-void ConfigClass::setPoint2(const wxPoint& p2) { _secondPoint = p2; }
-wxPoint ConfigClass::getPoint2() const { return _secondPoint; }
-
-void ConfigClass::setType(wxString type) { _type = type; }
-wxString ConfigClass::getType() { return _type; }
-
-void ConfigClass::setBorderColour(wxColour borderColor) { _borderColour = borderColor; }
-wxColour ConfigClass::getBorderColour() { return _borderColour; }
-
-void ConfigClass::setFillColour(wxColour fillColour) { _fillColour = fillColour; }
-wxColour ConfigClass::getFillColour() { return _fillColour; }
-
-void ConfigClass::setIsFilled(bool filled) { _isFilled = filled; }
-bool ConfigClass::getIsFilled() { return _isFilled; }
-
-
-//void ConfigClass::setCurrentFrame(Frame frame) { _frames[_frameIterator].setShapes(frame.getShapes()); }
-Frame ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
-
-
-int ConfigClass::getFrameNumber() { return _frames.size(); }
-
-void ConfigClass::setFrameIterator(int iterator) {
-	if (iterator < _frames.size())
-		_frameIterator = iterator;
+void ConfigClass::deleteShapes()
+{
+    _frames[_frameIterator].setShapes({});
+    prepareCurrentLayer();
+}
+void ConfigClass::resetProject()
+{
+    _frames.clear();
+    //_frames.shrink_to_fit();
+    _frames.emplace_back();
+    _frameIterator = 0;
+    prepareBitmaps();
 }
 
-
-void ConfigClass::setBrightness(int pos) { _backgroundBirghtness = pos; prepareBackgroundLayer(); }
-int ConfigClass::getBrightness() { return _backgroundBirghtness; }
-
-void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; prepareMiddleLayer(); }
-int ConfigClass::getOpacity() { return _middleOpacity; }
-
+void ConfigClass::loadBackground(wxString filePath)
+{
+    _frames[_frameIterator].setBgPath(filePath);
+    _frames[_frameIterator].loadBitmap();
+    prepareBackgroundLayer();
+}
 
 
 void ConfigClass::prepareBitmaps()
@@ -266,7 +236,7 @@ void ConfigClass::RescaleBackground()
 
 void ConfigClass::AdjustBackgroundBrightness()
 {
-	double s = _backgroundBirghtness / 100.0;
+	double s = _backgroundBrightness / 100.0;
 	if (_backgroundLayer.IsOk()) {
 		wxImage image = _backgroundLayer.ConvertToImage();
 		unsigned char* data = image.GetData();
@@ -365,3 +335,44 @@ void ConfigClass::prepareCurrentLayer()
 	}
 	memDC.SelectObject(wxNullBitmap);
 }
+
+
+
+
+
+void ConfigClass::setPoint1(const wxPoint& p1) { _firstPoint = p1; }
+wxPoint ConfigClass::getPoint1() const { return _firstPoint; }
+
+void ConfigClass::setPoint2(const wxPoint& p2) { _secondPoint = p2; }
+wxPoint ConfigClass::getPoint2() const { return _secondPoint; }
+
+void ConfigClass::setType(wxString type) { _type = type; }
+wxString ConfigClass::getType() { return _type; }
+
+void ConfigClass::setBorderColour(wxColour borderColor) { _borderColour = borderColor; }
+wxColour ConfigClass::getBorderColour() { return _borderColour; }
+
+void ConfigClass::setFillColour(wxColour fillColour) { _fillColour = fillColour; }
+wxColour ConfigClass::getFillColour() { return _fillColour; }
+
+void ConfigClass::setIsFilled(bool filled) { _isFilled = filled; }
+bool ConfigClass::getIsFilled() { return _isFilled; }
+
+
+
+Frame ConfigClass::getCurrentFrame() { return  _frames[_frameIterator]; }
+
+
+int ConfigClass::getFrameNumber() { return _frames.size(); }
+
+void ConfigClass::setFrameIterator(int iterator) {
+    if (iterator < _frames.size())
+        _frameIterator = iterator;
+}
+
+
+void ConfigClass::setBrightness(int pos) { _backgroundBrightness = pos; prepareBackgroundLayer(); }
+int ConfigClass::getBrightness() { return _backgroundBrightness; }
+
+void ConfigClass::setOpacity(int pos) { _middleOpacity = pos; prepareMiddleLayer(); }
+int ConfigClass::getOpacity() { return _middleOpacity; }

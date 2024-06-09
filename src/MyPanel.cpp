@@ -14,6 +14,7 @@ MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), _cfg(std::make_shared<Conf
 
 	Bind(wxEVT_PAINT, &MyPanel::onPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &MyPanel::onLeftDown, this);
+    Bind(wxEVT_MOTION, &MyPanel::onMotion, this);
 }
 
 void MyPanel::onLeftDown(wxMouseEvent& event) {
@@ -36,30 +37,51 @@ void MyPanel::onLeftDown(wxMouseEvent& event) {
     }
 }
 
-void MyPanel::onPaint(wxPaintEvent& event) {
-    //wxPaintDC dc(this);
-    wxBufferedPaintDC dc(this);
-    dc.Clear();
-
-    // Draw the background bitmap
-    wxBitmap backgroundBitmap = _cfg->getBackgroundBitmap();
-    if (backgroundBitmap.IsOk()) {
-        dc.DrawBitmap(backgroundBitmap, 0, 0, false);
-    }
-
-    // Draw the middle bitmap
-    wxBitmap middleBitmap = _cfg->getMiddleBitmap();
-    if (middleBitmap.IsOk()) {
-        dc.DrawBitmap(middleBitmap, 0, 0, true);
-    }
-
-    // Draw the current bitmap
-    wxBitmap currentBitmap = _cfg->getCurrentBitmap();
-    if (currentBitmap.IsOk()) {
-        dc.DrawBitmap(currentBitmap, 0, 0, true);
+void MyPanel::onMotion(wxMouseEvent& event)
+{
+    if (_clickCount == 1)
+    {
+        wxPoint currentPoint = event.GetPosition();
+        _cfg->setPoint2(currentPoint); // Update the current end point of the shape
+        Refresh(); // Trigger a repaint to show the updated shape
     }
 }
 
+void MyPanel::onPaint(wxPaintEvent& event) {
+    wxBufferedPaintDC dc(this);
+    dc.Clear();
+    wxBitmap currentBitmap = _cfg->getCurrentBitmap();
+    wxBitmap middleBitmap = _cfg->getMiddleBitmap();
+    wxBitmap backgroundBitmap = _cfg->getBackgroundBitmap();
+    auto gc = std::shared_ptr<wxGraphicsContext>(wxGraphicsContext::Create(dc));
+
+    if (gc)
+    {
+        // Check if background bitmap is valid before drawing
+        if (backgroundBitmap.IsOk()) {
+            wxGraphicsBitmap background = gc->CreateBitmap(backgroundBitmap);
+            gc->DrawBitmap(background, 0, 0, backgroundBitmap.GetWidth(), backgroundBitmap.GetHeight());
+        }
+
+        // Check if middle bitmap is valid before drawing
+        if (middleBitmap.IsOk()) {
+            wxGraphicsBitmap middle = gc->CreateBitmap(middleBitmap);
+            gc->DrawBitmap(middle, 0, 0, middleBitmap.GetWidth(), middleBitmap.GetHeight());
+        }
+
+        // Check if current bitmap is valid before drawing
+        if (currentBitmap.IsOk()) {
+            wxGraphicsBitmap current = gc->CreateBitmap(currentBitmap);
+            gc->DrawBitmap(current, 0, 0, currentBitmap.GetWidth(), currentBitmap.GetHeight());
+        }
+
+        if(_clickCount == 1){
+        Shape currentShape(_cfg->getPoint1(), _cfg->getPoint2(),_cfg->getType(), _cfg->getBorderColour(), _cfg->getIsFilled(), _cfg->getFillColour());
+        currentShape.drawShape(gc);
+        }
+    }
+
+}
 void MyPanel::setShape(const wxString& shape, const wxColour& borderColor, bool filled, const wxColour& fillColor) {
     _cfg->setType(shape);
     _cfg->setBorderColour(borderColor);

@@ -145,7 +145,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     Bind(wxEVT_BUTTON, &MainFrame::addFrame, this, ID_addFrame);
     Bind(wxEVT_BUTTON, &MainFrame::delFrame, this, ID_delFrame);
     Bind(wxEVT_BUTTON, &MainFrame::delShape, this, ID_delLastShape);
-    Bind(wxEVT_BUTTON, &MainFrame::deleteAllData, this, ID_delAll);
+    Bind(wxEVT_BUTTON, &MainFrame::deleteAllShapes, this, ID_delAll);
     Bind(wxEVT_BUTTON, &MainFrame::nextFrame, this, ID_nextFrame);
     Bind(wxEVT_BUTTON, &MainFrame::playFrame, this, ID_playFrame);
     Bind(wxEVT_BUTTON, &MainFrame::prevFrame, this, ID_prevFrame);
@@ -174,7 +174,11 @@ void MainFrame::loadAnimationFile(wxCommandEvent& e) {
     _myPanel->Refresh();
 }
 void MainFrame::newProject(wxCommandEvent& e) {
-    // ToDo
+    int answer = wxMessageBox("Are you sure you want to start new project? Changes won't be saved", "Confirm Reset", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+    if (answer == wxYES)
+        _myPanel->_cfg->resetProject();
+
+    _myPanel->Refresh();
 }
 
 void MainFrame::loadImage(wxCommandEvent& e) {
@@ -282,6 +286,9 @@ void MainFrame::onClose(wxCloseEvent& e)
 }
 
 
-void MainFrame::deleteAllData(wxCommandEvent& e) {
+void MainFrame::deleteAllShapes(wxCommandEvent& e) {
+    _myPanel->_cfg->deleteShapes();
+    _myPanel->Refresh();
     std::cout << "Implement logic for clearing all data\n";
+
 }
