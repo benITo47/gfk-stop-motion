@@ -1,5 +1,5 @@
-#include <wx/wx.h>
-#include "include/GUI.h"
+﻿#include <wx/wx.h>
+#include "GUI.h"
 
 class App : public wxApp {
 public:
@@ -26,7 +26,6 @@ wxIMPLEMENT_APP(App);
 //	wxEntryStart(argc, argv);
 //	wxTheApp->OnInit();
 //	wxTheApp->OnRun();
-//	wxTheApp->onExit();
-//	wxEntryCleanup();
+//	wxTheApp->OnExit();
 //	return 0;
 //}
