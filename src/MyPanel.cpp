@@ -48,8 +48,7 @@ void MyPanel::onMotion(wxMouseEvent& event)
 }
 
 void MyPanel::onPaint(wxPaintEvent& event) {
-    //wxPaintDC dc(this);
-    wxPaintDC dc(this);
+    wxBufferedPaintDC dc(this);
     dc.Clear();
     wxBitmap currentBitmap = _cfg->getCurrentBitmap();
     wxBitmap middleBitmap = _cfg->getMiddleBitmap();
