@@ -61,6 +61,7 @@ void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
         path.AddLineToPoint(firstPoint.x, secondPoint.y);
         path.AddLineToPoint(secondPoint.x, secondPoint.y);
         path.CloseSubpath();
+        gc->FillPath(path);
         gc->StrokePath(path);
     }
 }

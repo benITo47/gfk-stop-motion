@@ -48,7 +48,7 @@ public:
 	void onExit(wxCommandEvent& e);
 	void onAbout(wxCommandEvent& e);
 	void onClose(wxCloseEvent& e);
-	void deleteAllData(wxCommandEvent& e);
+	void deleteAllShapes(wxCommandEvent& e);
 
 private:
 	MyPanel* _myPanel;
