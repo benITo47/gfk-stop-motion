@@ -78,6 +78,13 @@ void ConfigClass::deleteLastShape()
 	prepareCurrentLayer();
 }
 
+void ConfigClass::setSpeedAnimation(int s) {
+	animationSpeed = s;
+}
+
+int ConfigClass::getSpeedAnimation() {
+	return animationSpeed;
+}
 
 
 void ConfigClass::nextFrame() {
@@ -369,7 +376,9 @@ void ConfigClass::setFrameIterator(int iterator) {
     if (iterator < _frames.size())
         _frameIterator = iterator;
 }
-
+int ConfigClass::getFrameIterator() {
+	return _frameIterator;
+}
 
 void ConfigClass::setBrightness(int pos) { _backgroundBrightness = pos; prepareBackgroundLayer(); }
 int ConfigClass::getBrightness() { return _backgroundBrightness; }

@@ -1,5 +1,6 @@
 ﻿#include "GUI.h"
 #include "util.h"
+#include <thread>
 
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
     _myPanel = new MyPanel(this);
@@ -9,7 +10,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     wxButton* _addFrame;
     wxButton* _delFrame;
     wxButton* _nextFrame;
-    wxButton* _playFrame;
     wxButton* _prevFrame;
     wxButton* _delLastShape;
     wxButton* _delAll;
@@ -105,6 +105,24 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _loadedBackgroundLabel->Hide();
     _scrollBarBrightness->Hide();
 
+    counterDisplay = new wxStaticText(this, wxID_ANY, "Current frame: \n1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    /*spinButton = new wxSpinButton(this, ID_spinButton, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
+    spinButton->SetRange(1, 1);
+    spinButton->SetValue(1);*/
+
+    wxStaticText* valuePlay = new wxStaticText(this, wxID_ANY, "Animation speed:      ", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    spinCtrl = new wxSpinCtrlDouble(this, ID_spinCtrl, "100.0", wxDefaultPosition, wxSize(100,20), wxSP_ARROW_KEYS, 1, 200, 100, 1);
+    //valueDisplay = new wxTextCtrl(this, wxID_ANY, "50.0", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+
+    wxBoxSizer* sizer4_5 = new wxBoxSizer(wxVERTICAL);
+    sizer4_5->Add(counterDisplay, 1, wxALIGN_CENTER, 5);
+    //sizer4_5->Add(spinButton, 1, wxEXPAND | wxTOP, 5);
+
+    wxBoxSizer* sizerSV = new wxBoxSizer(wxHORIZONTAL);
+    sizerSV->Add(valuePlay, 1, wxALIGN_CENTER, 15);
+    sizerSV->Add(spinCtrl, 1, wxALIGN_CENTER, 15);
+   // sizerSV->Add(valueDisplay, 1, wxEXPAND | wxTOP, 5);
+
     wxBoxSizer* sizer5 = new wxBoxSizer(wxHORIZONTAL);
     sizer5->Add(_prevFrame, 1, wxEXPAND | wxTOP, 5);
     sizer5->Add(_playFrame, 1, wxEXPAND | wxTOP, 5);
@@ -124,6 +142,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     sizer0->AddStretchSpacer();
     sizer0->AddStretchSpacer();
     sizer0->AddStretchSpacer();
+    sizer0->Add(sizerSV, 0, wxALIGN_CENTER , 5);
+    sizer0->AddStretchSpacer();
+    sizer0->Add(sizer4_5, 0, wxEXPAND | wxALL, 5);
     sizer0->Add(sizer5, 0, wxEXPAND | wxALL, 5);   //Fixed debug assertions
 
     SetSizerAndFit(mainSizer);
@@ -149,11 +170,14 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     Bind(wxEVT_BUTTON, &MainFrame::nextFrame, this, ID_nextFrame);
     Bind(wxEVT_BUTTON, &MainFrame::playFrame, this, ID_playFrame);
     Bind(wxEVT_BUTTON, &MainFrame::prevFrame, this, ID_prevFrame);
+    //Bind(wxEVT_SPIN, &MainFrame::OnSpinButton, this, ID_spinButton);
+    Bind(wxEVT_SPINCTRLDOUBLE, &MainFrame::OnSpinCtrl, this, ID_spinCtrl);
     Bind(wxEVT_CHOICE, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+
 }
 
 
@@ -199,14 +223,21 @@ void MainFrame::loadImage(wxCommandEvent& e) {
 }
 
 void MainFrame::addFrame(wxCommandEvent& e) {
-
     _myPanel->_cfg->addFrame(_copyPrevFrame->GetValue(), _copyBackground->GetValue());
     _myPanel->Refresh();
+    
+    changeTextCounter();
+   /* spinButton->SetRange(1, maxCounter);
+   * /*   maxCounter++;
+    spinButton->SetValue(_myPanel->_cfg->getFrameIterator()+1);
+   */
 }
 
 void MainFrame::delFrame(wxCommandEvent& e) {
     _myPanel->_cfg->deleteFrame();
     _myPanel->Refresh();
+
+    changeTextCounter();
 }
 
 void MainFrame::delShape(wxCommandEvent& e) {
@@ -217,15 +248,38 @@ void MainFrame::delShape(wxCommandEvent& e) {
 void  MainFrame::nextFrame(wxCommandEvent& e) {
     _myPanel->_cfg->nextFrame();
     _myPanel->Refresh();
+
+    changeTextCounter();
 }
 
 void MainFrame::playFrame(wxCommandEvent& e) {
-    std::cout << "play Frame\n";
-    _myPanel->playAnimation();
+    
+    if (_playFrame->GetLabel() == ">") {
+        if (_myPanel->_cfg->getFrameNumber() - 1)
+        {
+            _playFrame->SetLabel("x");
+            _myPanel->stopFlag = false;
+            _myPanel->endAnimation = false;
+            _myPanel->playAnimation();
+        }
+    }
+    else {
+        _playFrame->SetLabel(">");
+        _myPanel->stopFlag = true;
+        _myPanel->prevAnimation = true;
+    }
+
+    if (_myPanel->endAnimation) {
+        _playFrame->SetLabel(">");
+    }
+
+    changeTextCounter();
 }
 void MainFrame::prevFrame(wxCommandEvent& e) {
     _myPanel->_cfg->previousFrame();
     _myPanel->Refresh();
+
+    changeTextCounter();
 }
 void MainFrame::onFillCheckBoxChanged(wxCommandEvent& e) {
     MainFrame::updateShapeInPanel(e);
@@ -267,7 +321,8 @@ void MainFrame::copyPrevFrame(wxCommandEvent& e) {
 
 void MainFrame::onExit(wxCommandEvent& e)
 {
-    Close(true);
+    wxCloseEvent closeEvent(wxEVT_CLOSE_WINDOW, GetId());
+    onClose(closeEvent);
 }
 
 void MainFrame::onAbout(wxCommandEvent& e)
@@ -280,15 +335,30 @@ void MainFrame::onClose(wxCloseEvent& e)
 {
     int answer = wxMessageBox("Are you sure you want to exit?", "Confirm Exit", wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
     if (answer == wxYES)
-        e.Skip();
+        Destroy();
     else
         e.Veto();
 }
 
-
 void MainFrame::deleteAllShapes(wxCommandEvent& e) {
     _myPanel->_cfg->deleteShapes();
     _myPanel->Refresh();
-    std::cout << "Implement logic for clearing all data\n";
+}
 
+//void MainFrame::OnSpinButton(wxSpinEvent& e) {
+//    int counter = spinButton->GetValue();
+//    std::string s = "Current frame: \n" + std::to_string(counter);
+//    counterDisplay->SetLabel(s);
+//    _myPanel->_cfg->setFrameIterator(counter-1);
+//    _myPanel->_cfg->prepareBitmaps();
+//    _myPanel->Refresh();
+//}
+
+void MainFrame::changeTextCounter() {
+    std::string s = "Current frame: \n" + std::to_string(_myPanel->_cfg->getFrameIterator() + 1);
+    counterDisplay->SetLabel(s);
+}
+
+void MainFrame::OnSpinCtrl(wxSpinDoubleEvent& e) {
+    _myPanel->_cfg->setSpeedAnimation(spinCtrl->GetValue());
 }
