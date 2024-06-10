@@ -21,7 +21,8 @@
 #include <wx/icon.h>
 #include <wx/button.h>
 #include <wx/frame.h>
-
+#include <wx/spinbutt.h>
+#include <wx/spinctrl.h>
 
 #include "MyPanel.h"
 
@@ -49,11 +50,15 @@ public:
 	void onAbout(wxCommandEvent& e);
 	void onClose(wxCloseEvent& e);
 	void deleteAllShapes(wxCommandEvent& e);
+	void OnSpinButton(wxSpinEvent& e);
+	void OnSpinCtrl(wxSpinDoubleEvent& e);
+	void changeTextCounter();
 
 private:
-	MyPanel* _myPanel;
+	MyPanel* _myPanel = nullptr;
 	wxPanel* _shapePanel;
 	wxChoice* _shapeChoice;
+	wxButton* _playFrame;
 	wxColourPickerCtrl* _colorPicker;
 	wxColourPickerCtrl* _fillColorPicker;
 	wxCheckBox* _fillCheckBox;
@@ -62,7 +67,11 @@ private:
 	wxStaticText* _fillColorLabel;
 	wxStaticText* _loadedBackgroundLabel;
 	wxScrollBar* _scrollBarBrightness;
-	wxScrollBar* _scrollBarTransparent;
+	wxScrollBar* _scrollBarTransparent; 
+	wxStaticText* counterDisplay;
+	//wxSpinButton* spinButton;
+	wxSpinCtrlDouble* spinCtrl;
+	wxTextCtrl* valueDisplay;
 
 	enum {
 		ID_saveFile = 1001,
@@ -83,8 +92,11 @@ private:
 		ID_exit,
 		ID_about,
 		ID_delAll,
-		ID_newProject
+		ID_newProject,
+		ID_spinButton,
+		ID_spinCtrl
 	};
 
+	//int maxCounter = 1;
 };
 

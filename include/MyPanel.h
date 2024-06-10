@@ -18,12 +18,12 @@ public:
     void playAnimation();
 
 
-
 	friend class MainFrame;
 private:
     std::shared_ptr<ConfigClass> _cfg;
 
-
-
+	std::atomic<bool> stopFlag = false;
+	std::atomic<bool> prevAnimation = false;
+	std::atomic<bool> endAnimation = false;
 	int _clickCount=0;
 };

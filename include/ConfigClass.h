@@ -205,12 +205,16 @@ public:
     int getFrameNumber();
     //--------------------------------------------------
     void setFrameIterator(int iterator);
+    int getFrameIterator();
     //--------------------------------------------------
     void setBrightness(int pos);
     int getBrightness();
     //--------------------------------------------------
     void setOpacity(int pos);
     int getOpacity();
+    //--------------------------------------------------
+    void setSpeedAnimation(int s);
+    int getSpeedAnimation();
     //--------------------------------------------------
     wxBitmap getBackgroundBitmap(){return _backgroundLayer;}
     wxBitmap getMiddleBitmap(){return _middleLayer;}
@@ -240,8 +244,7 @@ private:
     int _frameIterator;                         //Iterator over the _frames vector
 
 
-
-
+    int animationSpeed = 100;
 
 
 
