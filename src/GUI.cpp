@@ -105,7 +105,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _loadedBackgroundLabel->Hide();
     _scrollBarBrightness->Hide();
 
-    counterDisplay = new wxStaticText(this, wxID_ANY, "Current frame: \n1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    counterDisplay = new wxStaticText(this, wxID_ANY, "Current frame: \n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     /*spinButton = new wxSpinButton(this, ID_spinButton, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
     spinButton->SetRange(1, 1);
     spinButton->SetValue(1);*/
@@ -355,7 +355,7 @@ void MainFrame::deleteAllShapes(wxCommandEvent& e) {
 //}
 
 void MainFrame::changeTextCounter() {
-    std::string s = "Current frame: \n" + std::to_string(_myPanel->_cfg->getFrameIterator() + 1);
+    wxString s = wxString::Format("Current frame:\n%d/%d", _myPanel->_cfg->getFrameIterator() + 1, _myPanel->_cfg->getFrameNumber());
     counterDisplay->SetLabel(s);
 }
 
