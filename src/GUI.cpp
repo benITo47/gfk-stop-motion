@@ -6,23 +6,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _myPanel = new MyPanel(this);
     _myPanel->SetBackgroundColour(*wxWHITE);
 
-    wxButton* _loadImage;
-    wxButton* _addFrame;
-    wxButton* _delFrame;
-    wxButton* _nextFrame;
-    wxButton* _prevFrame;
-    wxButton* _delLastShape;
-    wxButton* _delAll;
-
-    _loadImage = new wxButton(this, ID_loadImage, "Load background");
-    _addFrame = new wxButton(this, ID_addFrame, "Add frame");
-    _delFrame = new wxButton(this, ID_delFrame, "Delete frame");
-    _delLastShape = new wxButton(this, ID_delLastShape, "Delete last shape");
-    _delAll = new wxButton(this, ID_delAll, "Delete all shapes");
-    _nextFrame = new wxButton(this, ID_nextFrame, "->");
-    _playFrame = new wxButton(this, ID_playFrame, ">");
-    _prevFrame = new wxButton(this, ID_prevFrame, "<-");
-
     wxMenu* menuFile = new wxMenu();
     menuFile->Append(ID_newProject, "&New project", "");
     menuFile->Append(ID_saveFile, "&Save to file", "");
@@ -38,22 +21,38 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     SetMenuBar(menuBar);
 
-    _copyPrevFrame = new wxCheckBox(this, ID_copyPrevFrame, "Copy shapes");
-    _copyBackground = new wxCheckBox(this, ID_copyPrevBackground, "Copy background");
-    _scrollBarBrightness = new wxScrollBar(this, ID_scrollBarBrightness, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    _scrollBarBrightness->SetScrollbar(100, 10, 200, 10);
+    // Toolbar controls start
+    wxScrolledWindow* scrolledWindow = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+    scrolledWindow->SetScrollRate(5, 5);
 
-    wxStaticText* transparencyText = new wxStaticText(this, wxID_ANY, "Middle layer opacity", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-    _scrollBarTransparent = new wxScrollBar(this, ID_scrollBarTransparent, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    _scrollBarTransparent->SetScrollbar(20, 10, 100, 10);
+    wxButton* _loadImage;
+    wxButton* _addFrame;
+    wxButton* _delFrame;
+    wxButton* _nextFrame;
+    wxButton* _prevFrame;
+    wxButton* _delLastShape;
+    wxButton* _delAll;
 
-    _loadedBackgroundLabel = new wxStaticText(this, wxID_ANY, "Background brightness", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    _loadImage = new wxButton(scrolledWindow, ID_loadImage, "Load background");
+    _addFrame = new wxButton(scrolledWindow, ID_addFrame, "Add frame");
+    _delFrame = new wxButton(scrolledWindow, ID_delFrame, "Delete frame");
+    _delLastShape = new wxButton(scrolledWindow, ID_delLastShape, "Delete last shape");
+    _delAll = new wxButton(scrolledWindow, ID_delAll, "Delete all shapes");
+    _nextFrame = new wxButton(scrolledWindow, ID_nextFrame, "->");
+    _playFrame = new wxButton(scrolledWindow, ID_playFrame, ">");
+    _prevFrame = new wxButton(scrolledWindow, ID_prevFrame, "<-");
 
-    wxBoxSizer* sizer2 = new wxBoxSizer(wxHORIZONTAL);
-    sizer2->Add(_addFrame, 1, wxEXPAND | wxTOP, 5);
-    sizer2->Add(_delFrame, 1, wxEXPAND | wxTOP, 5);
+    _copyPrevFrame = new wxCheckBox(scrolledWindow, ID_copyPrevFrame, "Copy shapes");
+    _copyBackground = new wxCheckBox(scrolledWindow, ID_copyPrevBackground, "Copy background");
+    _scrollBarBrightness = new wxSlider(scrolledWindow, ID_scrollBarBrightness, 100, 0, 200);
 
-    _shapePanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
+    wxStaticText* transparencyText = new wxStaticText(scrolledWindow, wxID_ANY, "Middle layer opacity", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    _scrollBarTransparent = new wxSlider(scrolledWindow, ID_scrollBarTransparent, 20, 0, 100);
+    _loadedBackgroundLabel = new wxStaticText(scrolledWindow, wxID_ANY, "Background brightness", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+
+
+    // Shape panel begin
+    _shapePanel = new wxPanel(scrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE);
     wxBoxSizer* shapeSizer = new wxBoxSizer(wxVERTICAL);
 
     wxArrayString shapeChoices;
@@ -87,73 +86,84 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _fillCheckBox->Bind(wxEVT_CHECKBOX, &MainFrame::onFillCheckBoxChanged, this);
 
     _shapePanel->SetSizerAndFit(shapeSizer);
+    // Shape panel end
 
-    wxBoxSizer* sizer3 = new wxBoxSizer(wxVERTICAL);
-    sizer3->Add(_shapePanel, 0, wxEXPAND | wxALL, 5);
-    sizer3->Add(_copyPrevFrame, 1, wxEXPAND | wxTOP, 5);
-    sizer3->Add(_copyBackground, 1, wxEXPAND | wxTOP, 5);
-    sizer3->Add(_delLastShape, 1, wxEXPAND | wxTOP, 10);
-    sizer3->Add(_delAll, 1, wxEXPAND | wxTOP, 10);
-    sizer3->AddStretchSpacer();
-    sizer3->Add(transparencyText, 0, wxALIGN_CENTER_HORIZONTAL, 5);
-    sizer3->Add(_scrollBarTransparent, 0, wxEXPAND | wxTOP, 5);
-
-    wxBoxSizer* sizer4 = new wxBoxSizer(wxVERTICAL);
-    sizer4->Add(_loadImage, 1, wxEXPAND | wxTOP, 10);
-    sizer4->Add(_loadedBackgroundLabel, 0, wxEXPAND | wxTOP, 10);
-    sizer4->Add(_scrollBarBrightness, 0, wxEXPAND | wxTOP, 10);
     _loadedBackgroundLabel->Hide();
     _scrollBarBrightness->Hide();
 
-    counterDisplay = new wxStaticText(this, wxID_ANY, "Current frame: \n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    counterDisplay = new wxStaticText(scrolledWindow, wxID_ANY, "Current frame:\n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     /*spinButton = new wxSpinButton(this, ID_spinButton, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
     spinButton->SetRange(1, 1);
     spinButton->SetValue(1);*/
 
-    wxStaticText* valuePlay = new wxStaticText(this, wxID_ANY, "Animation speed:      ", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-    spinCtrl = new wxSpinCtrlDouble(this, ID_spinCtrl, "100.0", wxDefaultPosition, wxSize(100,20), wxSP_ARROW_KEYS, 1, 200, 100, 1);
-    //valueDisplay = new wxTextCtrl(this, wxID_ANY, "50.0", wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+    wxStaticText* valuePlay = new wxStaticText(scrolledWindow, wxID_ANY, "Animation speed:      ", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    spinCtrl = new wxSpinCtrlDouble(scrolledWindow, ID_spinCtrl, "100.0", wxDefaultPosition, wxSize(100,20), wxSP_ARROW_KEYS, 1, 200, 100, 1);
+    
 
-    wxBoxSizer* sizer4_5 = new wxBoxSizer(wxVERTICAL);
-    sizer4_5->Add(counterDisplay, 1, wxALIGN_CENTER, 5);
-    //sizer4_5->Add(spinButton, 1, wxEXPAND | wxTOP, 5);
+    // Layout defined here
+    wxBoxSizer* toolbarSizer = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* sizerSV = new wxBoxSizer(wxHORIZONTAL);
-    sizerSV->Add(valuePlay, 1, wxALIGN_CENTER, 15);
-    sizerSV->Add(spinCtrl, 1, wxALIGN_CENTER, 15);
-   // sizerSV->Add(valueDisplay, 1, wxEXPAND | wxTOP, 5);
+    // Add/remove frame
+    wxGridSizer* frameSizer = new wxGridSizer(1, 2, 5, 5);
+    frameSizer->Add(_addFrame, 0, wxEXPAND | wxALL, 0);
+    frameSizer->Add(_delFrame, 0, wxEXPAND | wxALL, 0);
+    toolbarSizer->Add(frameSizer, 0, wxEXPAND | wxALL, 5);
 
-    wxBoxSizer* sizer5 = new wxBoxSizer(wxHORIZONTAL);
-    sizer5->Add(_prevFrame, 1, wxEXPAND | wxTOP, 5);
-    sizer5->Add(_playFrame, 1, wxEXPAND | wxTOP, 5);
-    sizer5->Add(_nextFrame, 1, wxEXPAND | wxTOP, 5);
+    // Frame adding params
+    toolbarSizer->Add(_copyPrevFrame, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_copyBackground, 0, wxEXPAND | wxALL, 5);
 
-    wxBoxSizer* sizer0 = new wxBoxSizer(wxVERTICAL);
-    //sizer0->Add(sizer1, 0, wxEXPAND | wxALL, 5);
-    sizer0->Add(sizer2, 0, wxEXPAND | wxALL, 5);
-    sizer0->Add(sizer3, 0, wxEXPAND | wxALL, 5);
-    sizer0->Add(sizer4, 0, wxEXPAND | wxALL, 5);
-    sizer0->AddStretchSpacer();
+    // Shape panel
+    toolbarSizer->Add(_shapePanel, 0, wxEXPAND | wxALL, 5);
+
+    // Shape deletion 
+    wxGridSizer* deleteSizer = new wxGridSizer(1, 2, 5, 5);
+    deleteSizer->Add(_delLastShape, 0, wxEXPAND | wxALL, 0);
+    deleteSizer->Add(_delAll, 0, wxEXPAND | wxALL, 0);
+    toolbarSizer->Add(deleteSizer, 0, wxEXPAND | wxALL, 5);
+    
+    // Transparency control
+    toolbarSizer->Add(transparencyText, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_scrollBarTransparent, 0, wxEXPAND | wxALL, 5);
+    
+    // Background handling
+    toolbarSizer->Add(_loadImage, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_loadedBackgroundLabel, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_scrollBarBrightness, 0, wxEXPAND | wxALL, 5);
+    
+    toolbarSizer->AddStretchSpacer();
+
+    // Animation speed
+    wxGridSizer* speedSizer = new wxGridSizer(1, 2, 5, 5);
+    speedSizer->Add(valuePlay, 0, wxEXPAND, 0);
+    speedSizer->Add(spinCtrl, 0, wxEXPAND, 0);
+    toolbarSizer->Add(speedSizer, 0, wxEXPAND, 5);
+
+    // Animation controls and frame no
+    wxGridSizer* animSizer = new wxGridSizer(1, 3, 5, 5);
+    animSizer->Add(_prevFrame, 0, wxEXPAND, 0);
+    animSizer->Add(_playFrame, 0, wxEXPAND, 0);
+    animSizer->Add(_nextFrame, 0, wxEXPAND, 0);
+    toolbarSizer->Add(animSizer, 0, wxEXPAND, 5);
+    toolbarSizer->Add(counterDisplay, 0, wxALIGN_CENTER, 5);
+
+    scrolledWindow->SetSizer(toolbarSizer);
+    toolbarSizer->Fit(scrolledWindow);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
-    mainSizer->Add(_myPanel, 8, wxEXPAND | wxALL, 5);
-    mainSizer->Add(sizer0, 2, wxEXPAND | wxALL, 5);
+    mainSizer->Add(_myPanel, 1, wxEXPAND | wxALL, 0);
+    mainSizer->Add(scrolledWindow, 1, wxEXPAND | wxALL, 0);
 
-    sizer0->AddStretchSpacer();
-    sizer0->AddStretchSpacer();
-    sizer0->AddStretchSpacer();
-    sizer0->Add(sizerSV, 0, wxALIGN_CENTER , 5);
-    sizer0->AddStretchSpacer();
-    sizer0->Add(sizer4_5, 0, wxEXPAND | wxALL, 5);
-    sizer0->Add(sizer5, 0, wxEXPAND | wxALL, 5);   //Fixed debug assertions
+
 
     SetSizerAndFit(mainSizer);
 
-    this->SetInitialSize(wxSize(1550, 950));
-    this->SetMinSize(wxSize(1550, 950));
-    this->SetMaxSize(wxSize(1550, 950));
+    this->SetInitialSize(wxSize(1700, 950));
+    this->SetMinSize(wxSize(1700, 950));
+    this->SetMaxSize(wxSize(1700, 950));
     Centre();
 
+    // Bind events
     Bind(wxEVT_MENU, &MainFrame::saveAnimationFile, this, ID_saveFile);
     Bind(wxEVT_MENU, &MainFrame::loadAnimationFile, this, ID_loadFile);
     Bind(wxEVT_MENU, &MainFrame::newProject, this, ID_newProject);
@@ -175,8 +185,25 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     Bind(wxEVT_CHOICE, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
+
+    // Binding all slider events for onScrollBrightness
+    Bind(wxEVT_SCROLL_LINEUP, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_LINEDOWN, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_PAGEUP, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_PAGEDOWN, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_THUMBRELEASE, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+
+    // Binding all slider events for onScrollTransparent
+    Bind(wxEVT_SCROLL_LINEUP, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_LINEDOWN, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_PAGEUP, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_PAGEDOWN, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_THUMBRELEASE, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+
 
 }
 
@@ -303,13 +330,13 @@ void MainFrame::updateShapeInPanel(wxCommandEvent& e) {
 
 void MainFrame::onScrollBrightness(wxScrollEvent& e) {
 
-    std::cout << _scrollBarBrightness->GetThumbPosition() << std::endl;
-    _myPanel->_cfg->setBrightness(_scrollBarBrightness->GetThumbPosition());
+    std::cout << _scrollBarBrightness->GetValue() << std::endl;
+    _myPanel->_cfg->setBrightness(_scrollBarBrightness->GetValue());
     _myPanel->Refresh();
 }
 
 void MainFrame::onScrollTransparent(wxScrollEvent& e) {
-    _myPanel->_cfg->setOpacity(_scrollBarTransparent->GetThumbPosition());
+    _myPanel->_cfg->setOpacity(_scrollBarTransparent->GetValue());
     //std::cout << _scrollBarTransparent->GetThumbPosition() << std::endl;
     _myPanel->Refresh();
 }

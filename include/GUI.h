@@ -66,8 +66,8 @@ private:
 	wxCheckBox* _copyBackground;
 	wxStaticText* _fillColorLabel;
 	wxStaticText* _loadedBackgroundLabel;
-	wxScrollBar* _scrollBarBrightness;
-	wxScrollBar* _scrollBarTransparent; 
+	wxSlider* _scrollBarBrightness;
+	wxSlider* _scrollBarTransparent; 
 	wxStaticText* counterDisplay;
 	//wxSpinButton* spinButton;
 	wxSpinCtrlDouble* spinCtrl;
