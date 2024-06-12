@@ -44,12 +44,10 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
     _copyPrevFrame = new wxCheckBox(scrolledWindow, ID_copyPrevFrame, "Copy shapes");
     _copyBackground = new wxCheckBox(scrolledWindow, ID_copyPrevBackground, "Copy background");
-    _scrollBarBrightness = new wxScrollBar(this, ID_scrollBarBrightness, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    _scrollBarBrightness->SetScrollbar(100, 10, 200, 10);
+    _scrollBarBrightness = new wxSlider(scrolledWindow, ID_scrollBarBrightness, 100, 0, 200);
 
     wxStaticText* transparencyText = new wxStaticText(scrolledWindow, wxID_ANY, "Middle layer opacity", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-    _scrollBarTransparent = new wxScrollBar(this, ID_scrollBarTransparent, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    _scrollBarTransparent->SetScrollbar(20, 10, 100, 10);
+    _scrollBarTransparent = new wxSlider(scrolledWindow, ID_scrollBarTransparent, 20, 0, 100);
     _loadedBackgroundLabel = new wxStaticText(scrolledWindow, wxID_ANY, "Background brightness", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
 
 
@@ -112,9 +110,9 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     toolbarSizer->Add(_copyPrevFrame, 0, wxEXPAND | wxALL, 5);
     toolbarSizer->Add(_copyBackground, 0, wxEXPAND | wxALL, 5);
     toolbarSizer->Add(_loadedBackgroundLabel, 0, wxEXPAND | wxALL, 5);
-    //toolbarSizer->Add(_scrollBarBrightness, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_scrollBarBrightness, 0, wxEXPAND | wxALL, 5);
     toolbarSizer->Add(transparencyText, 0, wxEXPAND | wxALL, 5);
-    //toolbarSizer->Add(_scrollBarTransparent, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_scrollBarTransparent, 0, wxEXPAND | wxALL, 5);
 
     toolbarSizer->Add(_prevFrame, 1, wxEXPAND, 5);
     toolbarSizer->Add(_playFrame, 1, wxEXPAND, 5);
@@ -161,6 +159,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     Bind(wxEVT_CHOICE, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
+
+    // ToDo: update to use all events
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
 
@@ -289,13 +289,13 @@ void MainFrame::updateShapeInPanel(wxCommandEvent& e) {
 
 void MainFrame::onScrollBrightness(wxScrollEvent& e) {
 
-    std::cout << _scrollBarBrightness->GetThumbPosition() << std::endl;
-    _myPanel->_cfg->setBrightness(_scrollBarBrightness->GetThumbPosition());
+    std::cout << _scrollBarBrightness->GetValue() << std::endl;
+    _myPanel->_cfg->setBrightness(_scrollBarBrightness->GetValue());
     _myPanel->Refresh();
 }
 
 void MainFrame::onScrollTransparent(wxScrollEvent& e) {
-    _myPanel->_cfg->setOpacity(_scrollBarTransparent->GetThumbPosition());
+    _myPanel->_cfg->setOpacity(_scrollBarTransparent->GetValue());
     //std::cout << _scrollBarTransparent->GetThumbPosition() << std::endl;
     _myPanel->Refresh();
 }
