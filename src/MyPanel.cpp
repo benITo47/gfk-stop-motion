@@ -107,7 +107,7 @@ void MyPanel::playAnimation() {
         _cfg->setFrameIterator(i);
         _cfg->prepareBitmaps();
         Refresh();
-        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation); // Sleep for 100 milliseconds (0.1 seconds)
+        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation);
         wxYield();
     }
     prevAnimation = stopFlag ? true : false;
