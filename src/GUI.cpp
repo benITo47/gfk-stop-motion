@@ -91,7 +91,7 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _loadedBackgroundLabel->Hide();
     _scrollBarBrightness->Hide();
 
-    counterDisplay = new wxStaticText(scrolledWindow, wxID_ANY, "Current frame: \n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    counterDisplay = new wxStaticText(scrolledWindow, wxID_ANY, "Current frame:\n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     /*spinButton = new wxSpinButton(this, ID_spinButton, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
     spinButton->SetRange(1, 1);
     spinButton->SetValue(1);*/
@@ -100,41 +100,67 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     spinCtrl = new wxSpinCtrlDouble(scrolledWindow, ID_spinCtrl, "100.0", wxDefaultPosition, wxSize(100,20), wxSP_ARROW_KEYS, 1, 200, 100, 1);
     
 
+    // Layout defined here
     wxBoxSizer* toolbarSizer = new wxBoxSizer(wxVERTICAL);
-    toolbarSizer->Add(_addFrame, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_delFrame, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_loadImage, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_delLastShape, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_delAll, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_shapePanel, 0, wxEXPAND | wxALL, 5);
+
+    // Add/remove frame
+    wxGridSizer* frameSizer = new wxGridSizer(1, 2, 5, 5);
+    frameSizer->Add(_addFrame, 0, wxEXPAND | wxALL, 0);
+    frameSizer->Add(_delFrame, 0, wxEXPAND | wxALL, 0);
+    toolbarSizer->Add(frameSizer, 0, wxEXPAND | wxALL, 5);
+
+    // Frame adding params
     toolbarSizer->Add(_copyPrevFrame, 0, wxEXPAND | wxALL, 5);
     toolbarSizer->Add(_copyBackground, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_loadedBackgroundLabel, 0, wxEXPAND | wxALL, 5);
-    toolbarSizer->Add(_scrollBarBrightness, 0, wxEXPAND | wxALL, 5);
+
+    // Shape panel
+    toolbarSizer->Add(_shapePanel, 0, wxEXPAND | wxALL, 5);
+
+    // Shape deletion 
+    wxGridSizer* deleteSizer = new wxGridSizer(1, 2, 5, 5);
+    deleteSizer->Add(_delLastShape, 0, wxEXPAND | wxALL, 0);
+    deleteSizer->Add(_delAll, 0, wxEXPAND | wxALL, 0);
+    toolbarSizer->Add(deleteSizer, 0, wxEXPAND | wxALL, 5);
+    
+    // Transparency control
     toolbarSizer->Add(transparencyText, 0, wxEXPAND | wxALL, 5);
     toolbarSizer->Add(_scrollBarTransparent, 0, wxEXPAND | wxALL, 5);
+    
+    // Background handling
+    toolbarSizer->Add(_loadImage, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_loadedBackgroundLabel, 0, wxEXPAND | wxALL, 5);
+    toolbarSizer->Add(_scrollBarBrightness, 0, wxEXPAND | wxALL, 5);
+    
+    toolbarSizer->AddStretchSpacer();
 
-    toolbarSizer->Add(_prevFrame, 1, wxEXPAND, 5);
-    toolbarSizer->Add(_playFrame, 1, wxEXPAND, 5);
-    toolbarSizer->Add(_nextFrame, 1, wxEXPAND, 5);
-    toolbarSizer->Add(counterDisplay, 1, wxEXPAND, 5);
-    toolbarSizer->Add(valuePlay, 1, wxEXPAND, 5);
-    toolbarSizer->Add(spinCtrl, 1, wxEXPAND, 5);
+    // Animation speed
+    wxGridSizer* speedSizer = new wxGridSizer(1, 2, 5, 5);
+    speedSizer->Add(valuePlay, 0, wxEXPAND, 0);
+    speedSizer->Add(spinCtrl, 0, wxEXPAND, 0);
+    toolbarSizer->Add(speedSizer, 0, wxEXPAND, 5);
+
+    // Animation controls and frame no
+    wxGridSizer* animSizer = new wxGridSizer(1, 3, 5, 5);
+    animSizer->Add(_prevFrame, 0, wxEXPAND, 0);
+    animSizer->Add(_playFrame, 0, wxEXPAND, 0);
+    animSizer->Add(_nextFrame, 0, wxEXPAND, 0);
+    toolbarSizer->Add(animSizer, 0, wxEXPAND, 5);
+    toolbarSizer->Add(counterDisplay, 0, wxALIGN_CENTER, 5);
 
     scrolledWindow->SetSizer(toolbarSizer);
     toolbarSizer->Fit(scrolledWindow);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxHORIZONTAL);
-    mainSizer->Add(_myPanel, 1, wxEXPAND | wxALL, 5);
-    mainSizer->Add(scrolledWindow, 1, wxEXPAND | wxALL, 5);
+    mainSizer->Add(_myPanel, 1, wxEXPAND | wxALL, 0);
+    mainSizer->Add(scrolledWindow, 1, wxEXPAND | wxALL, 0);
 
 
 
     SetSizerAndFit(mainSizer);
 
-    this->SetInitialSize(wxSize(1550, 950));
-    this->SetMinSize(wxSize(1550, 950));
-    this->SetMaxSize(wxSize(1550, 950));
+    this->SetInitialSize(wxSize(1700, 950));
+    this->SetMinSize(wxSize(1700, 950));
+    this->SetMaxSize(wxSize(1700, 950));
     Centre();
 
     // Bind events
