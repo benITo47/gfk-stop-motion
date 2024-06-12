@@ -222,6 +222,7 @@ void MainFrame::loadAnimationFile(wxCommandEvent& e) {
     if (openFileDialog.ShowModal() == wxID_OK)
         _myPanel->_cfg->loadFramesFromFile(toUnixPath(openFileDialog.GetPath()));
 
+    changeTextCounter();
     _myPanel->Refresh();
 }
 void MainFrame::newProject(wxCommandEvent& e) {

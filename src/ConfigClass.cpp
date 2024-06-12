@@ -130,9 +130,10 @@ void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory,
 		const wxString& path = _frames[i].getBgPath();
 		wxString newPath = projectDirectory + wxString::Format("/img/%s%08zu.jpg", animName, i);
 
-		if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
-			throw std::runtime_error("Couldn't save bitmap to " + newPath);
-
+        if(_frames[i].getBitmap().IsOk()) {
+            if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
+                throw std::runtime_error("Couldn't save bitmap to " + newPath);
+        }
 		_frames[i].setBgPath(newPath);
 	}
 }
@@ -149,6 +150,7 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 		_frames.push_back(elem);
 	}
 	_frameIterator = 0;
+    prepareBitmaps();
 }
 
 void ConfigClass::saveFramesToFile(const wxString& path) {

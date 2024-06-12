@@ -33,15 +33,13 @@ void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
         gc->StrokePath(path);
     }
     else if (type == "Circle") {
-        int radius = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y)) / 2;
-        gc->DrawEllipse((firstPoint.x + secondPoint.x) / 2 - radius, (firstPoint.y + secondPoint.y) / 2 - radius, radius * 2, radius * 2);
+        int radius = sqrt(pow(secondPoint.x - firstPoint.x, 2) + pow(secondPoint.y - firstPoint.y, 2));
+        gc->DrawEllipse(firstPoint.x - radius, firstPoint.y - radius, radius * 2, radius * 2);
     }
     else if (type == "Ellipse") {
-        double x = firstPoint.x;
-        double y = firstPoint.y;
-        double w = secondPoint.x - firstPoint.x;
-        double h = secondPoint.y - firstPoint.y;
-        gc->DrawEllipse(x, y, w, h);
+        double w = abs(secondPoint.x - firstPoint.x) * 2;
+        double h = abs(secondPoint.y - firstPoint.y) * 2;
+        gc->DrawEllipse(firstPoint.x - w / 2, firstPoint.y - h / 2, w, h);
     }
     else if (type == "Square") {
         int side = wxMin(abs(secondPoint.x - firstPoint.x), abs(secondPoint.y - firstPoint.y));
@@ -57,9 +55,9 @@ void Shape::drawShape(std::shared_ptr<wxGraphicsContext> gc) const
     }
     else if (type == "Triangle") {
         wxGraphicsPath path = gc->CreatePath();
-        path.MoveToPoint((firstPoint.x + secondPoint.x) / 2, firstPoint.y);
-        path.AddLineToPoint(firstPoint.x, secondPoint.y);
-        path.AddLineToPoint(secondPoint.x, secondPoint.y);
+        path.MoveToPoint(firstPoint.x, firstPoint.y);  // Peak of the triangle
+        path.AddLineToPoint(secondPoint.x, secondPoint.y); // Base point at secondPoint
+        path.AddLineToPoint(2 * firstPoint.x - secondPoint.x, secondPoint.y); // Base point opposite to secondPoint
         path.CloseSubpath();
         gc->FillPath(path);
         gc->StrokePath(path);
