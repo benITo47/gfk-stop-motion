@@ -186,9 +186,24 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
     Bind(wxEVT_COLOURPICKER_CHANGED, &MainFrame::updateShapeInPanel, this);
 
-    // ToDo: update to use all events
+    // Binding all slider events for onScrollBrightness
+    Bind(wxEVT_SCROLL_LINEUP, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_LINEDOWN, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_PAGEUP, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_PAGEDOWN, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_THUMBRELEASE, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+    Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollBrightness, this, ID_scrollBarBrightness);
+
+    // Binding all slider events for onScrollTransparent
+    Bind(wxEVT_SCROLL_LINEUP, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_LINEDOWN, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_PAGEUP, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_PAGEDOWN, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
     Bind(wxEVT_SCROLL_THUMBTRACK, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_THUMBRELEASE, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+    Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
+
 
 }
 
