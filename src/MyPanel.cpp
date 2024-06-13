@@ -79,11 +79,6 @@ void MyPanel::onPaint(wxPaintEvent& event) {
         if(_clickCount == 1){
         Shape currentShape(_cfg->getPoint1(), _cfg->getPoint2(),_cfg->getType(), _cfg->getBorderColour(), _cfg->getIsFilled(), _cfg->getFillColour());
         currentShape.drawShape(gc);
-
-        //Indicator of drawn vector - uncomment if you need this.
-        /*gc->SetPen(*wxRED_PEN);
-        gc->StrokeLine(_cfg->getPoint1().x, _cfg->getPoint1().y, _cfg->getPoint2().x, _cfg->getPoint2().y);
-        */
         }
     }
 
