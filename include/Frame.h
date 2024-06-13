@@ -86,7 +86,7 @@ public:
     void setShapes(const std::vector<Shape>& shapes) {_shapes.clear(); _shapes = shapes;} //might add move constructor;
 
     /**
-     * @brief Dodaje Shape
+     * @brief Dodaje Shape do wektora _shapes
      *
      * @param p1
      * @param p2
