@@ -64,10 +64,13 @@ public:
      *
      * @param params Pierwszym parametrem jest ścieżka do obrazu tła, reszta to narysowane kształty.
      * @return Utworzona klatka.
+     * 
+     *  
      */
     static Frame fromString(const wxString& params);
 
     /// @brief Konwertuje klatkę na zapis w formie `wxString`
+    ///  
     wxString toString() const;
 
     void setBgPath(const wxString& path){_bgPath = path;}

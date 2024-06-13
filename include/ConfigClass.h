@@ -66,9 +66,7 @@ public:
     void previousFrame();
 
     /**
-     * @brief
-     * @param projectDirectory
-     * @param animName
+     *  
      */
     void copyImagesToProjectDirectory(const wxString& projectDirectory, const wxString& animName);
 
@@ -87,6 +85,8 @@ public:
     *
     * This function writes the current animation data to the specified file path,
     * preserving all frames and their bitmaps.
+    * 
+    *  
     */
     void saveFramesToFile(const wxString& path);
 

@@ -194,7 +194,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 	Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
 }
 
-
 void MainFrame::saveAnimationFile(wxCommandEvent& e) {
 	wxFileDialog saveFileDialog(this, _("Save animation file"), "", "",
 		"Animation files (*.anim)|*.anim", wxFD_SAVE);

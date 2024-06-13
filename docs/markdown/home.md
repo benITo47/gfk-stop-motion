@@ -27,6 +27,7 @@ _Daniel Czapla, Bartłomiej Obrochta, Franciszek Urbański_
 ### Rysowanie
 
 ### Zapis do pliku
+Algorytm zapisu do pliku oraz format pliku opisane są w opisie szczegółowym pliku `Parser.h`.
 
 ## Kodowanie
 

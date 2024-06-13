@@ -47,9 +47,10 @@ public:
     wxPoint firstPoint;
     wxPoint secondPoint;
 
-
+    ///  
     static Shape fromString(const wxString& input);
 
+    ///  
     wxString toString() const;
 };
 

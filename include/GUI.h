@@ -32,6 +32,7 @@ public:
 	MainFrame();
 
 	void newProject(wxCommandEvent& e);
+	///  
 	void saveAnimationFile(wxCommandEvent& e);
 	void loadAnimationFile(wxCommandEvent& e);
 	void loadImage(wxCommandEvent& e);
