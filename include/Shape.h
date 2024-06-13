@@ -1,7 +1,3 @@
-//
-// Created by Bartłomiej Obrochta on 24/05/2024.
-//
-
 #ifndef STOP_MOTION_SHAPE_H
 #define STOP_MOTION_SHAPE_H
 
