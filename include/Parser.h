@@ -1,4 +1,10 @@
-﻿#pragma once
+﻿/**
+ * @file Parser.h
+ * 
+ * @brief Parser
+ */
+
+#pragma once
 
 #include <algorithm>
 #include <vector>
