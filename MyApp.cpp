@@ -8,9 +8,8 @@ public:
 		SetProcessDPIAware();
 #endif
 		MainFrame* frame = new MainFrame();
-        wxImage::AddHandler(new wxJPEGHandler);           // Dodajemy handlery do formatow
+        wxImage::AddHandler(new wxJPEGHandler);
         wxImage::AddHandler(new wxPNGHandler);
-
 
         frame->Show(true);
 		SetTopWindow(frame);
@@ -19,13 +18,3 @@ public:
 };
 
 wxIMPLEMENT_APP(App);
-
-//int main(int argc, char* argv[]) {
-//	App app;
-//	wxApp::SetInstance(&app);
-//	wxEntryStart(argc, argv);
-//	wxTheApp->OnInit();
-//	wxTheApp->OnRun();
-//	wxTheApp->OnExit();
-//	return 0;
-//}
