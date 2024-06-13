@@ -40,6 +40,8 @@ public:
             format = wxBITMAP_TYPE_JPEG;
         else if (extension == "bmp")
             format = wxBITMAP_TYPE_BMP;
+        else
+            return; // Hack - when no background is present, no error will po up
 
         wxImage image;
         if(image.LoadFile(_bgPath, format))

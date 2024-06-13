@@ -88,8 +88,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
     _shapePanel->SetSizerAndFit(shapeSizer);
     // Shape panel end
 
-    _loadedBackgroundLabel->Hide();
-    _scrollBarBrightness->Hide();
+    //_loadedBackgroundLabel->Hide();
+    //_scrollBarBrightness->Hide();
 
     counterDisplay = new wxStaticText(scrolledWindow, wxID_ANY, "Current frame:\n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
     /*spinButton = new wxSpinButton(this, ID_spinButton, wxDefaultPosition, wxDefaultSize, wxSP_VERTICAL);
@@ -222,6 +222,7 @@ void MainFrame::loadAnimationFile(wxCommandEvent& e) {
     if (openFileDialog.ShowModal() == wxID_OK)
         _myPanel->_cfg->loadFramesFromFile(toUnixPath(openFileDialog.GetPath()));
 
+    changeTextCounter();
     _myPanel->Refresh();
 }
 void MainFrame::newProject(wxCommandEvent& e) {
@@ -233,10 +234,9 @@ void MainFrame::newProject(wxCommandEvent& e) {
 }
 
 void MainFrame::loadImage(wxCommandEvent& e) {
-    _loadedBackgroundLabel->Show();
-    _scrollBarBrightness->Show();
+    //_loadedBackgroundLabel->Show();
+    //_scrollBarBrightness->Show();
     _scrollBarBrightness->SetScrollbar(100, 10, 200, 10);
-    _myPanel->_cfg->setBrightness(100);
     wxFileDialog wxOpenFileDialog(this, _("Open Image file"), "", "",
         "Image files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp",
         wxFD_OPEN | wxFD_FILE_MUST_EXIST);

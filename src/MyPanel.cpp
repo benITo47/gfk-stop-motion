@@ -49,7 +49,7 @@ void MyPanel::onMotion(wxMouseEvent& event)
 }
 
 void MyPanel::onPaint(wxPaintEvent& event) {
-    wxBufferedPaintDC dc(this);
+    wxAutoBufferedPaintDC dc(this);
     dc.Clear();
     wxBitmap currentBitmap = _cfg->getCurrentBitmap();
     wxBitmap middleBitmap = _cfg->getMiddleBitmap();
@@ -79,6 +79,11 @@ void MyPanel::onPaint(wxPaintEvent& event) {
         if(_clickCount == 1){
         Shape currentShape(_cfg->getPoint1(), _cfg->getPoint2(),_cfg->getType(), _cfg->getBorderColour(), _cfg->getIsFilled(), _cfg->getFillColour());
         currentShape.drawShape(gc);
+
+        //Indicator of drawn vector - uncomment if you need this.
+        /*gc->SetPen(*wxRED_PEN);
+        gc->StrokeLine(_cfg->getPoint1().x, _cfg->getPoint1().y, _cfg->getPoint2().x, _cfg->getPoint2().y);
+        */
         }
     }
 
@@ -102,11 +107,13 @@ void MyPanel::playAnimation() {
         _cfg->setFrameIterator(i);
         _cfg->prepareBitmaps();
         Refresh();
-        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation); // Sleep for 100 milliseconds (0.1 seconds)
+        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation);
         wxYield();
     }
     prevAnimation = stopFlag ? true : false;
     endAnimation = true;
     _cfg->setOpacity(opacityLevel);
+    _cfg->prepareBitmaps();
+    Refresh();
 }
 
