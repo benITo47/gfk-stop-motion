@@ -90,8 +90,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 
 	counterDisplay = new wxStaticText(scrolledWindow, wxID_ANY, "Current frame:\n1/1", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
 
-	wxStaticText* valuePlay = new wxStaticText(scrolledWindow, wxID_ANY, "Animation speed:      ", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
-	spinCtrl = new wxSpinCtrlDouble(scrolledWindow, ID_spinCtrl, "100.0", wxDefaultPosition, wxSize(100, 20), wxSP_ARROW_KEYS, 1, 200, 100, 1);
+	wxStaticText* valuePlay = new wxStaticText(scrolledWindow, wxID_ANY, "Animation speed: ", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+	spinCtrl = new wxSpinCtrlDouble(scrolledWindow, ID_spinCtrl, "100.0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 200, 100, 1);
 
 
 	// Layout defined here
@@ -128,10 +128,8 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 	toolbarSizer->AddStretchSpacer();
 
 	// Animation speed
-	wxGridSizer* speedSizer = new wxGridSizer(1, 2, 5, 5);
-	speedSizer->Add(valuePlay, 0, wxEXPAND, 0);
-	speedSizer->Add(spinCtrl, 0, wxEXPAND, 0);
-	toolbarSizer->Add(speedSizer, 0, wxEXPAND, 5);
+	toolbarSizer->Add(valuePlay, 0, wxEXPAND, 5);
+	toolbarSizer->Add(spinCtrl, 0, wxEXPAND, 5);
 
 	// Animation controls and frame no
 	wxGridSizer* animSizer = new wxGridSizer(1, 3, 5, 5);

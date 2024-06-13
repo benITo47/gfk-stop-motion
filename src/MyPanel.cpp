@@ -4,7 +4,7 @@
 
 #define PANEL_HEIGHT  900
 #define PANEL_WIDTH  1200
-#define MIN_SPEED_ANIMATION 201
+#define MIN_SPEED_ANIMATION 600
 
 MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), _cfg(std::make_shared<ConfigClass>()) {
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
@@ -102,12 +102,11 @@ void MyPanel::playAnimation() {
     _cfg->setOpacity(0);
     int i = prevAnimation ? _cfg->getFrameIterator() : 0;
     int speedAnimation = _cfg->getSpeedAnimation();
-    for( ; i < frames && !stopFlag; i++)
-    {
+    for( ; i < frames && !stopFlag; i++) {
         _cfg->setFrameIterator(i);
         _cfg->prepareBitmaps();
         Refresh();
-        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation);
+        wxMilliSleep(MIN_SPEED_ANIMATION - (speedAnimation + 100) * 2);
         wxYield();
     }
     prevAnimation = stopFlag ? true : false;

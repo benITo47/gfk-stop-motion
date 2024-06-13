@@ -50,7 +50,6 @@ public:
 	void onAbout(wxCommandEvent& e);
 	void onClose(wxCloseEvent& e);
 	void deleteAllShapes(wxCommandEvent& e);
-	void OnSpinButton(wxSpinEvent& e);
 	void OnSpinCtrl(wxSpinDoubleEvent& e);
 	void changeTextCounter();
 
@@ -69,7 +68,6 @@ private:
 	wxSlider* _scrollBarBrightness;
 	wxSlider* _scrollBarTransparent; 
 	wxStaticText* counterDisplay;
-	//wxSpinButton* spinButton;
 	wxSpinCtrlDouble* spinCtrl;
 	wxTextCtrl* valueDisplay;
 
@@ -96,7 +94,5 @@ private:
 		ID_spinButton,
 		ID_spinCtrl
 	};
-
-	//int maxCounter = 1;
 };
 
