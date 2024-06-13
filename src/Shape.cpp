@@ -1,7 +1,3 @@
-//
-// Created by Bartłomiej Obrochta on 24/05/2024.
-//
-
 #include "Shape.h"
 
 #include "Parser.h"

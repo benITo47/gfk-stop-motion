@@ -1,8 +1,3 @@
-//
-// Created by Bartłomiej Obrochta on 24/05/2024.
-//
-
-
 #pragma warning(disable: 4996) // Visual Studio: warning C4996: 'XXX': This function or variable may be unsafe. <- wxcrt.h
 #include "ConfigClass.h"
 #include "Frame.h"
@@ -109,14 +104,6 @@ void ConfigClass::previousFrame() {
 	prepareBitmaps();
 }
 
-/// @brief Temporary function for transforming into frame class
-/*static std::vector<Frame> asFrameVec(wxString path, std::vector<Frame> frames) {
-	std::vector<Frame> result(frames.size());
-	std::transform(frames.begin(), frames.end(), result.begin(),
-		[path](std::vector<Shape> shapes) { return Frame(path, shapes); });
-	return result;
-}*/
-
 void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory, const wxString& animName) {
 	// Ensure the img directory exists
 	wxString imgDirectory = projectDirectory + "/img";
@@ -154,8 +141,6 @@ void ConfigClass::loadFramesFromFile(const wxString& path) {
 }
 
 void ConfigClass::saveFramesToFile(const wxString& path) {
-	//std::vector<Frame> frames = asFrameVec(_backgroundPath, _frames);
-
 	copyImagesToProjectDirectory(path.BeforeLast('/'), path.AfterLast('/').BeforeLast('.'));
 
 	Parser p;
@@ -175,7 +160,6 @@ void ConfigClass::deleteShapes()
 void ConfigClass::resetProject()
 {
     _frames.clear();
-    //_frames.shrink_to_fit();
     _frames.emplace_back();
     _frameIterator = 0;
     prepareBitmaps();
@@ -208,7 +192,7 @@ void ConfigClass::prepareBackgroundLayer()
 }
 
 //Helper function;
-int clamp(int value, int min, int max) {
+static int clamp(int value, int min, int max) {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;

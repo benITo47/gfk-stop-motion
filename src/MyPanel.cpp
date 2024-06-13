@@ -4,7 +4,7 @@
 
 #define PANEL_HEIGHT  900
 #define PANEL_WIDTH  1200
-#define MIN_SPEED_ANIMATION 201
+#define MIN_SPEED_ANIMATION 600
 
 MyPanel::MyPanel(wxWindow* parent) : wxPanel(parent), _cfg(std::make_shared<ConfigClass>()) {
     this->SetInitialSize(wxSize(PANEL_WIDTH,PANEL_HEIGHT));
@@ -79,11 +79,6 @@ void MyPanel::onPaint(wxPaintEvent& event) {
         if(_clickCount == 1){
         Shape currentShape(_cfg->getPoint1(), _cfg->getPoint2(),_cfg->getType(), _cfg->getBorderColour(), _cfg->getIsFilled(), _cfg->getFillColour());
         currentShape.drawShape(gc);
-
-        //Indicator of drawn vector - uncomment if you need this.
-        /*gc->SetPen(*wxRED_PEN);
-        gc->StrokeLine(_cfg->getPoint1().x, _cfg->getPoint1().y, _cfg->getPoint2().x, _cfg->getPoint2().y);
-        */
         }
     }
 
@@ -102,12 +97,11 @@ void MyPanel::playAnimation() {
     _cfg->setOpacity(0);
     int i = prevAnimation ? _cfg->getFrameIterator() : 0;
     int speedAnimation = _cfg->getSpeedAnimation();
-    for( ; i < frames && !stopFlag; i++)
-    {
+    for( ; i < frames && !stopFlag; i++) {
         _cfg->setFrameIterator(i);
         _cfg->prepareBitmaps();
         Refresh();
-        wxMilliSleep(MIN_SPEED_ANIMATION - speedAnimation);
+        wxMilliSleep(MIN_SPEED_ANIMATION - (speedAnimation + 100) * 2);
         wxYield();
     }
     prevAnimation = stopFlag ? true : false;

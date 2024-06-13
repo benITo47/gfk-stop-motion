@@ -1,7 +1,3 @@
-//
-// Created by Bartłomiej Obrochta on 24/05/2024.
-//
-
 #ifndef STOP_MOTION_CONFIGCLASS_H
 #define STOP_MOTION_CONFIGCLASS_H
 
@@ -241,15 +237,10 @@ private:
 
 
     std::vector<Frame>  _frames;    //Vector of Frames
-    int _frameIterator;                         //Iterator over the _frames vector
+    int _frameIterator;             //Iterator over the _frames vector
 
 
     int animationSpeed = 100;
-
-
-
 };
-
-
 
 #endif //STOP_MOTION_CONFIGCLASS_H
