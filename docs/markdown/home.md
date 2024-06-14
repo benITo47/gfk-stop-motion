@@ -61,5 +61,14 @@ Algorytm zapisu do pliku oraz format pliku opisane są w opisie szczegółowym p
 Korzystaliśmy z systemu kontroli wersji `git`.
 
 ## Testowanie
+Testowanie przeprowadzaliśmy w następnych etapach:
+- na bieżąco, podczas pisania kodu - np. podgląd GUI, test zapisu przez zapisanie i wczytanie każdego kształtu przed narysowaniem. Każdą funkcjonalność przed spushowaniem do repozytorium staraliśmy się w miarę możliwości przetestować;
+- code review na pull request'ach - przy wprowadzaniu bardziej zaawansowanych zmian, prosiliśmy się nawzajem o sprawdzenie i przetestowanie kodu. Dodatkową tego korzyścią było to, że sprawdzaliśmy czy program działa na różnych systemach operacyjnych;
+- test integracyjny: stworzenie projektu przykładowego, korzystającego ze wszystkich funkcjonalności programu
+
+Podczas sprawdzania poprawności kodu, próbowaliśmy zawsze rozważyć wszystkie edge case'y w których program mógłby zawieść. Znaleźliśmy w ten sposób (a następnie poprawiliśmy) wiele bug'ów, m.in.:
+- nieprawidłowa obsługa wydarzeń przy anulowaniu wyjścia z programu,
+- błąd przy wczytywaniu animacji bez tła,
+- niepoprawne wczytywanie animacji po zmianie sposobu rysowania.
 
 ## Wnioski
