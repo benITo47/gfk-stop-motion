@@ -1,6 +1,5 @@
 ﻿#include "GUI.h"
 #include "util.h"
-#include <thread>
 
 MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
 	_myPanel = new MyPanel(this);
