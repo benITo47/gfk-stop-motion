@@ -60,6 +60,38 @@ W projekcie zdecydowaliśmy się na implementację rozszerzonej wersji programu,
 ### Dane wyjściowe
 
 ### Struktury danych
+W programie zastosowano kilka kluczowych struktur danych, które są fundamentalne dla jego działania. Poniżej znajduje się opis tych struktur, ich funkcjonalności oraz relacji między nimi. Dokumentację techniczną struktur, można znaleźć w odpowiednich plikach nagłówkowych .h
+
+#### 1. `std::vector`
+
+Jako podstawową strukturę danych wykorzystano `std::vector` z biblioteki standardowej C++. `std::vector` to dynamiczna tablica, która pozwala na łatwe dodawanie i usuwanie elementów, jednocześnie zapewniając szybki dostęp do elementów za pomocą indeksów. W programie `std::vector` jest wykorzystywany głównie do przechowywania obiektów klasy `Shape` oraz `Frame`.
+
+#### 2. Klasa `Shape`
+
+`Shape` to klasa reprezentująca kształt, która pełni funkcję abstrakcji wektora. Kształty mogą być różnorodne, a ich reprezentacja graficzna zależy od zmiennych składowych klasy. Klasa `Shape` jest wykorzystywana jako:
+- **Reprezentacja graficzna**: Umożliwia prezentację różnych kształtów na ekranie.
+- **Zapis danych**: Służy do zapisu danych do pliku, co pozwala na ich późniejsze odtworzenie.
+
+#### 3. Klasa `Frame`
+
+`Frame` to klasa opisująca pojedynczą klatkę animacji. Zawiera następujące elementy:
+- **Shapes**: `std::vector` przechowujący obiekty typu `Shape`, które składają się na daną klatkę.
+- **Bitmapa**: Obiekt przechowujący bitmapę która służy jako tło danej klatki. Obiekt bitmapy może, ale nie musi posiadać valid wartości. 
+- **Ścieżka do bitmapy**: Ścieżka do pliku z którego została wczytana bitmapa.
+
+Klasa `Frame` służy przede wszystkim jako kontener. Pozwala zaoscjować określone kształty, z określoną bitmapą, ułatwia to zarządzanie informacjami w programie. 
+#### 4. Klasa `ConfigClass`
+
+`ConfigClass` to centralna klasa, która pełni funkcję konfiguracji aplikacji. Zawiera wszystkie kluczowe dane i parametry niezbędne do działania programu. Funkcjonalności klasy `ConfigClass` obejmują:
+- **Zarządzanie danymi aplikacji**: Przechowuje i zarządza wszystkimi danymi niezbędnymi do działania aplikacji.
+- **Zapis i wczytywanie plików**: Umożliwia zapis i wczytywanie konfiguracji oraz danych animacji do/z plików.
+- **Rysowanie**: Odpowiada za poprawne rysowanie elementów warstwy środkowej oraz górnej.
+- **Manipulacja bitmapami**: Zajmuje się obróbką bitmap służacych jako warstwy w tym ich modyfikacją i zarządzaniem.
+- **Procesowanie klatek**: Odpowiada za przetwarzanie klatek animacji, w tym ich wyświetlanie i zmiany.
+
+#### Relacje między klasami
+
+Klasa `ConfigClass` jest centralnym elementem aplikacji, zarządzającym wszystkimi innymi klasami. `ConfigClass` przechowuje kolekcję obiektów `Frame`, które z kolei zawierają obiekty `Shape`. Ta hierarchia umożliwia modularne zarządzanie poszczególnymi elementami animacji i ich łatwe modyfikowanie.
 
 ### Specyfikacja Interfejsu Użytkownika
 Interfejs aplikacji składa się z głównego okna oraz panelu narzędziowego, który zawiera przyciski, suwaki i kontrolki do manipulacji klatkami, kształtami oraz ustawieniami animacji.
@@ -117,7 +149,7 @@ Aplikacja zawiera również menu główne:
 
 #### Interakcja z użytkownikiem
 
-Użytkownik może interagować z aplikacją poprzez klikanie na przyciski, przesuwanie suwaków, wybieranie opcji z menu oraz rysowanie na panelu rysunkowym. Aplikacja reaguje na te interakcje, aktualizując wyświetlane klatki animacji oraz informacje na panelach - odpowiednie metody _Refresh()_ oraz _Layout()_ wywoływane odpowiednio dla obiektów typu _MyPanel_ oraz _MainFrame_.
+Użytkownik może pracować z aplikacją poprzez klikanie na przyciski, przesuwanie suwaków, wybieranie opcji z menu oraz rysowanie na panelu rysunkowym. Aplikacja reaguje na te interakcje, aktualizując wyświetlane klatki animacji oraz informacje na panelach - odpowiednie metody _Refresh()_ oraz _Layout()_ wywoływane odpowiednio dla obiektów typu _MyPanel_ oraz _MainFrame_.
 
 ### Wyodrębnienie i zdefiniowanie zadań
 
@@ -137,6 +169,14 @@ Użytkownik może interagować z aplikacją poprzez klikanie na przyciski, przes
 Zob. [Podział pracy i analiza czasowa](#podział-pracy-i-analiza-czasowa)
 
 ### Narzędzia programistyczne
+W projekcie wykorzystywane są następujące narzędzia programistyczne:
+
+* GIT - system kontroli wersji.
+* GitHub - interfejs systemu kontroli wersji oraz hub organizacyjny.
+* IDE - zintegrowane środowiska programistyczne, takie jak Microsoft Visual Studio oraz JetBrains CLion.
+* Valgrind & Leaks - programy wykorzystywane do wykrywania wycieków pamięci.
+* Debuggery - gdb oraz debuger Microsoftu (Visual Studio Debugger).
+* Menedżery aktywności - systemowe menedżery do kontroli zużycia zasobów hardware'owych.
 
 ## 5. Podział pracy i analiza czasowa
 We wstępnej analizie projektu wyodrębniliśmy następujące trzy zadania, i wstępnie podzielilismy się odpowiedzialnością za nie:
@@ -152,11 +192,11 @@ W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi 
 - Zapewnienie kompatybilności z różnymi rodzajami wyświetlaczy i systemów operacyjnych - 3h
 
 ### Rysowanie
-- Podstawowa funkcjonalność rysowania na panelu - x h
-- Podstawowe wyświetlanie kształtów i tła - x h
-- Zapewnienie kompatybilności z systemem zapisu plików - x h
-- Implementacja warstwy środkowej i jej kontroli przeźroczystości - x h
-- Rozwinięcie funkcjonalności rysowania z dynamicznie wyświetlanymi kształtami - x h
+- Podstawowa funkcjonalność rysowania na panelu - 1 h
+- Podstawowe wyświetlanie kształtów i tła - 2 h
+- Zapewnienie kompatybilności z systemem zapisu plików - 1 h
+- Implementacja warstwy środkowej i  kontroli jej przeźroczystości - 2 h
+- Rozwinięcie funkcjonalności rysowania z dynamicznie wyświetlanymi kształtami - 4 h
 - Zapewnienie kompatybilności z systemem MS Windows - 3 h
 
 ### Zapis do pliku
@@ -169,12 +209,21 @@ W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi 
 
 ## 6. Opis najważniejszych algorytmów
 ### Rysowanie
+Rysowanie klatek na ekran odbywa się w klasie `MyPanel`.
+Funkcja `MyPanel::onPaint(...)` pobiera trzy bitmapy ze swojej składowej `_cfg` (typu `ConfigClass`), które następnie są kolejno nakładane na siebie i rysowane. Na tak przygotowanym podłożu następuje rysowanie dynamicznego kształtu, czyli kształtu, który użytkownik aktualnie planuje dodać do projektu.
+
+Rozwiązanie z użyciem bitmap pozwala na oszczędność mocy obliczeniowej i zmniejszenie złożoności, ponieważ podczas pracy z programem, przy dodawaniu kształtów, jedynym ciągle rysowanym elementem jest aktualny kształt. Dzięki temu nie ma potrzeby, aby za każdym przesunięciem kursora przetwarzać i rysować  tło, poprzednią klatkę ani nawet obecną klatkę.
+
+Obecna klatka zostanie zaktualizowana i przerysowana na bitmapę raz jeszcze dopiero po dodaniu kształtu, co przyczynia się do płynniejszego działania programu.
+
+Sposób przetwarzania i aktualizowania bitmap jest opisany szczegółowo w pliku `ConfigClass.h`.
 
 ### Zapis do pliku
 Algorytm zapisu do pliku oraz format pliku opisane są w opisie szczegółowym pliku `Parser.h`.
 
 ## 7. Kodowanie
 Korzystaliśmy z systemu kontroli wersji `git`.
+Szczegółowa dokumentacja funkcji znajduje się w odpowiednich plikach nagłówkowych .h  
 
 ## 8. Testowanie
 Testowanie przeprowadzaliśmy w następnych etapach:
@@ -188,3 +237,18 @@ Podczas sprawdzania poprawności kodu, próbowaliśmy zawsze rozważyć wszystki
 - niepoprawne wczytywanie animacji po zmianie sposobu rysowania.
 
 ## 9. Wnioski
+
+Wszystkie założenia projektu zostały zrealizowane, co zaowocowało funkcjonalną aplikacją.
+
+W trakcie tworzenia aplikacji napotkaliśmy kilka przeszkód, które sukcesywnie rozwiązywaliśmy. Wiązało się to z częstą refaktoryzacją kodu. Na przykład, program początkowo pozwalał na wczytanie tylko jednego tła, które było wyświetlane na wszystkich klatkach, co wymagało zmiany całego systemu przetwarzania bitmap. Przy okazji została zaimplementowana hierarchia warstw, co z kolei skutkowało niekompatybilnością między platformami, wymagając kolejnej refaktoryzacji.
+
+Gdybyśmy mieli ten projekt napisać jeszcze raz, zdecydowanie więcej uwagi poświęcilibyśmy na ustalenie struktury programu oraz na inżynierię oprogramowania. Umożliwiłoby to uniknięcie wielu problemów związanych z refaktoryzacją i zapewniłoby większą spójność kodu.
+
+Dodatkowe wnioski po zakończeniu projektu:
+
+- **Dokumentacja**: Kompleksowa dokumentacja każdego etapu projektu, w tym szczegółowe opisy funkcji i modułów, jest kluczowa dla utrzymania spójności i ułatwienia przyszłych prac rozwojowych.
+- **Testowanie**: Wczesne i systematyczne testowanie każdego komponentu jest zdecydowanie pomocne w szybkim wykrywaniu i naprawianiu błędów.
+- **Komunikacja w zespole**: Regularne spotkania i skuteczna komunikacja online pomagają w szybkim rozwiązywaniu problemów i zapewnieniu, że wszyscy członkowie zespołu są na bieżąco z postępem prac.
+- **Czytanie dokumentacji bibliotek**: Regularne i dokładne zapoznawanie się z dokumentacją bibliotek i funkcji zewnętrznych jest kluczowe. Pozwala to na lepsze zrozumienie możliwości i ograniczeń używanych narzędzi, co z kolei przekłada się na bardziej efektywne ich wykorzystanie.
+
+Te wnioski będą nieocenione w przyszłych projektach, pomagając w unikaniu podobnych problemów i zwiększając efektywność pracy zespołu.

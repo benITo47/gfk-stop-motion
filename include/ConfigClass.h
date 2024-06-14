@@ -1,9 +1,86 @@
+
+/**
+ * @file ConfigClass.h
+ *
+ * @brief Moduł odpowiedzialny za przechowywanie i przetwarzanie danych programu.
+ *
+ * ### Opis klasy ConfigClass
+ *
+ * Klasa ConfigClass jest odpowiedzialna za zarządzanie danymi programu, w szczególności danymi związanymi z klatkami animacji.
+ * Zawiera metody pozwalające na dodawanie, usuwanie i modyfikowanie klatek oraz elementów graficznych w różnych warstwach.
+ * Dzięki temu modułowi możliwe jest tworzenie złożonych animacji składających się z wielu klatek z różnymi warstwami graficznymi.
+ *
+ * ### Zmienne składowe
+ * Klasa posiada zmienne składowe, które pełnią jedno z trzech głównych zadań:
+ *
+ * #### 1. Zmienne opisujące kształty (Shape)
+ * Klasa zawiera zmienne, które definiują właściwości kształtów rysowanych na klatkach animacji.
+ * Są to m.in. współrzędne punktów, kolory obramowania i wypełnienia oraz typ kształtu.
+ * Zmienne te pozwalają na tworzenie nowych obiektów dodawanych do kobecnej klatki. Dodatkowo mogą zostać pobrane na zewnatrz klasy przy pomocy funkcji z przedrostkiem getNAZWA_ZMIENNEJ
+ *
+ * #### 2. Zmienne odpowiedzialne za system warstw
+ * Bitmapy oraz dwie zmienne typu int umożliwiają przechowywanie i operowanie na warstwach danej klatki.
+ * Każda warstwa zawiera inne elementy graficzne i służy innym celom, co pozwala na bardziej elastyczne zarządzanie i manipulowanie grafiką.
+ *
+ * #### 3. Zmienne odpowiedzialne za klatki
+ * Klasa zarządza klatkami za pomocą zmiennej std::vector<Frame>, w której przechowywane są klatki obecnie używane w projekcie.
+ * Dodatkowo zmienna int _frameIterator umożliwia iterowanie po tym wektorze, co pozwala na łatwe przełączanie się między klatkami i zapewnia, że wszystkie funckcje wywolywane operują na obecnej klatce.
+ *
+ * ### Algorytmy przetwarzania
+ *
+ * #### 1. Algorytm przetwarzania klatek
+ * Klatki są przechowywane w wektorze, a iterator (_frameIterator) umożliwia nawigację między nimi.
+ * Główne operacje obejmują dodawanie, usuwanie i iterowanie po klatkach, a także kopiowanie danych między klatkami.
+ * Metoda ConfigClass::saveShape() pozwala na dodanie obiektu typu Shape opisywanego przez this do obecnie wskazywanej klatki.
+ *
+ * #### 2. Algorytm rysowania tła
+ * Tło klatki jest rysowane na podstawie bitmapy znajdującej się w aktualnej klatce.
+ * Jeśli klatka posiada tło, jest ono kopiowane, przeskalowane i dostosowywane do jasności ustawionej przez użytkownika (_backgroundBrightness).
+ * W przypadku braku tła, do zmiennej _backgroundLayer przypisywana jest pusta bitmapa z kanałem alfa.
+ *
+ * #### 3. Algorytm rysowania środkowej warstwy
+ * Środkowa warstwa jest rysowana tylko wtedy, gdy w programie jest więcej niż jedna klatka.
+ * Na bitmapę _middleLayer rysowana jest zawartość poprzedniej klatki, a następnie bitmapa jest manipulowana pod kątem przezroczystości zgodnie z wartością zmiennej _middleOpacity.
+ *
+ * #### 4. Algorytm rysowania aktualnej klatki
+ * Górna warstwa jest zawsze rysowana. Podobnie jak środkowa warstwa, korzysta z metody Shape::drawShape(...) do rysowania kształtów na aktualnej klatce.
+ *
+ *
+ *
+ * Każda z trzech bitmap może być przygotowana niezależnie, co pozwala na zmniejszenie złożoności obliczeniowej w czasie wykonywania programu.
+ * (Np. Nie ma potrzeby przetwarzania tła ani warstwy poprzedniej gdy uzytkownik dodał kształt. Wystarczy przetworzyć warstwe obecną;
+ *  Nie ma potrzeby przetwarzania warstwy srdokowej ani obecnej, gdy uzytkownik wczytuje tlo.)
+ *
+ * * Przygotowanie bitmap można wykonać przy pomocy następujących funkcji:
+ * - prepareBackgroundLayer(): przygotowuje bitmapę tła.
+ * - prepareMiddleLayer(): przygotowuje bitmapę środkowej warstwy.
+ * - prepareCurrentLayer(): przygotowuje bitmapę aktualnej klatki.
+ *
+ * Aby przygotować wszystkie bitmapy jednocześnie, można użyć funkcji prepareBitmaps().
+ *
+ * Warto zaznaczyć, że rysowanie na ekran, nie odbywa sie w klasie ConfigClass!
+ * Zamiast tego, klasa umozliwia pobranie przetworzonych - gotowych do wyswietlenia bitmap.
+ *
+ *
+ * Bitmapa tła jest przetwarzana przy wczytywaniu nowego obrazka do obecnej klatki oraz podczas iteracji między klatkami, a także podczas dodawania/usuwania klatek lub odtwarzania animacji.
+ *
+ * Bitmapa środkowa jest przygotowywana tylko podczas zmiany klatki lub przy dodawaniu/usuwaniu klatek.
+ *
+ * Bitmapa górna jest najczęściej przetwarzana - pełni rolę swoistego "working space".
+ * Jest przygotowywana podczas iteracji między klatkami, przy dodawaniu/usuwaniu klatek oraz po każdym wywołaniu metod ConfigClass::setShape(), ConfigClass::deleteLastShape i ConfigClass::resetProject().
+ *
+
+ */
+
+
+
 #ifndef STOP_MOTION_CONFIGCLASS_H
 #define STOP_MOTION_CONFIGCLASS_H
 
 #include "MyPanel.h"
 #include "Frame.h"
 #include "Shape.h"
+
 
 
 class ConfigClass {
@@ -235,11 +312,9 @@ private:
     int _backgroundBrightness;
     int _middleOpacity;
 
-
+    //Frame utilites
     std::vector<Frame>  _frames;    //Vector of Frames
     int _frameIterator;             //Iterator over the _frames vector
-
-
     int animationSpeed = 100;
 };
 
