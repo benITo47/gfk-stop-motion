@@ -1,3 +1,31 @@
+#pragma once
+
+#include <wx/artprov.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/panel.h>
+#include <wx/gdicmn.h>
+#include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
+#include <wx/string.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/valtext.h>
+#include <wx/sizer.h>
+#include <wx/scrolbar.h>
+#include <wx/radiobut.h>
+#include <wx/choice.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/icon.h>
+#include <wx/button.h>
+#include <wx/frame.h>
+#include <wx/spinbutt.h>
+#include <wx/spinctrl.h>
+
+#include "MyPanel.h"
+
 /**
  * @class MainFrame
  * @brief Główne okno aplikacji do tworzenia animacji stop-motion.
