@@ -133,20 +133,12 @@ Użytkownik może interagować z aplikacją poprzez klikanie na przyciski, przes
   - Zapisywanie i wczytywanie projektów animacji do/z pliku.
   - Zarządzanie obrazami tła.
 
-### Dane wejściowe
-
-### Dane wyjściowe
-
-### Struktury danych
-
-### GUI
-
 ### Zadania
 Zob. [Podział pracy i analiza czasowa](#podział-pracy-i-analiza-czasowa)
 
 ### Narzędzia programistyczne
 
-## Podział pracy i analiza czasowa
+## 5. Podział pracy i analiza czasowa
 We wstępnej analizie projektu wyodrębniliśmy następujące trzy zadania, i wstępnie podzielilismy się odpowiedzialnością za nie:
 - **Zaprojektowanie i utworzenie GUI**; odpowiedzialny: _Daniel Czapla_,
 - **Opracowanie logiki rysowania (wyświetlania oraz tworzenia) animacji w GUI**; odpowiedzialny: _Bartłomiej Obrochta_,
@@ -175,16 +167,16 @@ W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi 
 - Implementacja kopiowania obrazów - 1h
 - Poprawianie pojawiających się błędów związanych z edge-case'ami oraz kompatybilnością z MacOS - 1h
 
-## Opis najważniejszych algorytmów
+## 6. Opis najważniejszych algorytmów
 ### Rysowanie
 
 ### Zapis do pliku
 Algorytm zapisu do pliku oraz format pliku opisane są w opisie szczegółowym pliku `Parser.h`.
 
-## Kodowanie
+## 7. Kodowanie
 Korzystaliśmy z systemu kontroli wersji `git`.
 
-## Testowanie
+## 8. Testowanie
 Testowanie przeprowadzaliśmy w następnych etapach:
 - na bieżąco, podczas pisania kodu - np. podgląd GUI, test zapisu przez zapisanie i wczytanie każdego kształtu przed narysowaniem. Każdą funkcjonalność przed spushowaniem do repozytorium staraliśmy się w miarę możliwości przetestować;
 - code review na pull request'ach - przy wprowadzaniu bardziej zaawansowanych zmian, prosiliśmy się nawzajem o sprawdzenie i przetestowanie kodu. Dodatkową tego korzyścią było to, że sprawdzaliśmy czy program działa na różnych systemach operacyjnych;
@@ -195,4 +187,4 @@ Podczas sprawdzania poprawności kodu, próbowaliśmy zawsze rozważyć wszystki
 - błąd przy wczytywaniu animacji bez tła,
 - niepoprawne wczytywanie animacji po zmianie sposobu rysowania.
 
-## Wnioski
+## 9. Wnioski
