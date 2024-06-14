@@ -120,7 +120,7 @@ public:
     void changeTextCounter();
 
 private:
-    MyPanel* _myPanel = nullptr; ///< Panel rysowania.
+    MyPanel* _myPanel; ///< Panel rysowania.
     wxPanel* _shapePanel; ///< Panel wyboru kształtów.
     wxChoice* _shapeChoice; ///< Lista wyboru kształtów.
     wxButton* _playFrame; ///< Przycisk odtwarzania animacji.
