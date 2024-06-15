@@ -47,9 +47,19 @@ public:
     wxPoint firstPoint;
     wxPoint secondPoint;
 
-
+    /// @brief Dokonuje konwersji napisu na obiekt klasy `Shape`
+    /// @see `Shape::toString`
     static Shape fromString(const wxString& input);
 
+    /// @brief Dokonuje konwersji kształtu na napis
+    ///
+    /// Format:
+    /// 
+    /// `[nazwa]([x0],[y0],[x1],[y1],[kolor_obramowania][kolor_wypełnienia])`
+    /// - nazwa - bezpośredni zapis `Shape::type`
+    /// - x0, y0, x1, y1 - kolejne składowe `Shape::firstPoint` oraz `Shape::secondPoint`
+    /// - kolor obramowania - `Shape::borderColour` zapisany przez wywołanie funkcji `wxColour::toUInt`
+    /// - kolor wypełnienia - znak `-` jeśli brak koloru, w przeciwnym przypadku `Shape::fillColour` zapisany przez wywołanie funkcji `wxColour::toUInt`
     wxString toString() const;
 };
 

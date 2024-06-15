@@ -16,7 +16,7 @@ void Parser::readFile(const wxString& path) {
 		_lines.push_back(line);
 }
 
-void Parser::setFrames(const std::vector<Frame> frames) {
+void Parser::setFrames(const std::vector<Frame>& frames) {
 	_lines.clear();
 	for (auto& frame : frames)
 		_lines.push_back(frame.toString());

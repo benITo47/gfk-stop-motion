@@ -1,8 +1,7 @@
 ﻿#include "GUI.h"
 #include "util.h"
-#include <thread>
 
-MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
+MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion", wxDefaultPosition, wxDefaultSize) {
 	_myPanel = new MyPanel(this);
 	_myPanel->SetBackgroundColour(*wxWHITE);
 
@@ -193,7 +192,6 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji
 	Bind(wxEVT_SCROLL_THUMBRELEASE, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
 	Bind(wxEVT_SCROLL_CHANGED, &MainFrame::onScrollTransparent, this, ID_scrollBarTransparent);
 }
-
 
 void MainFrame::saveAnimationFile(wxCommandEvent& e) {
 	wxFileDialog saveFileDialog(this, _("Save animation file"), "", "",

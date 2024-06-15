@@ -120,8 +120,8 @@ void ConfigClass::copyImagesToProjectDirectory(const wxString& projectDirectory,
         if(_frames[i].getBitmap().IsOk()) {
             if (!_frames[i].getBitmap().SaveFile(newPath, wxBITMAP_TYPE_JPEG))
                 throw std::runtime_error("Couldn't save bitmap to " + newPath);
-        }
-		_frames[i].setBgPath(newPath);
+			_frames[i].setBgPath(newPath);
+		}
 	}
 }
 
