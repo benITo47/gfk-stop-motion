@@ -47,10 +47,14 @@ public:
     wxPoint firstPoint;
     wxPoint secondPoint;
 
-    ///  
+    /// @brief Dokonuje konwersji napisu na obiekt klasy `Shape`
     static Shape fromString(const wxString& input);
 
-    ///  
+    /// @brief Dokonuje konwersji kształtu na napis
+    ///
+    /// Format:
+    /// 
+    /// `[nazwa]([x0],[y0],[x1],[y1],[kolor_obramowania][kolor_wypełnienia])`
     wxString toString() const;
 };
 

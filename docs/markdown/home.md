@@ -62,17 +62,17 @@ W projekcie zdecydowaliśmy się na implementację rozszerzonej wersji programu,
 ### Struktury danych
 W programie zastosowano kilka kluczowych struktur danych, które są fundamentalne dla jego działania. Poniżej znajduje się opis tych struktur, ich funkcjonalności oraz relacji między nimi. Dokumentację techniczną struktur, można znaleźć w odpowiednich plikach nagłówkowych .h
 
-#### 1. `std::vector`
+#### 1. std::vector
 
 Jako podstawową strukturę danych wykorzystano `std::vector` z biblioteki standardowej C++. `std::vector` to dynamiczna tablica, która pozwala na łatwe dodawanie i usuwanie elementów, jednocześnie zapewniając szybki dostęp do elementów za pomocą indeksów. W programie `std::vector` jest wykorzystywany głównie do przechowywania obiektów klasy `Shape` oraz `Frame`.
 
-#### 2. Klasa `Shape`
+#### 2. Klasa Shape
 
 `Shape` to klasa reprezentująca kształt, która pełni funkcję abstrakcji wektora. Kształty mogą być różnorodne, a ich reprezentacja graficzna zależy od zmiennych składowych klasy. Klasa `Shape` jest wykorzystywana jako:
 - **Reprezentacja graficzna**: Umożliwia prezentację różnych kształtów na ekranie.
 - **Zapis danych**: Służy do zapisu danych do pliku, co pozwala na ich późniejsze odtworzenie.
 
-#### 3. Klasa `Frame`
+#### 3. Klasa Frame
 
 `Frame` to klasa opisująca pojedynczą klatkę animacji. Zawiera następujące elementy:
 - **Shapes**: `std::vector` przechowujący obiekty typu `Shape`, które składają się na daną klatkę.
@@ -80,7 +80,8 @@ Jako podstawową strukturę danych wykorzystano `std::vector` z biblioteki stand
 - **Ścieżka do bitmapy**: Ścieżka do pliku z którego została wczytana bitmapa.
 
 Klasa `Frame` służy przede wszystkim jako kontener. Pozwala zaoscjować określone kształty, z określoną bitmapą, ułatwia to zarządzanie informacjami w programie. 
-#### 4. Klasa `ConfigClass`
+
+#### 4. Klasa ConfigClass
 
 `ConfigClass` to centralna klasa, która pełni funkcję konfiguracji aplikacji. Zawiera wszystkie kluczowe dane i parametry niezbędne do działania programu. Funkcjonalności klasy `ConfigClass` obejmują:
 - **Zarządzanie danymi aplikacji**: Przechowuje i zarządza wszystkimi danymi niezbędnymi do działania aplikacji.
