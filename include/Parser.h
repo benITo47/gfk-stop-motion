@@ -8,10 +8,11 @@
  * Zalecane jest, aby na elementy te przeznaczyć osobny katalog projektowy.
  * 
  * Dane o animacji zapisane są w pliku tekstowym o rozszerzeniu `.anim`. W kolejnych linijkach pliku znajdują się informacje o kolejnych klatkach animacji. 
- * Wewnątrz linijek może znajdować się dowolnie dużo wyrażeń rozdzielonych znakiem ';', przy czym:
+ * Wewnątrz linijek może znajdować się dowolnie dużo wyrażeń rozdzielonych znakiem `;`, przy czym:
  * - pierwszym wyrażeniem jest nazwa obrazu tła - wyrażenie to jest puste, jeżeli tła w klatce nie ma
  * - kolejne wyrażenia to reprezentacje kształtów narysowanych na klatce, opisane w formacie `[nazwa]([x0],[y0],[x1],[y1],[kolor_obramowania][kolor_wypełnienia])`. 
  * Tak jednolity format zapisu umożliwiony jest przez fakt, że każdy rodzaj kształtu zapamiętany jest jako para punktów `(x0, y0); (x1, y1)`.
+ * @see `Shape::toString`
  * 
  * ## Zapis do pliku
  * Zapis zaimplementowany jest warstwowo. Cały proces wywoływany jest przez funkcję `MainFrame::saveAnimationFile`. 

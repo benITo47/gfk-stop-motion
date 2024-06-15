@@ -2,7 +2,7 @@
 
 ## 1. Tytuł projektu oraz autorzy projektu
 
-**Tytuł projektu:** ANIMACJE POKLATKOWE
+**Tytuł projektu:** ANIMACJE POKLATKOWE (nr 27)
 
 **Autorzy projektu:** 
 - Daniel Czapla
@@ -56,8 +56,24 @@ W projekcie zdecydowaliśmy się na implementację rozszerzonej wersji programu,
 ## 4. Analiza projektu
 
 ### Dane wejściowe
+Program wejście może otrzymać na dwa sposoby:
+- poprzez interakcję z użytkownikiem - szczegółowa specyfikacja w sekcji _Specyfikacja interfejsu użytkownika_
+- poprzez wczytanie animacji z pliku `.anim` - szczegółowa specyfikacja formatu `.anim` w opisie szczegółowym pliku `Parser.h`
+
+Specyfikacja dla poszczególnych danych wejściowych jest następująca:
+- **Obrazy tła**: wspierane formaty to `.jpg`, `.png` oraz `.bmp`. Obraz może mieć dowolne wymiary i zostanie automatycznie dopasowany do rozmiarów panelu aplikacji
+- **Kształty**: położenie każdego kształtu opisane jest przez dwa punkty - odczytane z pliku, bądź też wprowadzone myszką przez użytkownika. Kształty są również opisane dwoma kolorami: obramowania oraz tła (ignorowanym dla kształtów złożonych z samych linii bądź też jeżeli wybrana jest opcja braku wypełnienia)
+- **Animacja**: animacja to sekwencja klatek, z których każda składa się z obrazu tła (lub jego braku) oraz wektora kształtów. Wektor klatek stworzony może zostać ręcznie przy użyciu odpowiednich przycisków w GUI, bądź też wgrany z pliku `.anim`
 
 ### Dane wyjściowe
+Wyjście programu również objawia się na dwa sposoby:
+- poprzez wyświetlenie animacji w interfejsie graficznym
+- poprzez zapisanie animacji do pliku `.anim` - szczegółowa specyfikacja w opisie szczegółowym pliku `Parser.h`
+
+Specyfikacja dla poszczególnych danych wejściowych jest następująca:
+- **Obrazy tła**: zapisywane są jako `.jpg` w katalogu `img`, tworzonym w folderze w którym znajduje się plik `.anim`
+- **Kształty**: zapisane są w formie `[nazwa]([x0],[y0],[x1],[y1],[kolor_obramowania][kolor_wypełnienia])`
+- **Animacja**: kolejne klatki to wiersze parametrów (nazwy obrazu tła lub opisów kształtów) oddzielone znakiem `;`
 
 ### Struktury danych
 W programie zastosowano kilka kluczowych struktur danych, które są fundamentalne dla jego działania. Poniżej znajduje się opis tych struktur, ich funkcjonalności oraz relacji między nimi. Dokumentację techniczną struktur, można znaleźć w odpowiednich plikach nagłówkowych .h
@@ -172,27 +188,29 @@ Zob. [Podział pracy i analiza czasowa](#podział-pracy-i-analiza-czasowa)
 ### Narzędzia programistyczne
 W projekcie wykorzystywane są następujące narzędzia programistyczne:
 
-* GIT - system kontroli wersji.
-* GitHub - interfejs systemu kontroli wersji oraz hub organizacyjny.
-* IDE - zintegrowane środowiska programistyczne, takie jak Microsoft Visual Studio oraz JetBrains CLion.
+* git - system kontroli wersji, dzięki któremu mogliśmy prowadzić pracę nad projektem równolegle.
+* GitHub - interfejs systemu kontroli wersji oraz hub organizacyjny, pomagał dzielić się na bieżąco rezultatami oraz usprawniał pracę przez lepszą organizacje.
+* IDE - zintegrowane środowiska programistyczne, takie jak Microsoft Visual Studio oraz JetBrains CLion - w zależności od wykorzystywanego systemu operacyjnego.
+* Debuggery - gdb oraz debuger Microsoftu (Visual Studio Debugger) - j.w.
 * Valgrind & Leaks - programy wykorzystywane do wykrywania wycieków pamięci.
-* Debuggery - gdb oraz debuger Microsoftu (Visual Studio Debugger).
 * Menedżery aktywności - systemowe menedżery do kontroli zużycia zasobów hardware'owych.
+
+Docelowo praca odbywała się na systemie MS Windows (by zapewnić funkcjonalny na tym systemie produkt ostateczny), program jednak był również częściowo rozwijany na systemie macOS.
 
 ## 5. Podział pracy i analiza czasowa
 We wstępnej analizie projektu wyodrębniliśmy następujące trzy zadania, i wstępnie podzielilismy się odpowiedzialnością za nie:
 - **Zaprojektowanie i utworzenie GUI**; odpowiedzialny: _Daniel Czapla_,
 - **Opracowanie logiki rysowania (wyświetlania oraz tworzenia) animacji w GUI**; odpowiedzialny: _Bartłomiej Obrochta_,
 - **Opracowanie formatu zapisywanego pliku oraz algorytmu jego zapisu**; odpowiedzialny: _Franciszek Urbański_.
-W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi zadaniami, przez co też granice odpowiedzialności rozmywały się. Nad niektórymi funkcjonalnościami, w szczególności związanymi z kompatybilnością z różnymi systemami operacyjnymi, siedzieliśmy również wspólnie.
+W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi zadaniami, przez co też granice odpowiedzialności rozmywały się. Nad niektórymi funkcjonalnościami, w szczególności związanymi z kompatybilnością z różnymi systemami operacyjnymi, pracowaliśmy również wspólnie.
 
-### GUI
-- Projekt - x h // to nie w ogolnosci? moze nie w GUI? przed GUI? jako calokszatlt -> suma - x h
+### GUI - 14h
+- Projekt interfejsu - 1 h
 - Implementacja - 4 h
 - Poprawki w miarę powstawania nowych funkcjonalności - 6 h
 - Zapewnienie kompatybilności z różnymi rodzajami wyświetlaczy i systemów operacyjnych - 3h
 
-### Rysowanie
+### Rysowanie - 13h
 - Podstawowa funkcjonalność rysowania na panelu - 1 h
 - Podstawowe wyświetlanie kształtów i tła - 2 h
 - Zapewnienie kompatybilności z systemem zapisu plików - 1 h
@@ -200,13 +218,18 @@ W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi 
 - Rozwinięcie funkcjonalności rysowania z dynamicznie wyświetlanymi kształtami - 4 h
 - Zapewnienie kompatybilności z systemem MS Windows - 3 h
 
-### Zapis do pliku
+### Zapis do pliku - 10h
 - Opracowanie formatu zapisu pliku, wraz z formatem zapisu parametrów - 1h
 - Opracowanie i próby implementacji struktury wewnętrznej zapisu animacji (`Parser.h`) - 4h
 - Zapewnienie kompatybilności z logiką rysowania - 2h
 - Implementacja funkcji zapisu kształtu, klatki - 1h
 - Implementacja kopiowania obrazów - 1h
 - Poprawianie pojawiających się błędów związanych z edge-case'ami oraz kompatybilnością z MacOS - 1h
+
+Każdy z nas spędził również średnio 4h na spotkaniach i rozmowach związanych z projektem.
+
+### Suma
+Biorąc pod uwagę czas trwania implementacji, spotkań, oraz sumując czasy pracy każdego niezależnie, szacujemy całkowity nakład pracy na ok. 50 roboczogodzin.
 
 ## 6. Opis najważniejszych algorytmów
 ### Rysowanie
@@ -223,8 +246,7 @@ Sposób przetwarzania i aktualizowania bitmap jest opisany szczegółowo w pliku
 Algorytm zapisu do pliku oraz format pliku opisane są w opisie szczegółowym pliku `Parser.h`.
 
 ## 7. Kodowanie
-Korzystaliśmy z systemu kontroli wersji `git`.
-Szczegółowa dokumentacja funkcji znajduje się w odpowiednich plikach nagłówkowych .h  
+Szczegółowa dokumentacja ważniejszych funkcji oraz klas znajduje się w odpowiednich zakładkach dokumentacji `doxygen`. Ważniejsze algorytmy opisane są zaś w sekcji wyżej.
 
 ## 8. Testowanie
 Testowanie przeprowadzaliśmy w następnych etapach:
