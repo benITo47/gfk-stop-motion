@@ -1,7 +1,7 @@
 ﻿#include "GUI.h"
 #include "util.h"
 
-MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion po roku w Rosji", wxDefaultPosition, wxDefaultSize) {
+MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Stop motion", wxDefaultPosition, wxDefaultSize) {
 	_myPanel = new MyPanel(this);
 	_myPanel->SetBackgroundColour(*wxWHITE);
 
