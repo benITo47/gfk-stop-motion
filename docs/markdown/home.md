@@ -186,9 +186,9 @@ We wstępnej analizie projektu wyodrębniliśmy następujące trzy zadania, i ws
 W praktyce oczywiście było wiele przestrzeni wspólnej między tymi ogólnymi zadaniami, przez co też granice odpowiedzialności rozmywały się. Nad niektórymi funkcjonalnościami, w szczególności związanymi z kompatybilnością z różnymi systemami operacyjnymi, siedzieliśmy również wspólnie.
 
 ### GUI
-- Projekt - x h
-- Implementacja - x h
-- Poprawki w miarę powstawania nowych funkcjonalności - x h
+- Projekt - x h // to nie w ogolnosci? moze nie w GUI? przed GUI? jako calokszatlt -> suma - x h
+- Implementacja - 4 h
+- Poprawki w miarę powstawania nowych funkcjonalności - 6 h
 - Zapewnienie kompatybilności z różnymi rodzajami wyświetlaczy i systemów operacyjnych - 3h
 
 ### Rysowanie
